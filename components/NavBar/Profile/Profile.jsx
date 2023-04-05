@@ -6,9 +6,12 @@ import { TbDownloadOff, TbDownload } from "react-icons/tb";
 import Link from "next/link";
 import { useDisconnect } from "@thirdweb-dev/react";
 
-//INTERNAL IMPORT
+
 import Style from "./Profile.module.css";
 import images from "../../../img";
+import CustomerForm from "/components/CustomerForm.js"; // Import the CustomerForm component
+//import withClientSideRendering from "/firebase/withClientSideRendering.js";
+// components/Profile.js
 
 const Profile = () => {
   const disconnect = useDisconnect();
@@ -25,7 +28,7 @@ const Profile = () => {
           <div className={Style.profile_menu_one_item}>
             <FaUserAlt />
             <p>
-              <Link href={{ pathname: "/myprofile" }}>MY PROFILE</Link>
+              <Link href="/ProfilePage">PROFILE</Link>
             </p>
           </div>
           <div className={Style.profile_menu_one_item}>
