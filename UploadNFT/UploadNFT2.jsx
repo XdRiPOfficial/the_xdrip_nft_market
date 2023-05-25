@@ -11,11 +11,11 @@ import Style from "./Upload.module.css";
 import formStyle from "../AccountPage/Form/Form.module.css";
 import images from "../img";
 import { Button } from "../components/componentsindex.js";
-import { DropZone } from "./uploadNFTIndex.js";
+import { DropZone2 } from "./uploadNFTIndex2.js";
 
 import NFTPreview from "./NFTPreview";
 
-const UloadNFT = ({ createNFT }) => {
+const UloadNFT2 = ({ createNFT }) => {
   const [price, setPrice] = useState("");
   const [active, setActive] = useState(0);
   const [name, setName] = useState("");
@@ -102,7 +102,7 @@ const UloadNFT = ({ createNFT }) => {
 
   return (
     <div className={Style.upload}>
-      <DropZone
+      <DropZone2
         title="JPG, GIF, PNG, MP4, MP3, MOV, WMV, MPEG, WEBM, MAX 250MB"
         heading="DRAG AND DROP VIDEO / AUDIO MEDIA FILE OR"
         subHeading="CLICK TO BROWSE YOUR DEVICE"
@@ -324,4 +324,4 @@ const UloadNFT = ({ createNFT }) => {
   );
 };
 
-export default UloadNFT;
+export default UloadNFT2;

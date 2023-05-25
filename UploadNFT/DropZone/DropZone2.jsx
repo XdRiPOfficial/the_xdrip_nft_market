@@ -9,7 +9,7 @@ import images from "../../img";
 
 
 
-const DropZone = ({
+const DropZone2 = ({
   title,
   heading,
   subHeading,
@@ -247,4 +247,4 @@ const formatFileSize = (size) => {
 
 };
 
-export default DropZone;
+export default DropZone2;

@@ -6,7 +6,7 @@ import { NFTStorage, Blob } from 'nft.storage';
 import marketplaceCA_ABI from "./marketplaceCA_ABI.json";
 import mohCA_ABI from "./mohCA_ABI.json";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
-import {uploadToIPFS } from "../UploadNFT/UploadNFT"
+import {uploadToIPFS } from "../UploadNFT/UploadNFT2"
 
 import Web3 from 'web3';
 
