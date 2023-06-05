@@ -14,7 +14,7 @@
     font-size: 1.3rem;
   }
   
- .tooltip {
+.tooltip {
   position: relative;
   display: inline-block;
   cursor: pointer;
@@ -23,14 +23,14 @@
 .tooltipText {
   visibility: hidden;
   width: 200px;
-  background-color: #555;
-  color: #fff;
+  background-color: var(--icons-color); /* Use the same background color as the input boxes */
+  color: var(--main-bg-color); /* Use the same text color as the input boxes */
   text-align: center;
-  border-radius: 5px;
-  padding: 5px;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
   position: absolute;
   z-index: 1;
-  bottom: 100%;
+  bottom: 120%;
   left: 50%;
   transform: translateX(-50%);
   opacity: 0;
@@ -42,6 +42,25 @@
   opacity: 1;
 }
 
+.tooltipText::before {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  border: 6px solid transparent;
+  border-top-color: var(--icons-color); /* Use the same background color as the input boxes */
+  transform: translateX(-50%);
+}
+
+.tooltipText::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  border: 6px solid transparent;
+  border-top-color: var(--icons-color); /* Use the same background color as the input boxes */
+  transform: translateX(-50%);
+}
   
   
   .Form_box_input select {
