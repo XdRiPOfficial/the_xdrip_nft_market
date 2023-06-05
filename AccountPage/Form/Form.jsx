@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+
+import { useAddress } from "@thirdweb-dev/react";
 import { HiOutlineMail } from "react-icons/hi";
 import { MdOutlineHttp, MdOutlineContentCopy } from "react-icons/md";
 import {
@@ -7,14 +9,13 @@ import {
   FaInstagram,
 } from "react-icons/fa";
 
-//INTERNAL IMPORT
 import Style from "./Form.module.css";
 import { Button } from "../../components/componentsindex.js";
 
 const Form = () => {
 
-  const [isCreator, setIsCreator] = useState(false); // State for the creator selection
-
+  const [isCreator, setIsCreator] = useState(false); 
+  const connectedWalletAddress = useAddress();
   const handleCreatorChange = (event) => {
     setIsCreator(event.target.checked);
   };
@@ -121,7 +122,7 @@ const Form = () => {
               </div>
               <input
                 type="text"
-                placeholder="0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                placeholder={connectedWalletAddress || "Connect your wallet"}
               />
               <div className={Style.Form_box_input_box_icon}>
                 <MdOutlineContentCopy />
