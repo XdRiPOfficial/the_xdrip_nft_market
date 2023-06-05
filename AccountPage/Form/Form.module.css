@@ -22,10 +22,10 @@
 
 .tooltipText {
   visibility: hidden;
-  width: 200px;
-  background-color: var(--icons-color); /* Use the same background color as the input boxes */
-  color: var(--main-bg-color); /* Use the same text color as the input boxes */
-  text-align: center;
+  width: 500px;
+  background-color: var(--icons-color); 
+  color: var(--main-bg-color); 
+  text-align: left;
   border-radius: 0.5rem;
   padding: 0.5rem;
   position: absolute;
@@ -48,7 +48,7 @@
   top: 100%;
   left: 50%;
   border: 6px solid transparent;
-  border-top-color: var(--icons-color); /* Use the same background color as the input boxes */
+  border-top-color: var(--icons-color); 
   transform: translateX(-50%);
 }
 
@@ -58,7 +58,7 @@
   top: 100%;
   left: 50%;
   border: 6px solid transparent;
-  border-top-color: var(--icons-color); /* Use the same background color as the input boxes */
+  border-top-color: var(--icons-color); 
   transform: translateX(-50%);
 }
   
