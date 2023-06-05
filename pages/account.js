@@ -94,7 +94,8 @@ const Account = () => {
           )}
         </div>
 
-        <Form setUsername={setUsername} setEmail={setEmail} />
+        <Form setUsername={setUsername} setEmail={setEmail} username={username} email={email} />
+
       </div>
     </div>
   );
