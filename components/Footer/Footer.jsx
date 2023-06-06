@@ -9,6 +9,7 @@ import {
   FaArrowDown,
   FaArrowUp,
 } from "react-icons/fa";
+import Link from 'next/link';
 
 import { RiSendPlaneFill } from "react-icons/ri";
 
@@ -22,9 +23,9 @@ const Footer = () => {
     <div className={Style.footer}>
       <div className={Style.footer_box}>
         <div className={Style.footer_box_social}>
-          <Image src={images.logo} alt="footer logo"  />
+          <Image src={images.logo} alt="footer logo" />
           <p>
-          OFFERING AN XCELLENT AVENUE FOR BUYING, SELLING, AND DISCOVERING XCLUSIVE DIGITAL ART.
+            OFFERING AN XCELLENT AVENUE FOR BUYING, SELLING, AND DISCOVERING XCLUSIVE DIGITAL ART.
           </p>
 
           <div className={Style.footer_social}>
@@ -54,6 +55,13 @@ const Footer = () => {
         <div className={Style.footer_box_help}>
           <h3>HELP CENTER</h3>
           <HelpCenter />
+          <div className={Style.footer_box_link}>
+            <Link href="/legalEntry">
+              <a>
+              <h2 className={Style.link_heading}>LEGAL LINKS</h2>
+              </a>
+            </Link>
+          </div>
         </div>
 
         <div className={Style.subscribe}>
@@ -65,7 +73,7 @@ const Footer = () => {
           </div>
           <div className={Style.subscribe_box_info}>
             <p>
-              JOIN OUR GROWING XMARKET COMMUNITY TODAY! 
+              JOIN OUR GROWING XMARKET COMMUNITY TODAY!
             </p>
           </div>
         </div>

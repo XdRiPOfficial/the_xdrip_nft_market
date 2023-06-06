@@ -291,8 +291,8 @@ const BigNFTSlider = () => {
           <Image
               src={images.left_arrow}
               alt="Left Arrow"
-              width={55}
-              height={55}
+              width={50}
+              height={50}
               className={Style.sliderBtn_icon_left}
               onClick={() => dec()}
             />
@@ -301,8 +301,8 @@ const BigNFTSlider = () => {
             <Image
               src={images.right_arrow}
               alt="Right Arrow"
-              width={55}
-              height={55}
+              width={50}
+              height={50}
               className={Style.sliderBtn_icon_right}
               onClick={() => inc()}
             />

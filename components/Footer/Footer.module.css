@@ -34,6 +34,10 @@
     margin-left: 1rem;
 }
 
+.link_heading{
+    font-size:  1.2rem;
+}
+
 /* //SOCIAL */
 .footer_social{
     display: flex;
