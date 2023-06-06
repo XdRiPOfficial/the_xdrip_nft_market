@@ -14,6 +14,55 @@
     font-size: 1.3rem;
   }
   
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.tooltipText {
+  visibility: hidden;
+  width: 500px;
+  background-color: var(--icons-color); 
+  color: var(--main-bg-color); 
+  text-align: left;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  position: absolute;
+  z-index: 1;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltipText {
+  visibility: visible;
+  opacity: 1;
+}
+
+.tooltipText::before {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  border: 6px solid transparent;
+  border-top-color: var(--icons-color); 
+  transform: translateX(-50%);
+}
+
+.tooltipText::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  border: 6px solid transparent;
+  border-top-color: var(--icons-color); 
+  transform: translateX(-50%);
+}
+  
+  
   .Form_box_input select {
     width: 100%;
     border: 4px double rgba(1, 122, 254, 255);
