@@ -20,7 +20,7 @@ import images from "../../img";
 import Image from "next/image";
 
 const Filter = () => {
-  const [filter, setFilter] = useState(true);
+  const [filter, setFilter] = useState(false);
   const [image, setImage] = useState(true);
   const [video, setVideo] = useState(true);
   const [music, setMusic] = useState(true);
@@ -114,20 +114,70 @@ const Filter = () => {
     { label: "5.0 - 10.0 BNB", min: 5.00, max: 10.00 },
   ];
 
+  const handleCategoryClick = (selectedCategory) => {
+    setCategory(selectedCategory);
+  };
+
+  const handleImageClick = () => {
+    setImage(!image);
+  };
+
+  const handleVideoClick = () => {
+    setVideo(!video);
+  };
+
+  const handleMusicClick = () => {
+    setMusic(!music);
+  };
+
+  const handleFilterClick = () => {
+    setFilter(!filter);
+  };
+
   return (
     <div className={Style.filter}>
       <div className={Style.filter_box}>
-        <div className={Style.filter_box_left}>
-          <button onClick={() => setCategory("nfts")}>ALL NFTs</button>
-          <button onClick={() => setCategory("ART")}>ART</button>
-          <button onClick={() => setCategory("GAMING")}>GAMING</button>
-          <button onClick={() => setCategory("SPORTS")}>SPORTS</button>
-          <button onClick={() => setCategory("METAVERSE")}>METAVERSE</button>
-          <button onClick={() => setCategory("PHOTOGRAPHY")}>PHOTOGRAPHY</button>
+      <div className={Style.filter_box_left}>
+          <button
+            className={category === "nfts" ? Style.active : ""}
+            onClick={() => handleCategoryClick("nfts")}
+          >
+            ALL NFTs
+          </button>
+          <button
+            className={category === "ART" ? Style.active : ""}
+            onClick={() => handleCategoryClick("ART")}
+          >
+            ART
+          </button>
+          <button
+            className={category === "GAMING" ? Style.active : ""}
+            onClick={() => handleCategoryClick("GAMING")}
+          >
+            GAMING
+          </button>
+          <button
+            className={category === "SPORTS" ? Style.active : ""}
+            onClick={() => handleCategoryClick("SPORTS")}
+          >
+            SPORTS
+          </button>
+          <button
+            className={category === "METAVERSE" ? Style.active : ""}
+            onClick={() => handleCategoryClick("METAVERSE")}
+          >
+            METAVERSE
+          </button>
+          <button
+            className={category === "PHOTOGRAPHY" ? Style.active : ""}
+            onClick={() => handleCategoryClick("PHOTOGRAPHY")}
+          >
+            PHOTOGRAPHY
+          </button>
         </div>
 
         <div className={Style.filter_box_right}>
-          <div className={Style.filter_box_right_box} onClick={() => openFilter()}>
+          <div className={Style.filter_box_right_box} onClick={() => setFilter(!filter)}>
             <FaFilter />
             <span>FILTER</span> {filter ? <FaAngleDown /> : <FaAngleUp />}
           </div>
@@ -139,7 +189,7 @@ const Filter = () => {
           <div className={Style.filter_box_items_box}>
             
               <select value={priceRange} onChange={(e) => setPriceRange(e.target.value)}>
-                <option value="">Select Price Range (ALL)</option>
+                <option value="">Price Range (ALL)</option>
                 {priceRanges.map((range) => (
                   <option key={range.label} value={range.label}>
                     {range.label}
@@ -151,31 +201,34 @@ const Filter = () => {
           </div>
 
           <div className={Style.filter_box_items_box}>
-            <div className={Style.filter_box_items_box_item_trans} onClick={() => setImage(!image)}>
-              <FaImages /> <small>IMAGES</small>
-              {image ? <TiTick /> : <AiFillCloseCircle />}
-            </div>
-          </div>
+  <div
+    className={`${Style.filter_box_items_box_item_trans} ${image ? Style.active : ""}`}
+    onClick={handleImageClick}
+  >
+    <FaImages /> <small>IMAGES</small>
+    {image ? <TiTick /> : <AiFillCloseCircle />}
+  </div>
+</div>
 
-          <div className={Style.filter_box_items_box}>
-            <div
-              className={Style.filter_box_items_box_item_trans}
-              onClick={() => setVideo(!video)}
-            >
-              <FaVideo /> <small>VIDEOS</small>
-              {video ? <TiTick /> : <AiFillCloseCircle />}            </div>
-          </div>
+<div className={Style.filter_box_items_box}>
+  <div
+    className={`${Style.filter_box_items_box_item_trans} ${video ? Style.active : ""}`}
+    onClick={handleVideoClick}
+  >
+    <FaVideo /> <small>VIDEOS</small>
+    {video ? <TiTick /> : <AiFillCloseCircle />}
+  </div>
+</div>
 
-          <div className={Style.filter_box_items_box}>
-            <div
-              className={Style.filter_box_items_box_item_trans}
-              onClick={() => setMusic(!music)}
-            >
-              <FaMusic /> <small>MUSIC</small>
-              {music ? <TiTick /> : <AiFillCloseCircle />}
-            </div>
-          </div>
-
+<div className={Style.filter_box_items_box}>
+  <div
+    className={`${Style.filter_box_items_box_item_trans} ${music ? Style.active : ""}`}
+    onClick={handleMusicClick}
+  >
+    <FaMusic /> <small>MUSIC</small>
+    {music ? <TiTick /> : <AiFillCloseCircle />}
+  </div>
+</div>
           <div className={Style.filter_box_items_box}>
             <div className={Style.filter_box_items_box_item}>
               <span>VERIFIED</span>

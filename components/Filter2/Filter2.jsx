@@ -20,7 +20,7 @@ import images from "../../img";
 import Image from "next/image";
 
 const Filter2 = () => {
-  const [filter, setFilter] = useState(true);
+  const [filter, setFilter] = useState(false);
   const [image, setImage] = useState(true);
   const [video, setVideo] = useState(true);
   const [music, setMusic] = useState(true);
@@ -104,28 +104,77 @@ const Filter2 = () => {
   }, [category, nfts, nftsCopy]);
 
   const priceRanges = [
-    { label: "0.0 - .20 BNB", min: 0.0, max: .20 },
-    { label: ".20 - .50 BNB", min: .20, max: .50 },
-    { label: ".50 - 1.0 BNB", min: .50, max: 1.00 },
+    { label: "0.0 - .20 BNB", min: 0.0, max: 0.20 },
+    { label: ".20 - .50 BNB", min: 0.20, max: 0.50 },
+    { label: ".50 - 1.0 BNB", min: 0.50, max: 1.00 },
     { label: "1.0 - 5.0 BNB", min: 1.00, max: 5.00 },
     { label: "5.0 - 10.0 BNB", min: 5.00, max: 10.00 },
   ];
 
+  const handleCategoryClick = (selectedCategory) => {
+    setCategory(selectedCategory);
+  };
+
+  const handleImageClick = () => {
+    setImage(!image);
+  };
+
+  const handleVideoClick = () => {
+    setVideo(!video);
+  };
+
+  const handleMusicClick = () => {
+    setMusic(!music);
+  };
+
+  const handleFilterClick = () => {
+    setFilter(!filter);
+  };
 
   return (
     <div className={Style.filter2}>
       <div className={Style.filter2_box}>
         <div className={Style.filter2_box_left}>
-          <button onClick={() => setCategory("nfts")}>ALL NFTs</button>
-          <button onClick={() => setCategory("ART")}>ART</button>
-          <button onClick={() => setCategory("GAMING")}>GAMING</button>
-          <button onClick={() => setCategory("SPORTS")}>SPORTS</button>
-          <button onClick={() => setCategory("METAVERSE")}>METAVERSE</button>
-          <button onClick={() => setCategory("PHOTOGRAPHY")}>PHOTOGRAPHY</button>
+          <button
+            className={category === "nfts" ? Style.active : ""}
+            onClick={() => handleCategoryClick("nfts")}
+          >
+            ALL NFTs
+          </button>
+          <button
+            className={category === "ART" ? Style.active : ""}
+            onClick={() => handleCategoryClick("ART")}
+          >
+            ART
+          </button>
+          <button
+            className={category === "GAMING" ? Style.active : ""}
+            onClick={() => handleCategoryClick("GAMING")}
+          >
+            GAMING
+          </button>
+          <button
+            className={category === "SPORTS" ? Style.active : ""}
+            onClick={() => handleCategoryClick("SPORTS")}
+          >
+            SPORTS
+          </button>
+          <button
+            className={category === "METAVERSE" ? Style.active : ""}
+            onClick={() => handleCategoryClick("METAVERSE")}
+          >
+            METAVERSE
+          </button>
+          <button
+            className={category === "PHOTOGRAPHY" ? Style.active : ""}
+            onClick={() => handleCategoryClick("PHOTOGRAPHY")}
+          >
+            PHOTOGRAPHY
+          </button>
         </div>
 
         <div className={Style.filter2_box_right}>
-          <div className={Style.filter2_box_right_box} onClick={() => setFilter(!filter)}>
+          <div className={Style.filter2_box_right_box} onClick={handleFilterClick}>
             <FaFilter />
             <span>FILTER</span> {filter ? <FaAngleDown /> : <FaAngleUp />}
           </div>
@@ -135,46 +184,46 @@ const Filter2 = () => {
       {filter && (
         <div className={Style.filter2_box_items}>
           <div className={Style.filter2_box_items_box}>
-            
-              <select value={priceRange} onChange={(e) => setPriceRange(e.target.value)}>
-                <option value="">Select Price Range (ALL)</option>
-                {priceRanges.map((range) => (
-                  <option key={range.label} value={range.label}>
-                    {range.label}
-                  </option>
-                ))}
-              </select>
-
-            
-          </div>
-
-
-
-
-
-          <div className={Style.filter2_box_items_box}>
-            <div className={Style.filter2_box_items_box_item_trans} onClick={() => setImage(!image)}>
-              <FaImages /> <small>IMAGES</small>
-              {image ? <TiTick /> : <AiFillCloseCircle />}
-            </div>
+            <select value={priceRange} onChange={(e) => setPriceRange(e.target.value)}>
+              <option value="">Price Range (ALL)</option>
+              {priceRanges.map((range) => (
+                <option key={range.label} value={range.label}>
+                  {range.label}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className={Style.filter2_box_items_box}>
-            <div className={Style.filter2_box_items_box_item_trans} onClick={() => setVideo(!video)}>
-              <FaVideo /> <small>VIDEOS</small>
-              {video ? <TiTick /> : <AiFillCloseCircle />}
-            </div>
-          </div>
+  <div
+    className={`${Style.filter2_box_items_box_item_trans} ${image ? Style.active : ""}`}
+    onClick={handleImageClick}
+  >
+    <FaImages /> <small>IMAGES</small>
+    {image ? <TiTick /> : <AiFillCloseCircle />}
+  </div>
+</div>
 
-          <div className={Style.filter2_box_items_box}>
-            <div
-              className={Style.filter2_box_items_box_item_trans}
-              onClick={() => setMusic(!music)}
-            >
-              <FaMusic /> <small>MUSIC</small>
-              {music ? <TiTick /> : <AiFillCloseCircle />}
-            </div>
-          </div>
+<div className={Style.filter2_box_items_box}>
+  <div
+    className={`${Style.filter2_box_items_box_item_trans} ${video ? Style.active : ""}`}
+    onClick={handleVideoClick}
+  >
+    <FaVideo /> <small>VIDEOS</small>
+    {video ? <TiTick /> : <AiFillCloseCircle />}
+  </div>
+</div>
+
+<div className={Style.filter2_box_items_box}>
+  <div
+    className={`${Style.filter2_box_items_box_item_trans} ${music ? Style.active : ""}`}
+    onClick={handleMusicClick}
+  >
+    <FaMusic /> <small>MUSIC</small>
+    {music ? <TiTick /> : <AiFillCloseCircle />}
+  </div>
+</div>
+
 
           <div className={Style.filter2_box_items_box}>
             <div className={Style.filter2_box_items_box_item}>
@@ -182,8 +231,8 @@ const Filter2 = () => {
               <Image
                 src={images.xm2}
                 alt="NFT"
-                width={25}
-                height={25}
+                width={20}
+                height={20}
                 objectFit="cover"
                 className={Style.verified_img}
                 controls
@@ -192,7 +241,6 @@ const Filter2 = () => {
           </div>
         </div>
       )}
-
 
       <div className={Style.category_section}>
         {selectedCategoryData.length === 0 ? (
@@ -238,12 +286,14 @@ const Filter2 = () => {
                     nft.category === "MUSIC" ||
                     fileExtension === "flac"))
               ) {
-                  if (
-                    !priceRange || // If no price range is selected
-                    (priceRange === "All") || 
-                  priceRange &&
-                  parseFloat(nft.price) * 10 ** 9 >= priceRanges.find((range) => range.label === priceRange).min &&
-                  parseFloat(nft.price) * 10 ** 9 <= priceRanges.find((range) => range.label === priceRange).max
+                if (
+                  !priceRange || // If no price range is selected
+                  (priceRange === "All") ||
+                  (priceRange &&
+                    parseFloat(nft.price) * 10 ** 9 >=
+                      priceRanges.find((range) => range.label === priceRange).min &&
+                    parseFloat(nft.price) * 10 ** 9 <=
+                      priceRanges.find((range) => range.label === priceRange).max)
                 ) {
                   return true;
                 }
@@ -253,10 +303,8 @@ const Filter2 = () => {
           />
         )}
       </div>
-
     </div>
   );
 };
 
 export default Filter2;
-

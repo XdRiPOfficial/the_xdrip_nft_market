@@ -4,6 +4,15 @@
     background-image: url(../../img/card-background-2.png);
 }
 
+.filter2_box_left .active{
+    background: rgb(52, 52, 58);
+    
+}
+
+.filter2_box_items_box .active{
+    background: rgb(52, 52, 58);
+}
+
 .filter2_box {
     width: 80%;
     margin: 0 auto;
@@ -11,18 +20,16 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-bottom: 4rem;
+    padding-bottom: .5rem;
     padding-top: 4rem;
+    border-bottom: 4px double rgba(1,122,254,255);
 }
 
-.selected {
-    background-color: #e8e8e8;
 
-}
 
 .filter2_box_left {
     display: flex;
-    gap: 2rem;
+    gap: 1rem;
 
 }
 
@@ -32,8 +39,8 @@
 }
 
 .filter2_box_left button {
-    padding: 1rem 1.25rem;
-    border-radius: 0.4rem;
+    padding: .55rem 1.1rem;
+    border-radius: 0.2rem;
     border: 4px double rgba(1, 122, 254, 255);
     cursor: pointer;
     background-color: rgb(14, 14, 26);
@@ -41,7 +48,7 @@
     font-family: "Good Times";
     cursor: pointer;
     transition: 0.6s;
-    box-shadow: 0px 0px 60px #1f4c65;
+    box-shadow: 0px 0px 20px #1f4c65;
     -webkit-box-reflect: below 10px linear-gradient(to bottom, rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.4));
 
 }
@@ -54,9 +61,13 @@
 
 }
 
+.filter2_box_items_box_item{
+    font-size: .9rem;
+}
+
 .filter2_box_right_box {
-    padding: 1rem 1.25rem;
-    border-radius: 0.4rem;
+    padding: .55rem 1rem;
+    border-radius: 0.2rem;
     border: 4px double rgba(1, 122, 254, 255);
     cursor: pointer;
     background-color: rgb(14, 14, 26);
@@ -64,8 +75,14 @@
     font-family: "Good Times";
     cursor: pointer;
     transition: 0.6s;
-    box-shadow: 0px 0px 60px #1f4c65;
+    box-shadow: 0px 0px 20px #1f4c65;
     -webkit-box-reflect: below 10px linear-gradient(to bottom, rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.4));
+}
+
+.filter2_box_right_box:hover{
+    background: rgb(2,29,78);
+    background: linear-gradient(270deg, rgba(2, 29, 78, 0.681) 0%, rgba(22, 151, 163, 0.873) 60%);
+    color: rgb(4, 4, 38);
 }
 
 .filter2_box_items_box_item_trans button {
@@ -78,12 +95,6 @@
     margin-left: 1rem ;
   }
   
-  /* Styles for the active button */
-  .filter2_box_items_box_item_trans button.active {
-    background-color: #000000;    
-    color: #fff;
-   
-  }
   
   /* Additional styles for the button container */
   .filter2_box_items_box_item_trans span {
@@ -102,8 +113,8 @@
     width: 80%;
     margin: 0 auto;
     display: flex;
-    padding: 2rem 0;
-    border-top: 2px double rgba(1, 122, 254, 255);
+    padding: 0.5rem 0;
+    
 }
 
 .filter2_box_items_box {
@@ -114,7 +125,7 @@
 }
 
 .filter2_box_items_box_item {
-    padding: .75rem 1rem;
+    padding: .35rem .75rem;
     border-radius: 0.4rem;
     border: 4px double rgba(1, 122, 254, 255);
     cursor: pointer;
@@ -124,15 +135,16 @@
     cursor: pointer;
     transition: 0.6s;
     justify-content: space-between;
+    font-size: .9rem;
     gap: 1rem;
-    box-shadow: 0px 0px 60px #1f4c65;
+    box-shadow: 0px 0px 20px #1f4c65;
     -webkit-box-reflect: below 10px linear-gradient(to bottom, rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.4));
 }
 
 .filter2_box_items_box_item_trans {
-    padding: 1rem 1.25rem;
-    border-radius: 0.4rem;
-
+    padding: .35rem .75rem;
+    border-radius: 0.2rem;
+    font-size: .9rem;
     border: 4px double rgba(1, 122, 254, 255);
     cursor: pointer;
     background-color: rgb(14, 14, 26);
@@ -140,25 +152,26 @@
     font-family: "Good Times";
     cursor: pointer;
     transition: 0.6s;
-    box-shadow: 0px 0px 60px #1f4c65;
+    box-shadow: 0px 0px 20px #1f4c65;
     -webkit-box-reflect: below 10px linear-gradient(to bottom, rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.4));
 }
 
-.filter2_box_items_box_item_trans:hover {
-    
- 
+.filter2_box_items_box_item_trans:hover{
+    background: rgb(2,29,78);
+    background: linear-gradient(270deg, rgba(2, 29, 78, 0.681) 0%, rgba(22, 151, 163, 0.873) 60%);
+    color: rgb(4, 4, 38);
 }
 
 .filter2_box_items_box_item:hover {
     background: rgb(2, 29, 78);
-    background: linear-gradient(270deg, rgba(2, 29, 78, 0.681) 0%, rgba(31, 215, 232, 0.873) 60%);
+    background: linear-gradient(270deg, rgba(2, 29, 78, 0.681) 0%, rgba(22, 151, 163, 0.873) 60%);
     color: rgb(4, 4, 38);
 }
 
 .filter2_box_items_box select{
-    padding: 1.1rem 1.25rem;
+    padding: .35rem .75rem;
     border-radius: 0.4rem;
-
+    font-size: .9rem;
     border: 4px double rgba(1, 122, 254, 255);
     cursor: pointer;
     background-color: rgb(14, 14, 26);
@@ -166,7 +179,7 @@
     font-family: "Good Times";
     cursor: pointer;
     transition: 0.6s;
-    box-shadow: 0px 0px 60px #1f4c65;
+    box-shadow: 0px 0px 20px #1f4c65;
     -webkit-box-reflect: below 10px linear-gradient(to bottom, rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.4));
 }
 
