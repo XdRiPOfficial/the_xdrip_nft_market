@@ -24,14 +24,15 @@ const Filter = () => {
   const [image, setImage] = useState(true);
   const [video, setVideo] = useState(true);
   const [music, setMusic] = useState(true);
+  const [priceRange, setPriceRange] = useState("");
   const { fetchNFTs, setError, currentAccount } = useContext(NFTMarketplaceContext);
   const [nfts, setNfts] = useState([]);
   const [nftsCopy, setNftsCopy] = useState([]);
   const [category, setCategory] = useState("nfts");
   const [selectedCategoryData, setSelectedCategoryData] = useState([]);
-    const [fileTypes, setFileTypes] = useState({});
+  const [fileTypes, setFileTypes] = useState({});
   const [loading, setLoading] = useState(true);
-  const [sortOrder, setSortOrder] = useState("ascending");
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -102,24 +103,16 @@ const Filter = () => {
         setSelectedCategoryData(nftsCopy);
     }
 
-    const sortedData = selectedCategoryData.sort((a, b) => {
-      // Assuming each NFT object has a `price` property
-      const priceA = a.price;
-      const priceB = b.price;
 
-      if (sortOrder === "ascending") {
-        return priceA - priceB;
-      } else {
-        return priceB - priceA;
-      }
-    });
+  }, [category, nfts, nftsCopy]);
 
-    setSelectedCategoryData([...sortedData]);
-  }, [category, sortOrder, nfts, nftsCopy]);
-
-  const handleSortOrderChange = (order) => {
-    setSortOrder(order);
-  };
+  const priceRanges = [
+    { label: "0.0 - .20 BNB", min: 0.0, max: .20 },
+    { label: ".20 - .50 BNB", min: .20, max: .50 },
+    { label: ".50 - 1.0 BNB", min: .50, max: 1.00 },
+    { label: "1.0 - 5.0 BNB", min: 1.00, max: 5.00 },
+    { label: "5.0 - 10.0 BNB", min: 5.00, max: 10.00 },
+  ];
 
   return (
     <div className={Style.filter}>
@@ -144,21 +137,17 @@ const Filter = () => {
       {filter && (
         <div className={Style.filter_box_items}>
           <div className={Style.filter_box_items_box}>
-          <div className={Style.filter_box_items_box_item_trans}>
-            <span>Price:</span>
-            <button
-              onClick={() => handleSortOrderChange("ascending")}
-              className={sortOrder === "ascending" ? Style.active : ""}
-            >
-              ASC
-            </button>
-            <button
-              onClick={() => handleSortOrderChange("descending")}
-              className={sortOrder === "descending" ? Style.active : ""}
-            >
-              DESC
-            </button>
-          </div>
+            
+              <select value={priceRange} onChange={(e) => setPriceRange(e.target.value)}>
+                <option value="">Select Price Range (ALL)</option>
+                {priceRanges.map((range) => (
+                  <option key={range.label} value={range.label}>
+                    {range.label}
+                  </option>
+                ))}
+              </select>
+
+            
           </div>
 
           <div className={Style.filter_box_items_box}>
@@ -205,7 +194,7 @@ const Filter = () => {
       )}
 
       <div className={Style.category_section}>
-      {selectedCategoryData.length === 0 ? (
+        {selectedCategoryData.length === 0 ? (
           <Loader />
         ) : (
           <NFTCard
@@ -216,40 +205,48 @@ const Filter = () => {
               }
               const fileExtension = fileType.split("/")[1];
               if (
-                (image && 
-                  (fileExtension === "png" || 
-                   fileExtension === "jpeg" || 
-                   fileExtension === "bmp" || 
-                   fileExtension === "tiff" || 
-                   fileExtension === "xml" || 
-                   fileExtension === "webp")) ||
+                (image &&
+                  (fileExtension === "png" ||
+                    fileExtension === "jpeg" ||
+                    fileExtension === "bmp" ||
+                    fileExtension === "tiff" ||
+                    fileExtension === "xml" ||
+                    fileExtension === "webp")) ||
 
-                (video && 
-                  (fileExtension === "mp4" ||  
-                  fileExtension === "gif" ||
-                  fileExtension === "avi" || 
-                  fileExtension === "mov" || 
-                  fileExtension === "webm" || 
-                  fileExtension === "wmv" || 
-                  fileExtension === "flv" || 
-                  fileExtension === "mkv" || 
-                  nft.category === "VIDEO" || 
-                  fileExtension === "m4v" || 
-                  fileExtension === "3gp" )) ||
+                (video &&
+                  (fileExtension === "mp4" ||
+                    fileExtension === "gif" ||
+                    fileExtension === "avi" ||
+                    fileExtension === "mov" ||
+                    fileExtension === "webm" ||
+                    fileExtension === "wmv" ||
+                    fileExtension === "flv" ||
+                    fileExtension === "mkv" ||
+                    nft.category === "VIDEO" ||
+                    fileExtension === "m4v" ||
+                    fileExtension === "3gp")) ||
 
-                (music && 
-                  (fileExtension === "mp3" || 
-                  fileExtension === "ogg" || 
-                  fileExtension === "wma" || 
-                  fileExtension === "aac" || 
-                  fileExtension === "wav" || 
-                  fileExtension === "mpeg" || 
-                  fileExtension === "mpg" || 
-                  nft.category === "MUSIC" || 
-                  fileExtension === "flac"))
+                (music &&
+                  (fileExtension === "mp3" ||
+                    fileExtension === "ogg" ||
+                    fileExtension === "wma" ||
+                    fileExtension === "aac" ||
+                    fileExtension === "wav" ||
+                    fileExtension === "mpeg" ||
+                    fileExtension === "mpg" ||
+                    nft.category === "MUSIC" ||
+                    fileExtension === "flac"))
+              ) {
+                if (
+                  !priceRange || // If no price range is selected
+                  (priceRange === "All") || 
+                priceRange &&
+                parseFloat(nft.price) * 10 ** 9 >= priceRanges.find((range) => range.label === priceRange).min &&
+                parseFloat(nft.price) * 10 ** 9 <= priceRanges.find((range) => range.label === priceRange).max
               ) {
                 return true;
               }
+            }
               return false;
             })}
           />

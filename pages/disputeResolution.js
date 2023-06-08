@@ -85,9 +85,12 @@ const PrivacyPolicy = () => {
                 <div className={Style.agreement_box_box}>
                     <div className={Style.agreement_box_body_title}>
                         <h1>XMARKET DISPUTE RESOLUTION </h1>
-                        <a>
-                            If there arises any dispute or disagreement between parties originating from or in connection with this agreement, both parties commit to initially attempt to resolve such dispute via friendly consultation and negotiation. This involves clear communication and a demonstrated willingness to seek a compromise that is mutually acceptable. If the dispute remains unresolved after an extended period deemed reasonable, the unresolved issue or issues may then be referred to mediation. This mediation will be conducted in accordance with any prevailing statutory rules of mediation. If mediation fails to bring about a satisfactory resolution of the entire dispute or if such a process is unavailable, the remaining unresolved issues will then be submitted to final and binding arbitration. This arbitration will be conducted under the laws and rules applicable in your location. The award handed down by the arbitrator will be considered final and legally binding. Judgment upon the award rendered by the arbitrator may be entered in any court possessing jurisdiction within the geographical limits of your location.
-                        </a>
+                        <p>
+                            If there arises any dispute or disagreement between parties originating from or in connection with this agreement, both parties commit to initially attempt to resolve such dispute via friendly consultation and negotiation. This involves clear communication and a demonstrated willingness to seek a compromise that is mutually acceptable. If the dispute remains unresolved after an extended period deemed reasonable, the unresolved issue or issues may then be referred to mediation. 
+                        </p>
+                        <p>
+                        This mediation will be conducted in accordance with any prevailing statutory rules of mediation. If mediation fails to bring about a satisfactory resolution of the entire dispute or if such a process is unavailable, the remaining unresolved issues will then be submitted to final and binding arbitration. This arbitration will be conducted under the laws and rules applicable in your location. The award handed down by the arbitrator will be considered final and legally binding. Judgment upon the award rendered by the arbitrator may be entered in any court possessing jurisdiction within the geographical limits of your location.
+                        </p>
                     </div>
                     <div className={Style.agreement_box_body}>
                         <div className={Style.agreement_box_body_update}>
