@@ -16,13 +16,6 @@ const apiKey = process.env.NEXT_PUBLIC_NFT_STORAGE_API_KEY;
 
 const client = new NFTStorage({ token: apiKey });
 
-//not actually using this http client but keeping code and web3 provider  wrapper for now
-
-const ipfs = ipfsHttpClient({
-  host: 'ipfs.nft.storage',
-  port: 443,
-  protocol: 'https',
-});
 
 
 const NFTMarketplaceAddress = marketplaceCA_ABI.address;
@@ -302,19 +295,9 @@ async function fetchNFTs() {
   }, []);
   
   
+
+  
   /*
-  
-  async function fetchNFTs() {
-  const fetchedNFTs = await loadNFTs();
-  setNfts(fetchedNFTs);
-}
-  useEffect(() => {
-    fetchNFTs();
-  }, []);
-*/
-  
-  
-  //---BUY NFTs FUNCTION
   const buyNFT = async (nft) => {
     try {
       const contract = await connectingWithSmartContract();
@@ -331,6 +314,37 @@ async function fetchNFTs() {
       setOpenError(true);
     }
   };
+*/
+
+const buyNFT = async (nft) => {
+  try {
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    const account = accounts[0];
+
+    const nftMarketplaceContract = new web3.eth.Contract(NFTMarketplaceABI, NFTMarketplaceAddress);
+    
+    const price = web3.utils.toWei(nft.price.toString(), "ether");  // Convert price back to Wei from Ether
+
+    const transactionParameters = {
+      to: NFTMarketplaceAddress,  // Address of NFT Marketplace Contract
+      from: account, // User's address
+      data: nftMarketplaceContract.methods.createMarketSale(nft.tokenId).encodeABI(),
+      value: web3.utils.toHex(price), // Purchase price of NFT
+    };
+
+    const txHash = await window.ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [transactionParameters],
+    });
+
+    await transaction.wait();
+
+    router.push("/author");
+  } catch (error) {
+    setError("Error While buying NFT");
+    setOpenError(true);
+  }
+};
 
 
   //----TRANSFER FUNDS
