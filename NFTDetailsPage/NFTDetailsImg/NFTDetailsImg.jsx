@@ -170,12 +170,14 @@ export default NFTDetailsImg;
 
 added back details  */
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Style from "./NFTDetailsImg.module.css";
 import { FaArrowDown, FaArrowUp } from "react-icons/fa";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import ReactPlayer from 'react-player';
 import "react-lazy-load-image-component/src/effects/blur.css";
+
+
 
 const NFTDetailsImg = ({ nft }) => {
   const [information, setInformation] = useState(true);
@@ -201,6 +203,12 @@ const NFTDetailsImg = ({ nft }) => {
 
   const openInformation = () => setInformation(!information);
   const openDetails = () => setDetails(!details);
+
+
+
+
+
+
 
   return (
     <div className={Style.NFTDetailsImg}>
