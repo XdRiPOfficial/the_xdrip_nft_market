@@ -48,63 +48,6 @@ const NFTCard = ({ NFTData }) => {
   };
 
 
-/*
-  useEffect(() => {
-    const fetchFileTypes = async () => {
-      const fileTypesObj = {};
-
-      for (const el of NFTData) {
-        try {
-          const response = await fetch(el.image);
-          const contentType = response.headers.get("content-type");
-          fileTypesObj[el.image] = contentType;
-        } catch (error) {
-          console.log(error);
-        }
-      }
-
-      setFileTypes(fileTypesObj);
-      setLoading(false);
-    };
-
-    fetchFileTypes();
-  }, [NFTData]);
-  
-  */
-  
-  
-  /*
-  useEffect(() => {
-  const fetchFileTypes = async () => {
-    let fileTypesObj = {};
-
-    const savedData = localStorage.getItem('fileTypesObj');
-    if (savedData) {
-      fileTypesObj = JSON.parse(savedData);
-    } else {
-
-      for (const el of NFTData) {
-        try {
-          const response = await fetch(el.image);
-          const contentType = response.headers.get("content-type");
-          fileTypesObj[el.image] = contentType;
-        } catch (error) {
-          console.log(error);
-        }
-      }
-
-      localStorage.setItem('fileTypesObj', JSON.stringify(fileTypesObj));
-    }
-
-    setFileTypes(fileTypesObj);
-    setLoading(false);
-  };
-
-  fetchFileTypes();
-}, [NFTData]);
-*/
-
-
 useEffect(() => {
   const fetchFileTypes = async () => {
     let fileTypesObj = {};
@@ -136,69 +79,6 @@ useEffect(() => {
 }, [NFTData]);
 
 
-
-
-/*
-  const renderFilePreview = (el) => {
-    const fileType = fileTypes[el.image];
-
-    if (fileType && fileType.includes("image")) {
-      return (
-        <img
-          src={el.image}
-          alt="NFT"
-          width={350}
-          height={300}
-          objectFit="cover"
-          className={Style.NFTCard_box_img_img}
-        />
-      );
-    } else if (fileType && fileType.includes("video")) {
-      return (
-        <video
-          src={el.image}
-          alt="NFT"
-          width={350}
-          height={300}
-          objectFit="cover"
-          className={Style.NFTCard_box_img_img}
-          controls
-        />
-      );
-    } else if (fileType && fileType.includes("audio")) {
-      return (
-        <div className={Style.NFTCard_box_audio}>
-          <Image
-            src={images.audio_image}
-            alt="Default"
-            width={350}
-            height={255}
-            objectFit="cover"
-            className={Style.NFTCard_box_img_audio}
-          />
-          <audio
-            src={el.image}
-            controls
-            className={Style.NFTCard_box_audio_controls}
-          />
-        </div>
-      );
-    } else {
-      return (
-        <Image
-          src={images.invalidImage}
-          alt="NFT"
-          width={350}
-          height={300}
-          objectFit="cover"
-          className={Style.NFTCard_box_img_img}
-          controls
-        />
-       
-      );
-    }
-  };
-*/
 
 const RenderDefault = () => (
   <Image

@@ -74,7 +74,7 @@ const Home = () => {
 
       <div id="audio" className={Style.section}>
         <Title
-          heading="AUDIO XCELENCE"
+          heading="AUDIO XCELLENCE"
           paragraph="XCELLENT CREATIONS DESIGNED TO TEASE YOUR EAR HOLES."
         />
         <AudioLive />
@@ -91,7 +91,7 @@ const Home = () => {
       <div id="slider" className={Style.section}>
         <Title
           heading="XPLORE VIDEO NFTS"
-          paragraph="XCELLENT VIDEOS DESIGNED FOR YOU VISUAL PLEASURE."
+          paragraph="XCELLENT VIDEOS DESIGNED FOR YOUR VISUAL PLEASURE."
         />
         <Slider />
       </div>

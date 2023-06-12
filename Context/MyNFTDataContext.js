@@ -2,14 +2,14 @@ import React, { createContext, useState, useEffect } from 'react';
 import Web3 from 'web3';
 import { useAddress } from "@thirdweb-dev/react";
 import mohCA_ABI from "./mohCA_ABI.json";
-import marketplaceCA_ABI from "./marketplaceCA_ABI.json";
+
 
 export const MyNFTDataContext = createContext();
 
 const MyNFTData = ({ children }) => {
   const address = useAddress();
   const [nfts, setNfts] = useState([]);
-  const bscRpcUrl = 'https://data-seed-prebsc-1-s1.binance.org:8545/';
+  const bscRpcUrl = "https://binance-testnet.rpc.thirdweb.com/";
 
   useEffect(() => {
     if (!address) return;
@@ -19,9 +19,6 @@ const MyNFTData = ({ children }) => {
       const mohABI = mohCA_ABI.abi;
       const mohContractAddress = mohCA_ABI.address;
       const mohnftContract = new web3.eth.Contract(mohABI, mohContractAddress);
-
-      const marketplaceContractAddress = marketplaceCA_ABI.address;
-      const marketplaceContract = new web3.eth.Contract(marketplaceCA_ABI.abi, marketplaceContractAddress);
 
       const fetchTokensFromContract = async (contract) => {
         const tokenCount = await contract.methods.balanceOf(address).call();
@@ -40,7 +37,10 @@ const MyNFTData = ({ children }) => {
 
             const response = await fetch(tokenURI);
             const metadata = await response.json();
-            return { tokenId, metadata };
+            //const creationDate = await contract.methods.creationDate(tokenId).call(); 
+            const contractAddress = mohContractAddress; 
+
+            return { tokenId, metadata, contractAddress };
           })
         );
 
@@ -48,9 +48,9 @@ const MyNFTData = ({ children }) => {
       };
 
       const nftsFromMohContract = await fetchTokensFromContract(mohnftContract);
-      const nftsFromMarketplaceContract = await fetchTokensFromContract(marketplaceContract);
+      //const nftsFromMarketplaceContract = await fetchTokensFromContract(marketplaceContract);
 
-      setNfts([...nftsFromMohContract, ...nftsFromMarketplaceContract]);
+      setNfts([...nftsFromMohContract]);
     };
 
     fetchNFTs();

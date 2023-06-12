@@ -1,12 +1,14 @@
 import React, { useContext, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
+
 import Style from "./NFTWalletCard.module.css";
 import { MyNFTDataContext } from "../../../Context/MyNFTDataContext";
+import mohCA_ABI from "../../../Context/mohCA_ABI.json";
+
 
 const NFTWalletCard = ({ renderMedia }) => {
   const { nfts } = useContext(MyNFTDataContext);
-
+  const mohContractAddress = mohCA_ABI.address;
   const [flippedCards, setFlippedCards] = useState(Array(nfts.length).fill(false));
 
   const handleClick = (i) => {
@@ -68,13 +70,13 @@ const NFTWalletCard = ({ renderMedia }) => {
 
           <div className={Style.NFTWalletCard_box_back}>
             <h3>COLLECTION</h3>
-            <p>{metadata.collection ? metadata.collection : "NO DATA AVAILABLE"}</p>
+            <p>{metadata.collection ? metadata.collection : "MEDALS of HONOR"}</p>
 
-            <h3>CREATION DATE</h3>
-            <p>{metadata.creation ? metadata.creation : "NO DATA AVAILABLE"}</p>
+            <h3>MEDAL</h3>
+            <p>{metadata.name ? metadata.name : "NO DATA AVAILABLE"}</p>
 
             <h3>CONTRACT</h3>
-            <p>{metadata.contract ? metadata.contract : "NO DATA AVAILABLE"}</p>
+            <p>{mohContractAddress ? mohContractAddress : "NO DATA AVAILABLE"}</p>
 
             <h3>DESCRIPTION</h3>
             <p>{metadata.description ? metadata.description : "NO DATA AVAILABLE"}</p>
