@@ -42,8 +42,8 @@ const NFTWallet = () => {
   
   return (
     <div className={Style.nft_wallet}>
-      <Banner bannerVideo={videos.bannerVideo} />
-      <h1 className={Style.page_title}>MY WALLET GALLERY</h1>
+      
+      <h1 className={Style.page_title}>MY MEDALS OF HONOR</h1>
       
       <NFTWalletCard nfts={nfts} renderMedia={renderMedia} />
       <Slider />
