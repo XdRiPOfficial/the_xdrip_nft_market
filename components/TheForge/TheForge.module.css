@@ -9,7 +9,7 @@
     grid-template-columns: repeat(5, 1fr);
     width: 90%;
     padding: 1rem;
-    gap: 1rem;
+    gap: 1.75rem;
   }
   
   .card {
@@ -20,12 +20,19 @@
     
   }
 
+
+
+  .card_right_top video{
+    margin-top: -1rem;
+   
+  }
+
   .card_left{
     display: flex;
    
     justify-content: center;
     text-align: center;
-    margin-top: -1rem;
+    margin-top: 0rem;
     margin-bottom: 0rem;
   }
 
@@ -49,7 +56,7 @@
     justify-content: center;
     text-align: center;
     gap: 2rem;
-    margin-top: 1rem;
+    margin-top: 0rem;
   }
 
   .car_right_box_price {
@@ -99,7 +106,7 @@
         align-items: center;
         justify-content: center;
         gap: 3rem;
-        padding-block: 1rem 0rem;
+        padding-block: 0rem .5rem;
         font-size: 1rem;
     
     }

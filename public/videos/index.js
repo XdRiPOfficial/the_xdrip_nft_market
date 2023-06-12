@@ -13,9 +13,9 @@ import coin2 from "./coin-2.mp4";
 import coin3 from "./coin-3.mp4";
 import coin4 from "./coin-4.mp4";
 import coin5 from "./coin-5.mp4";
-import create_select from "./create-select.mp4"
-import create_select_2 from "./create-select-2.mp4"
-
+import create_select from "./create-select.mp4";
+import create_select_2 from "./create-select-2.mp4";
+import Forge1 from "./Forge1.mp4";
 
 export default {
     banner1,
@@ -29,6 +29,7 @@ export default {
     common,
     create_select,
     create_select_2,
+    Forge1,
     uncommon,
     rare,
     epic,

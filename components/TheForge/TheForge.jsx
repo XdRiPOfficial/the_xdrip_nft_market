@@ -169,6 +169,7 @@ const TheForge = () => {
                         <div className={Style.card_left}>
                             <h2>{item.title}</h2>
                         </div>
+                        
 
                         <div className={Style.card_right}>
                             <div className={Style.card_right_top}>

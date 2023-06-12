@@ -1,6 +1,12 @@
+.the{
+    display: flex;
+ 
+}
+
 .theForge {
     margin-top: 6rem;
     position: relative;
+    padding-bottom: 6rem;
 }
 
 .theForge::before {
@@ -19,21 +25,46 @@
     background-attachment: fixed;
 }
 
+.video {
 
+    opacity: 0.7; /* Adjust the opacity value as per your preference */
+  }
 
 
 .theForge_cont{
      display: flex;
     align-content: center;
     justify-content: center;
+    margin-top: 6rem;
+    
 }
 
 .theForge_container h1 {
   font-size: 4rem;
-  text-align: center;
+  
   margin-bottom: 6rem;
   display: inline-block;
   border-bottom: .5rem double white;
 }
 
+.theForge_content {
+    
+    margin-top: 4rem;
+    justify-content: center;
+  }
 
+.medalsTitle {
+    font-size: 4rem;
+    margin-left: 7rem;
+    margin-bottom: 2rem;
+    display: inline-block;
+    border-bottom: .5rem double white;
+  }
+  
+  .medalsText {
+    font-size: 1.3rem;
+    line-height: 1.4;
+    max-width: 1500px;
+    margin: 0 auto;
+    margin-bottom: 8rem;
+  }
