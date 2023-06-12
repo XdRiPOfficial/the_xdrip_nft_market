@@ -2,6 +2,9 @@ import React, { useState, useEffect, useContext } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import NFTDetailsImg from "../NFTDetailsImg/NFTDetailsImg";
+
+
 import {
   MdVerified,
   MdCloudUpload,
@@ -27,6 +30,7 @@ import { NFTTabs } from "../NFTDetailsIndex";
 
 //IMPORT SMART CONTRACT
 import { NFTMarketplaceContext } from "../../Context/NFTMarketplaceContext";
+import { getUserProfile } from "../../firebase/services"; // Import the getUserProfile function
 
 const NFTDescription = ({ nft }) => {
   const [social, setSocial] = useState(false);
@@ -36,6 +40,9 @@ const NFTDescription = ({ nft }) => {
   const [owner, setOwner] = useState(false);
   const [timeoutId, setTimeoutId] = useState(null);
   const [isMenuHovered, setIsMenuHovered] = useState(false);
+  const [sellerUsername, setSellerUsername] = useState(""); 
+  const [profilePic, setProfilePic] = useState(null);
+  const [fileType, setFileType] = useState("");
 
   const router = useRouter();
 
@@ -121,6 +128,54 @@ const NFTDescription = ({ nft }) => {
     }, 70);
     setTimeoutId(newTimeoutId);
   };
+  
+  
+  useEffect(() => {
+    const fetchFileType = async () => {
+      try {
+        const response = await fetch(nft.image);
+        const contentType = response.headers.get("content-type");
+        setFileType(contentType);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchFileType();
+  }, [nft.image]);
+  
+  
+  
+  useEffect(() => {
+    const fetchProfilePic = async () => {
+      try {
+        const userProfile = await getUserProfile(nft.seller);
+        if (userProfile && userProfile.profilePictureUrl) {
+          setProfilePic(userProfile.profilePictureUrl);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchProfilePic();
+  }, [nft.seller]);
+  
+
+  useEffect(() => {
+    const fetchSellerUsername = async () => {
+      try {
+        const sellerProfile = await getUserProfile(nft.seller);
+        if (sellerProfile && sellerProfile.username) {
+          setSellerUsername(sellerProfile.username);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchSellerUsername();
+  }, [nft.seller]);
 
   //SMART CONTRACT DATA
   const { buyNFT, currentAccount } = useContext(NFTMarketplaceContext);
@@ -131,13 +186,14 @@ const NFTDescription = ({ nft }) => {
         {/* //Part ONE */}
         <div className={Style.NFTDescription_box_share}>
           <p>{nft.category}</p>
-          <div className={Style.NFTDescription_box_share_box}
+          <div
+            className={Style.NFTDescription_box_share_box}
             onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}>
+            onMouseLeave={handleMouseLeave}
+          >
             <MdCloudUpload
               className={Style.NFTDescription_box_share_box_icon}
               onClick={() => openSocial()}
-
             />
 
             {social && (
@@ -163,7 +219,8 @@ const NFTDescription = ({ nft }) => {
             />
 
             {NFTMenu && (
-              <div className={Style.NFTDescription_box_share_box_social}
+              <div
+                className={Style.NFTDescription_box_share_box_social}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
               >
@@ -191,6 +248,11 @@ const NFTDescription = ({ nft }) => {
           <div className={Style.NFTDescription_box_profile_box}>
             <div className={Style.NFTDescription_box_profile_box_left}>
               <Image
+              
+                /*
+                src={images.user1}
+                src={profilePic}
+                */
                 src={images.user1}
                 alt="profile"
                 width={40}
@@ -199,10 +261,9 @@ const NFTDescription = ({ nft }) => {
               />
               <div className={Style.NFTDescription_box_profile_box_left_info}>
                 <small>CREATOR</small> <br />
-                {/* <Link href={{ pathname: "/author", query: `${nft.seller}` }}> */}
                 <Link href={{ pathname: "/author" }}>
                   <span>
-                    XDIP OFFICIAL <MdVerified />
+                    {sellerUsername} <MdVerified />
                   </span>
                 </Link>
               </div>
@@ -227,17 +288,26 @@ const NFTDescription = ({ nft }) => {
           </div>
 
           <div className={Style.NFTDescription_box_profile_biding}>
-            <div className={Style.NFTDescription_box}>
+            <div className={Style.NFTDescription_box}></div>
 
-            </div>
-
-            <div className={Style.NFTDescription_box_profile_biding_box_timer}>
-              <div className={Style.NFTDescription_box_profile_biding_box_timer_item}>
+            <div
+              className={
+                Style.NFTDescription_box_profile_biding_box_timer
+              }
+            >
+              <div
+                className={
+                  Style.NFTDescription_box_profile_biding_box_timer_item
+                }
+              >
                 <p>NFT DESCRIPTION</p>
                 <span>{nft.description}</span>
               </div>
               <div
-                className={Style.NFTDescription_box_profile_biding_box_timer_item}>
+                className={
+                  Style.NFTDescription_box_profile_biding_box_timer_item
+                }
+              >
                 <p> {/* future auciton functionality */}</p>
                 <span> {/* future auciton functionality */}</span>
               </div>
@@ -259,22 +329,28 @@ const NFTDescription = ({ nft }) => {
               </div>
             </div>
 
-            <div className={Style.NFTDescription_box_profile_biding_box_price}>
+            <div
+              className={
+                Style.NFTDescription_box_profile_biding_box_price
+              }
+            >
               <div
                 className={
                   Style.NFTDescription_box_profile_biding_box_price_bid
                 }
               >
                 <small>CURRENT PRICE</small>
-                <p>
-                  {parseFloat(nft.price) * 10 ** 9} BNB
-                </p>
+                <p>{parseFloat(nft.price) * 10 ** 9} BNB</p>
               </div>
 
               <span> {/* future Quantity functionality*/}</span>
             </div>
 
-            <div className={Style.NFTDescription_box_profile_biding_box_button}>
+            <div
+              className={
+                Style.NFTDescription_box_profile_biding_box_button
+              }
+            >
               {currentAccount == nft.seller?.toLowerCase() ? (
                 <p>YOU CAN'T BUY YOUR OWN NFT</p>
               ) : currentAccount == nft.owner?.toLowerCase() ? (
@@ -300,30 +376,46 @@ const NFTDescription = ({ nft }) => {
               <Button
                 icon={<FaPercentage />}
                 btnName="MAKE OFFER"
-                handleClick={() => { }}
+                handleClick={() => {}}
                 classStyle={Style.button}
               />
             </div>
 
-            <div className={Style.NFTDescription_box_profile_biding_box_tabs}>
+            <div
+              className={
+                Style.NFTDescription_box_profile_biding_box_tabs
+              }
+            >
               <button onClick={(e) => openTabs(e)}>PURCHASE HISTORY</button>
               <button onClick={(e) => openTabs(e)}>PROVANANCE</button>
               <button onClick={() => openOwmer()}>OWNER</button>
             </div>
 
             {history && (
-              <div className={Style.NFTDescription_box_profile_biding_box_card}>
+              <div
+                className={
+                  Style.NFTDescription_box_profile_biding_box_card
+                }
+              >
                 <NFTTabs dataTab={historyArray} />
               </div>
             )}
             {provanance && (
-              <div className={Style.NFTDescription_box_profile_biding_box_card}>
+              <div
+                className={
+                  Style.NFTDescription_box_profile_biding_box_card
+                }
+              >
                 <NFTTabs dataTab={provananceArray} />
               </div>
             )}
 
             {owner && (
-              <div className={Style.NFTDescription_box_profile_biding_box_card}>
+              <div
+                className={
+                  Style.NFTDescription_box_profile_biding_box_card
+                }
+              >
                 <NFTTabs dataTab={ownerArray} icon={<MdVerified />} />
               </div>
             )}
