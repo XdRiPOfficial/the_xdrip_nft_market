@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useAddress } from "@thirdweb-dev/react";
 import Image from "next/image";
 import { TiArrowSortedDown, TiArrowSortedUp, TiTick } from "react-icons/ti";
+
+import { getUserProfile } from "../../firebase/services";
 
 //INTERNAL IMPORT
 import Style from "./AuthorTaps.module.css";
@@ -16,6 +19,79 @@ const AuthorTaps = ({
   const [openList, setOpenList] = useState(false);
   const [activeBtn, setActiveBtn] = useState(1);
   const [selectedMenu, setSelectedMenu] = useState("Most Recent");
+  const [user, setUser] = useState(null);
+  const [share, setShare] = useState(false);
+  const [report, setReport] = useState(false);
+  const address = useAddress(); 
+
+  const [fileTypes, setFileTypes] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  const [likes, setLikes] = useState(() => {
+    const savedLikes = localStorage.getItem("nftLikes");
+    return savedLikes ? JSON.parse(savedLikes) : {};
+  });
+
+  const likeNFT = (tokenId, ratingValue) => {
+    setLikes((prevState) => {
+      const newLikes = { ...prevState };
+      if (!newLikes[tokenId]) {
+        newLikes[tokenId] = { count: 0, liked: false, rating: 0 };
+      }
+      newLikes[tokenId].liked = !newLikes[tokenId].liked;
+      if (newLikes[tokenId].liked) {
+        newLikes[tokenId].count++;
+        newLikes[tokenId].rating = ratingValue;
+      } else {
+        newLikes[tokenId].count--;
+        newLikes[tokenId].rating = 0;
+      }
+      localStorage.setItem("nftLikes", JSON.stringify(newLikes));
+      return newLikes;
+    });
+  };
+
+
+useEffect(() => {
+  const fetchFileTypes = async () => {
+    let fileTypesObj = {};
+
+    const savedData = localStorage.getItem('fileTypesObj');
+    if (savedData) {
+      fileTypesObj = JSON.parse(savedData);
+    }
+
+    for (const el of NFTData) {
+      if (!fileTypesObj[el.image]) {
+        try {
+          const response = await fetch(el.image);
+          const contentType = response.headers.get("content-type");
+          fileTypesObj[el.image] = contentType;
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
+
+    localStorage.setItem('fileTypesObj', JSON.stringify(fileTypesObj));
+
+    setFileTypes(fileTypesObj);
+    setLoading(false);
+  };
+
+  fetchFileTypes();
+}, [NFTData]);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (address) { 
+        const userData = await getUserProfile(address); 
+        setUser(userData);
+      }
+    }
+    
+    fetchUserData();
+  }, [address]); 
 
   const listArray = [
     "Created By Admin",
@@ -23,6 +99,7 @@ const AuthorTaps = ({
     "Most Discussed",
     "Most Viewed",
   ];
+  
 
   const openDropDownList = () => {
     if (!openList) {

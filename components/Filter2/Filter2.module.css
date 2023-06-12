@@ -39,7 +39,7 @@
 }
 
 .filter2_box_left button {
-    padding: .55rem 1.1rem;
+    padding: .45rem 1.1rem;
     border-radius: 0.2rem;
     border: 4px double rgba(1, 122, 254, 255);
     cursor: pointer;
@@ -66,7 +66,7 @@
 }
 
 .filter2_box_right_box {
-    padding: .55rem 1rem;
+    padding: .45rem 1rem;
     border-radius: 0.2rem;
     border: 4px double rgba(1, 122, 254, 255);
     cursor: pointer;

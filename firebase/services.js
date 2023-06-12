@@ -1,15 +1,5 @@
 import firebaseApp from "./config";
-import {
-  getFirestore,
-  collection,
-  query,
-  where,
-  addDoc,
-  updateDoc,
-  doc,
-  getDocs,
-  getDoc,
-} from "firebase/firestore";
+import { getFirestore, collection, query, where, addDoc, updateDoc, doc, getDocs } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import firebase from 'firebase/app';
 import 'firebase/firestore';
@@ -18,7 +8,7 @@ const firestore = getFirestore();
 const storage = getStorage();
 //const db = firebase.firestore();
 
-export const addUser = async (username, email, walletAddress, profilePicture, legalname, address, phone, addressVerifyImage, idImageFront, idImageBack, socialMedia) => {
+export const addUser = async (username, email, walletAddress, profilePicture,) => {
   const userRef = collection(firestore, "users");
   const newUser = {
     email,
@@ -31,25 +21,12 @@ export const addUser = async (username, email, walletAddress, profilePicture, le
     nftsListed: [],
     nftsSold: [],
     collectionsCreated: [],
-    legalname,
-    address,
-    phone,
-    addressVerifyImage,
-    idImageFront,
-    idImageBack,
-    socialMedia: {
-      twitter: "",
-      tiktok: "",
-      instagram: "",
-      facebook: "",
-      discord: "",
-      website: "",
-    },
+
   };
 
   try {
     const docRef = await addDoc(userRef, newUser);
-
+    
     if (profilePicture) {
       // Upload the profile image to Firebase Storage
       const storage = getStorage();
@@ -84,32 +61,11 @@ export const addNft = async (userId, tokenURI) => {
       };
       userData.nftsListed.push(nft);
       await updateDoc(userRef, { nftsListed: userData.nftsListed });
-
-      // Call the addCreatedNft function to add the NFT to the created NFTs array
-      await addCreatedNft(userId, nft);
     } else {
       console.error("User does not exist");
     }
   } catch (error) {
     console.error("Error adding NFT: ", error);
-  }
-};
-
-export const addCreatedNft = async (userId, nft) => {
-  const userRef = doc(firestore, "users", userId);
-
-  try {
-    const userSnapshot = await getDoc(userRef);
-
-    if (userSnapshot.exists()) {
-      const userData = userSnapshot.data();
-      userData.nftsCreated.push(nft);
-      await updateDoc(userRef, { nftsCreated: userData.nftsCreated });
-    } else {
-      console.error("User does not exist");
-    }
-  } catch (error) {
-    console.error("Error adding created NFT: ", error);
   }
 };
 
@@ -192,43 +148,3 @@ export const getUserProfile = async (walletAddress) => {
   }
 };
 
-export const addCollection = async (userId, collectionData) => {
-  const userRef = doc(firestore, "users", userId);
-
-  try {
-    const userSnapshot = await getDoc(userRef);
-
-    if (userSnapshot.exists()) {
-      const userData = userSnapshot.data();
-      userData.collectionsCreated.push(collectionData);
-      await updateDoc(userRef, { collectionsCreated: userData.collectionsCreated });
-    } else {
-      console.error("User does not exist");
-    }
-  } catch (error) {
-    console.error("Error adding collection: ", error);
-  }
-};
-
-export const updateCollection = async (userId, collectionIndex, updates) => {
-  const userRef = doc(firestore, "users", userId);
-
-  try {
-    const userSnapshot = await getDoc(userRef);
-
-    if (userSnapshot.exists()) {
-      const userData = userSnapshot.data();
-      if (collectionIndex >= 0 && collectionIndex < userData.collectionsCreated.length) {
-        const updatedCollection = { ...userData.collectionsCreated[collectionIndex], ...updates };
-        userData.collectionsCreated[collectionIndex] = updatedCollection;
-        await updateDoc(userRef, { collectionsCreated: userData.collectionsCreated });
-      } else {
-        console.error("Invalid collection index");
-      }
-    } else {
-      console.error("User does not exist");
-    }
-  } catch (error) {
-    console.error("Error updating collection: ", error);
-  }
-};
