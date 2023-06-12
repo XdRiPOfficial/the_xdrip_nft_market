@@ -23,8 +23,11 @@ import Error from "./Error/Error";
 import NFTWallet from "./NFTWallet/NFTWallet";
 import CreateButtons from "./CreateButtons/CreateButtons";
 import TheForge from "./TheForge/TheForge";
+import MOH from "./MOH/MOH";
+
 
 export {
+  MOH,
   NFTWallet,
   TheForge,
   CreateButtons,

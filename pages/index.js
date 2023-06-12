@@ -15,7 +15,7 @@ import {
   Collection,
   AudioLive,
   FollowerTab,
-  
+  MOH,
   Brand,
   Video,
   Loader,
@@ -61,13 +61,13 @@ const Home = () => {
       </div>
 
       <div id="service" className={Style.section}>
-        <Service />
+        <MOH />
       </div>
 
       <div id="forge" className={Style.section}>
         <Title
-          heading="DEVELOPMENT COLLECTION"
-          paragraph="A COLLECTION FROM THE TEAM TO THEIR SOLDIERS."
+          heading="XMARKET FEATURED NFTS"
+          paragraph="SHINING THE LIGHT ON XCEPTIONAL ASSETS"
         />
         <BigNFTSlider />
       </div>

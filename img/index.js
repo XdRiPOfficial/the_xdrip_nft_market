@@ -78,11 +78,13 @@ import audio_image2 from "./audio-image2.png";
 import audio_image3 from "./audio-image3.png";
 import left_arrow from "./left-arrow.png";
 import right_arrow from "./right-arrow.png";
-
+import moh_entry from "./moh_entry.png";
+import bullet_12 from "./bullet-12.jpg";
 
 
 
 export default {
+  moh_entry,
   left_arrow,
   right_arrow,
   audio_image,
@@ -100,6 +102,7 @@ export default {
   bullet_9,
   bullet_10,
   bullet_11,
+  bullet_12,
   hero2,
   founder1,
   founder2,

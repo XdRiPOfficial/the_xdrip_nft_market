@@ -1,205 +1,139 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Image from "next/image";
-import { AiFillRocket, AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { MdVerified, MdTimer } from "react-icons/md";
-import { TbArrowBigLeftLines, TbArrowBigRightLine } from "react-icons/tb";
-import { useAddress } from "@thirdweb-dev/react"
-
-// INTERNAL IMPORT
+import { MdVerified } from "react-icons/md";
 import Style from "./BigNFTSlider.module.css";
 import images from "../../img";
-import videos from "../../public/videos";
 import Button from "../Button/Button";
 import Link from "next/link";
+import ReactPlayer from "react-player";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
+import { NFTMarketplaceContext } from "../../Context/NFTMarketplaceContext";
 
-import { ethers } from "ethers";
-import mohCA_ABI from "../../Context/mohCA_ABI.json";
-import ipfsHashes from "../../Context/ipfsHashes";
-
-const MohAddress = mohCA_ABI.address;
-const MohABI = mohCA_ABI.abi;
-
-const fetchMohContract = (signerOrProvider) =>
-  new ethers.Contract(MohAddress, MohABI, signerOrProvider);
+const mp3Image = "/mp3.jpg";
 
 const BigNFTSlider = () => {
-  const [idNumber, setIdNumber] = useState(0);
-  const address = useAddress();
+  const { fetchNFTS, setError } = useContext(NFTMarketplaceContext);
+  const [nfts, setNFTs] = useState([]);
+  const [currentItemIndex, setCurrentItemIndex] = useState(0);
+  const [fileTypes, setFileTypes] = useState({});
 
-  const sliderData = [
-    {
-      title: "COMMON",
-      id: 1,
-      name: "XDRIP OFFICIAL",
-      collection: "MEDALS OF HONOR",
-      price: "0.25 BNB",
-      like: 1,
-      image: images.user1,
-      nftVideo: videos.common,
-      description:
-        "Common Medal, forged in the fires of battle, this medal represents the courage and determination of the XdRiP warrior.",
-      ipfsHash: ipfsHashes.find((hash) => hash.title === "COMMON").url,
-      inventory: {
-        forged: 0,
-        available: 100,
-      },
-    },
-    {
-      title: "UNCOMMON",
-      id: 2,
-      name: "XDRIP OFFICIAL",
-      collection: "MEDALS OF HONOR",
-      price: "0.50 BNB",
-      like: 369,
-      image: images.user1,
-      nftVideo: videos.uncommon,
-      description:
-        "Uncommon Medal, crafted by the most skilled, this medal is a symbol of the exceptional strength and valor possessed by those who rise above the rest.",
-      ipfsHash: ipfsHashes.find((hash) => hash.title === "UNCOMMON").url,
-      inventory: {
-        forged: 0,
-        available: 80,
-      },
-    },
-    {
-      title: "RARE ",
-      id: 3,
-      name: "XDRIP OFFICIAL",
-      collection: "MEDALS OF HONOR",
-      price: "0.75 BNB",
-      like: 1,
-      image: images.user1,
-      nftVideo: videos.rare,
-      description:
-        "Rare Medal, forged from rare and precious metals, this medal is a testament to the elite few who have demonstrated unparalleled bravery and honor.",
-      ipfsHash: ipfsHashes.find((hash) => hash.title === "RARE").url,
-      inventory: {
-        forged: 0,
-        available: 60,
-      },
-    },
-    {
-      title: "EPIC ",
-      id: 4,
-      name: "XDRIP OFFICIAL",
-      collection: "MEDALS OF HONOR",
-      price: "1.0 BNB",
-      like: 1,
-      image: images.user1,
-      nftVideo: videos.epic,
-      description:
-        "Epic Medal, wrought with mystical powers, this medal is a sign of the legendary feats accomplished by only the most heroic and mighty of warriors.",
-      ipfsHash: ipfsHashes.find((hash) => hash.title === "EPIC").url,
-      inventory: {
-        forged: 0,
-        available: 40,
-      },
-    },
-    {
-      title: "LEGENDARY ",
-      id: 5,
-      name: "XDRIP OFFICIAL",
-      collection: "MEDALS OF HONOR",
-      price: "1.5 BNB",
-      like: 1,
-      image: images.user1,
-      nftVideo: videos.legendary,
-      description:
-        "Legendary Medal, forged by the XdRiP Gods, this medal is a symbol of the ultimate achievement in battle, an honor bestowed only upon the greatest of heroes. ",
-      ipfsHash: ipfsHashes.find((hash) => hash.title === "LEGENDARY").url,
-      inventory: {
-        forged: 0,
-        available: 40,
-      },
-    },
-  ];
-
-  //-------INC
-  const inc = useCallback(() => {
-    if (idNumber + 1 < sliderData.length) {
-      setIdNumber((prevIdNumber) => prevIdNumber + 1);
-    }
-  }, [idNumber, sliderData.length]);
-
-  //-------DEC
-  const dec = useCallback(() => {
-    if (idNumber > 0) {
-      setIdNumber((prevIdNumber) => prevIdNumber - 1);
-    }
-  }, [idNumber]);
-
-  const mint = async (medalType, ipfsHash) => {
-    try {
-      if (!address) {
-        window.ethereum.enable();
-        return;
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const items = await fetchNFTS();
+        setNFTs(items.reverse());
+        setCurrentItemIndex(0);
+      } catch (error) {
+        setError("Please reload the browser", error);
       }
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      const contract = fetchMohContract(signer);
+    };
 
-      let mintFunction;
-      switch (medalType) {
-        case "COMMON":
-          mintFunction = contract.mintCommon;
-          break;
-        case "UNCOMMON":
-          mintFunction = contract.mintUncommon;
-          break;
-        case "RARE":
-          mintFunction = contract.mintRare;
-          break;
-        case "EPIC":
-          mintFunction = contract.mintEpic;
-          break;
-        case "LEGENDARY":
-          mintFunction = contract.mintLegendary;
-          break;
-        default:
-          throw new Error("Invalid medal type");
+    fetchData();
+  }, [fetchNFTS, setError]);
+
+  useEffect(() => {
+    const fetchFileTypes = async () => {
+      let fileTypesObj = {};
+
+      const savedData = localStorage.getItem("fileTypesObj");
+      if (savedData) {
+        fileTypesObj = JSON.parse(savedData);
       }
 
-      const price = ethers.utils.parseUnits(
-        sliderData[idNumber].price.split(" ")[0],
-        "ether"
+      const newFileTypesObj = await nfts.reduce(async (acc, el) => {
+        const response = await fetch(el.image);
+        const contentType = response.headers.get("content-type");
+        return { ...(await acc), [el.image]: contentType };
+      }, Promise.resolve(fileTypesObj));
+
+      localStorage.setItem("fileTypesObj", JSON.stringify(newFileTypesObj));
+      setFileTypes(newFileTypesObj);
+    };
+
+    fetchFileTypes();
+  }, [nfts, setFileTypes]);
+
+  const renderFilePreview = (nft) => {
+    if (!nft || !nft.image) {
+      return (
+        <Image
+          src={images.invalidImage}
+          alt="NFT"
+          width={350}
+          height={300}
+          objectFit="cover"
+          className={Style.NFTCard_box_img_img}
+          controls
+        />
       );
-      const transaction = await mintFunction(ipfsHash, {
-        value: price,
-        gasLimit: 500000,
-      });
-      await transaction.wait();
-      alert("Your Medal Of Honor was minted successfully!");
-    } catch (error) {
-      console.error("Error minting medal:", error);
-      alert("Minting failed. Please check console for details.");
     }
+  
+    const fileType = fileTypes[nft.image];
+  
+    const RenderDefault = () => (
+      <Image
+        src={images.invalidImage}
+        alt="NFT"
+        width={350}
+        height={300}
+        objectFit="cover"
+        className={Style.NFTCard_box_img_img}
+        controls
+      />
+    );
+  
+    const RenderMedia = ({ src }) => {
+      const isImage = fileType && fileType.startsWith("image");
+      const isAudio = fileType && fileType.startsWith("audio");
+  
+      return (
+        <LazyLoadImage
+          src={src}
+          alt="NFT"
+          width={350}
+          height={300}
+          effect="blur"
+          className={Style.NFTCardTwo_box_img_img}
+          placeholderSrc={images.placeholderImage}
+        />
+      );
+    };
+  
+    return fileType ? <RenderMedia src={nft.image} /> : <RenderDefault />;
   };
+  
+
+  const handleNext = () => {
+    setCurrentItemIndex((prevIndex) => (prevIndex + 1) % nfts.length);
+  };
+
+  const handlePrevious = () => {
+    setCurrentItemIndex((prevIndex) =>
+      prevIndex === 0 ? nfts.length - 1 : prevIndex - 1
+    );
+  };
+
+  const currentNFT = nfts[currentItemIndex];
 
   return (
     <div className={Style.bigNFTSlider}>
       <div className={Style.bigNFTSlider_box}>
         <div className={Style.bigNFTSlider_box_left}>
-          <h2>{sliderData[idNumber].title}</h2>
+          <h2>{currentNFT?.name}</h2>
           <div className={Style.bigNFTSlider_box_left_creator}>
             <div className={Style.bigNFTSlider_box_left_creator_profile}>
-              <Image
-                className={Style.bigNFTSlider_box_left_creator_profile_img}
-                src={sliderData[idNumber].image}
-                alt="profile image"
-                width={50}
-                height={50}
-              />
+              {renderFilePreview(currentNFT)}
               <div className={Style.bigNFTSlider_box_left_creator_profile_info}>
                 <p>CREATOR</p>
                 <h4>
-                  {sliderData[idNumber].name}{" "}
+                  {currentNFT?.name}{" "}
                   <span>
                     <MdVerified />
                   </span>
                 </h4>
               </div>
             </div>
-
             <div className={Style.bigNFTSlider_box_left_creator_collection}>
               <Image
                 src={images.xm2}
@@ -208,109 +142,60 @@ const BigNFTSlider = () => {
                 height={50}
                 className={Style.bigNFTSlider_box_left_creator_collection_icon}
               />
-
               <div className={Style.bigNFTSlider_box_left_creator_collection_info}>
                 <p>COLLECTION</p>
-                <h4>{sliderData[idNumber].collection}</h4>
+                <h4>{currentNFT?.collection}</h4>
               </div>
             </div>
           </div>
-
           <div className={Style.bigNFTSlider_box_left_bidding}>
             <div className={Style.bigNFTSlider_box_left_bidding_box}>
               <small>CURRENT PRICE</small>
-              <p>{sliderData[idNumber].price}</p>
+              <p>{currentNFT?.price}</p>
             </div>
-
-            <div className={Style.bigNFTSlider_box_left_origin}>
-              <h3>ORIGIN:</h3>
+            <div className={Style.bigNFTSlider_box_left_bidding_box_auction}>
+              {currentNFT?.description}
             </div>
-
-            <p className={Style.bigNFTSlider_box_left_bidding_box_auction}>
-              {sliderData[idNumber].description}
-            </p>
-
             <div className={Style.bigNFTSlider_box_left_bidding_box_timer}>
               <div className={Style.bigNFTSlider_box_left_bidding_box_timer_item}>
-                <p>{sliderData[idNumber].inventory.forged}</p>
+                <p>{currentNFT?.inventory}</p>
                 <span>TOTAL FORGED</span>
               </div>
-
               <div className={Style.bigNFTSlider_box_left_bidding_box_timer_item}>
-                <p>{sliderData[idNumber].inventory.available}</p>
+                <p>{currentNFT?.inventory}</p>
                 <span>TOTAL AVAILABLE</span>
               </div>
             </div>
-
             <div className={Style.bigNFTSlider_box_left_button}>
               <Button
-                btnName="FORGE YOUR MEDAL"
+                btnName="BUY"
                 handleClick={() =>
-                  mint(sliderData[idNumber].title, sliderData[idNumber].ipfsHash)
+                  mint(currentNFT?.title, currentNFT?.ipfsHash)
                 }
               />
-
               <div className={Style.sliderCard_box_price_box_btn_btn}>
-                <Link href={{ pathname: "/NFTDetails", query: idNumber }} key={`${idNumber}`}>
+                <Link
+                  href={{ pathname: "/NFTDetails", query: currentNFT }}
+                  key={`${currentNFT?.tokenId}`}
+                >
                   <button className={Style.detailsButton}>DETAILS</button>
                 </Link>
               </div>
             </div>
           </div>
-
-
         </div>
-
         <div className={Style.bigNFTSlider_box_right}>
           <div className={Style.bigNFTSlider_box_right_box}>
-            <video
-              src={sliderData[idNumber].nftVideo}
-              width="100%"
-              height="100%"
-              loop
-              muted
-              autoPlay
-              preload="auto"
-              playsInline
-              alt="NFT VIDEO"
-              transition="transform 0.5s cubic-bezier(0.42, 0, 0.58, 1)"
-              className={Style.bigNFTSlider_box_right_box_img}
-              controlsList="nodownload noplaybackspeed "
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                if (!document.fullscreenElement) {
-                  e.target.requestFullscreen();
-                } else {
-                  document.exitFullscreen();
-                }
-              }}
-            />
-          <div className={Style.sliderBtnContainer}>
-          <div className={Style.sliderBtn_icon_left}>
-          <Image
-              src={images.left_arrow}
-              alt="Left Arrow"
-              width={50}
-              height={50}
-              className={Style.sliderBtn_icon_left}
-              onClick={() => dec()}
-            />
-            </div>
-             <div className={Style.sliderBtn_icon_right }>
-            <Image
-              src={images.right_arrow}
-              alt="Right Arrow"
-              width={50}
-              height={50}
-              className={Style.sliderBtn_icon_right}
-              onClick={() => inc()}
-            />
+            {renderFilePreview(currentNFT)}
+            <div className={Style.sliderBtnContainer}>
+              <button className={Style.sliderBtn} onClick={handlePrevious}>
+                Prev
+              </button>
+              <button className={Style.sliderBtn} onClick={handleNext}>
+                Next
+              </button>
             </div>
           </div>
-          </div>
-
-      
         </div>
       </div>
     </div>
