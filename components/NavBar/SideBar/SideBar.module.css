@@ -1,3 +1,5 @@
+/* NOTE: Also see NavBar.module.css "SIDEBAR" section */
+
 .sideBar_box{
     padding: 2rem;
     border-bottom: 1px solid var(--icons-color);
@@ -48,10 +50,7 @@
 }
 
 .sideBar_menu{
-    padding: 2rem;
-    text-transform: uppercase;
-    font-weight: 500;
-    border-bottom:  1px solid var(--icons-color);
+    text-align:right;
 }
 
 .sideBar_menu_box{
@@ -63,9 +62,7 @@
 
 .sideBar_discover{
     padding-inline: 1rem;
-
 }
-
 
 .box_box_right {
     background-color: var(--icons-color); /*#3d465c;*/
@@ -82,6 +79,4 @@
 
 .box_box_right{
     background-color: var(--main-bg-color);
-    /*border:  1px solid var(--icons-color);*/
-    /*color:  var(--icons-color);*/
 }

@@ -24,9 +24,7 @@ const Footer = () => {
       <div className={Style.footer_box}>
         <div className={Style.footer_box_social}>
           <Image src={images.logo} alt="footer logo" />
-          <p>
-            OFFERING AN XCELLENT AVENUE FOR BUYING, SELLING, AND DISCOVERING XCLUSIVE DIGITAL ART.
-          </p>
+          <p>Where digital art meets innovation</p>
 
           <div className={Style.footer_social}>
             <a href="https://www.facebook.com/TheXdripOfficial/">
@@ -48,20 +46,13 @@ const Footer = () => {
         </div>
 
         <div className={Style.footer_box_discover}>
-          <h3>XPLORE XM</h3>
+          <h3>XPLORE</h3>
           <Discover />
         </div>
 
         <div className={Style.footer_box_help}>
-          <h3>HELP CENTER</h3>
+          <h3>SUPPORT</h3>
           <HelpCenter />
-          <div className={Style.footer_box_link}>
-            <Link href="/legalEntry">
-              <a>
-              <h2 className={Style.link_heading}>LEGAL LINKS</h2>
-              </a>
-            </Link>
-          </div>
         </div>
 
         <div className={Style.subscribe}>
@@ -75,6 +66,11 @@ const Footer = () => {
             <p>
               JOIN OUR GROWING XMARKET COMMUNITY TODAY!
             </p>
+          </div>
+          <div className={Style.footer_box_link}>
+            <Link href="/legalEntry">
+              <a><span className={Style.link_heading}>LEGAL LINKS</span></a>
+            </Link>
           </div>
         </div>
       </div>

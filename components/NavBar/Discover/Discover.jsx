@@ -8,20 +8,12 @@ const Discover = () => {
   //--------DISCOVER NAVIGATION MENU
   const discover = [
      {
-      name: "SEARCH XM",
+      name: "SEARCH",
       link: "searchPage",
     },
     {
-      name: "XM CATEGORIES",
+      name: "CATEGORIES",
       link: "categoriesPage",
-    },
-    {
-      name: "XM CREATORS",
-      link: "author",
-    },
-    {
-      name: "BEGIN CREATING",
-      link: "createButtonsPage",
     },
     {
       name: "XNEWS",

@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
-import React from "react";
+import React, { useState, useEffect } from 'react';
 import Image from "next/image";
-import { FaUserAlt, FaRegImage, FaUserEdit } from "react-icons/fa";
+import { FaUserAlt, FaRegImage, FaUserEdit, FaPlus } from "react-icons/fa";
 import { MdHelpCenter } from "react-icons/md";
 import { TbDownloadOff, TbDownload } from "react-icons/tb";
 import Link from "next/link";
@@ -12,6 +12,7 @@ import styles from "./Profile.module.css";
 import LoginAndSignUp from "../../../loginAndSignUp/LoginAndSignUp.jsx";
 
 const Profile = ({
+  isNavbarDocked,
   currentAccount,
   closeMenu,
   isWalletConnected,
@@ -67,63 +68,46 @@ const Profile = ({
           setProfileImageSrc={setProfileImageSrc} // pass the function as a prop
         />
       )}
-      <div className={styles.profile}>
+      <div className={`${styles.profile} ${isNavbarDocked ? "" : styles.profileUndocked}`}>
         <div className={styles.profileContainer}>
           <div className={styles.profileBox}>
             <div className={styles.profileItems}>
-              <div className={styles.profileItem}>
-
-                <Link href="/loginandsignup">
-                  <a onClick={() => setIsProfileMenuOpen(false)}>
-                    <FaUserAlt />
-                    <p>{isWalletConnected ? 'My Profile' : 'Login'}</p>
+              <div className={styles.linkContainer}>
+                <Link href={isWalletConnected ? "/author" : "/loginandsignup"}>
+                  <a onClick={() => setIsProfileMenuOpen(false)} className={styles.linkA}>
+                    <span className={styles.linkText}>{isWalletConnected ? 'My Profile' : 'Login'}</span>
+                    <FaUserAlt className={styles.icon}/>
                   </a>
                 </Link>
-              </div>
-              <div className={styles.profileItem}>
-                {isWalletConnected ? (
-                  <Link href="/walletNFTs">
-                    <a onClick={() => setIsProfileMenuOpen(false)}>
-                      <FaRegImage />
-                      <p>My Wallet</p>
-                    </a>
-                  </Link>
-                ) : (
-                  <a>
-                    <FaRegImage />
-                    <p>My Wallet</p>
-                  </a>
-                )}
-              </div>
-
-              <div className={styles.profileItem}>
-              <Link href="/createButtonsPage">
-                  <a onClick={() => setIsProfileMenuOpen(false)}>
-                <FaUserEdit />
-                <p>Create NFT/Collection</p>
-                </a>
-                </Link>
-              </div>
-
-
-              <div className={styles.profileItem}>
-              <Link href="/account">
-                  <a onClick={() => setIsProfileMenuOpen(false)}>
-                <FaUserEdit />
-                <p>Edit Profile</p>
-                </a>
-                </Link>
-              </div>
-              <div className={styles.profileItem}>
-                <MdHelpCenter />
-                <p>Help Center</p>
               </div>
               {isWalletConnected && (
-                <div className={styles.profileItem} onClick={handleDisconnect}>
-                  <TbDownloadOff />
-                  <p>Disconnect Wallet</p>
+                <div className={styles.linkContainer}>
+                  <Link href="/account">
+                    <a onClick={() => setIsProfileMenuOpen(false)} className={styles.linkA}>
+                      <span className={styles.linkText}>Edit Profile</span>
+                      <FaUserEdit className={styles.icon} />
+                    </a>
+                  </Link>
                 </div>
               )}
+              <div className={styles.linkContainer}>
+                <Link href="/createButtonsPage">
+                  <a onClick={() => setIsProfileMenuOpen(false)} className={styles.linkA}>
+                    <span className={styles.linkText}>Create NFT/Collection</span>
+                    <FaPlus className={styles.icon} />
+                  </a>
+                </Link>
+              </div>
+            {isWalletConnected && (
+              <div className={styles.linkContainer} onClick={handleDisconnect}>
+                <a className={styles.linkA}>
+                  <span className={styles.linkText}>
+                    Disconnect Wallet
+                  </span>
+                  <TbDownloadOff className={styles.icon} />
+                </a>
+              </div>
+            )}
             </div>
           </div>
           <div className={styles.profileUpgrade}>
@@ -133,7 +117,6 @@ const Profile = ({
           </div>
         </div>
       </div>
-
     </>
   );
 };

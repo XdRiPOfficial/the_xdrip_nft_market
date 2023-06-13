@@ -141,10 +141,8 @@
   display: flex;
   justify-content: center;
   text-align: center;
-  line-height: 0rem;
+  line-height: 1.5em;
   text-transform: uppercase;
-
-    
 }
 
 
