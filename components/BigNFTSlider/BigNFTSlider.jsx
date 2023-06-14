@@ -11,9 +11,7 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import Link from "next/link";
 import { NFTMarketplaceContext } from "../../Context/NFTMarketplaceContext";
-import { getUserProfile } from '../../firebase/services';
-
-
+import { getUserProfile } from "../../firebase/services";
 
 const BigNFTSlider = () => {
   const [fileTypes, setFileTypes] = useState({});
@@ -23,6 +21,7 @@ const BigNFTSlider = () => {
   const [nfts, setNfts] = useState([]);
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [muted, setMuted] = useState(true);
   const [profilePic, setProfilePic] = useState(null);
 
   useEffect(() => {
@@ -80,7 +79,7 @@ const BigNFTSlider = () => {
     };
 
     fetchProfilePic();
-  }, nfts.seller);
+  }, [nfts, currentIndex]);
 
   const RenderDefault = () => (
     <Image
@@ -98,6 +97,7 @@ const BigNFTSlider = () => {
     const fileType = fileTypes[el.image];
     const isImage = fileType && fileType.startsWith("image");
     const isAudio = fileType && fileType.startsWith("audio");
+    const isVideo = fileType && fileType.startsWith("video");
 
     return (
       <LazyLoadComponent>
@@ -126,6 +126,7 @@ const BigNFTSlider = () => {
                   src={el.image}
                   ref={audioRef}
                   className={Style.bigNFTSlider_box_audio}
+                  muted={muted}
                 />
                 <button onClick={togglePlay} className={Style.audioControlButton}>
                   {isPlaying ? (
@@ -133,29 +134,52 @@ const BigNFTSlider = () => {
                       src={images.play}
                       width={175}
                       height={175}
-                      alt="Play"
+                      alt="Pause"
                     />
                   ) : (
                     <Image
                       src={images.playW}
                       width={175}
                       height={175}
-                      alt="Pause"
+                      alt="Play"
                     />
                   )}
                 </button>
               </div>
             </div>
           </div>
+        ) : isVideo ? (
+          <div>
+            <ReactPlayer
+              url={el.image}
+              playing={true}
+              muted={muted}
+              width="765px"
+              height="700px"
+              className={Style.bigNFTSlider_box_img_rp}
+            />
+            <div className={Style.bigNFTSlider_box_video_controls_wrapper}>
+            <button onClick={handleToggleMute} className={Style.videoControlButton}>
+              {muted ? (
+                    <Image
+                      src={images.unmute}
+                      width={25}
+                      height={25}
+                      alt="Pause"
+                    />
+                  ) : (
+                    <Image
+                      src={images.mute}
+                      width={25}
+                      height={25}
+                      alt="Play"
+                    />
+                  )}
+            </button>
+            </div>
+          </div>
         ) : (
-          <ReactPlayer
-            url={el.image}
-            playing={true}
-            muted={true}
-            width="765px"
-            height="700px"
-            className={Style.bigNFTSlider_box_img_rp}
-          />
+          <div>{}</div>
         )}
       </LazyLoadComponent>
     );
@@ -171,7 +195,9 @@ const BigNFTSlider = () => {
     }
   };
 
-
+  const handleToggleMute = () => {
+    setMuted(!muted);
+  };
 
   const renderFilePreview = (el) => {
     const fileType = fileTypes[el.image];
@@ -203,8 +229,8 @@ const BigNFTSlider = () => {
           className={Style.bigNFTSlider_box}
         >
           <div className={Style.bigNFTSlider_box_left}>
-          <div className={Style.bigNFTSlider_box_left_id}>
-            <p>TOKEN ID #{nfts[currentIndex].tokenId}</p>
+            <div className={Style.bigNFTSlider_box_left_id}>
+              <p>TOKEN ID #{nfts[currentIndex].tokenId}</p>
             </div>
             <div className={Style.bigNFTSlider_box_left_name}>
               <h2>{nfts[currentIndex].name}</h2>
@@ -223,20 +249,16 @@ const BigNFTSlider = () => {
                 </div>
                 <div className={Style.bigNFTSlider_box_left_creator_profile_info_middle}>
                   <p>CATEGORY</p>
-                  <h4>
-                    {nfts[currentIndex].category}{" "}
-                  </h4>
+                  <h4>{nfts[currentIndex].category}</h4>
                 </div>
                 <div className={Style.bigNFTSlider_box_left_creator_profile_info_right}>
                   <p>COLLECTION</p>
                   <h4>{nfts[currentIndex].collection || "N/A"}</h4>
                 </div>
-
               </div>
             </div>
 
             <div className={Style.bigNFTSlider_box_left_bidding}>
-
               <div className={Style.bigNFTSlider_box_left_bidding_box}>
                 <small>CURRENT PRICE</small>
                 <p>{parseFloat(nfts[currentIndex].price) * 10 ** 9} BNB</p>
@@ -274,13 +296,27 @@ const BigNFTSlider = () => {
               {renderFilePreview(nfts[currentIndex])}
 
               <div className={Style.sliderBtnContainer}>
-                <button className={Style.bigNFTSlider_box_left_sliderBtn_icon} onClick={dec}>
-                  <Image src={images.left_arrow} width={25}
-                    height={25} alt="Previous" />
+                <button
+                  className={Style.bigNFTSlider_box_left_sliderBtn_icon}
+                  onClick={dec}
+                >
+                  <Image
+                    src={images.left_arrow}
+                    width={25}
+                    height={25}
+                    alt="Previous"
+                  />
                 </button>
-                <button className={Style.bigNFTSlider_box_left_sliderBtn_icon} onClick={inc}>
-                  <Image src={images.right_arrow} width={25}
-                    height={25} alt="Next" />
+                <button
+                  className={Style.bigNFTSlider_box_left_sliderBtn_icon}
+                  onClick={inc}
+                >
+                  <Image
+                    src={images.right_arrow}
+                    width={25}
+                    height={25}
+                    alt="Next"
+                  />
                 </button>
               </div>
             </div>

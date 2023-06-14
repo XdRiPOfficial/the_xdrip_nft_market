@@ -85,7 +85,8 @@ import play from "./play.png";
 import play2 from "./play2.png";
 import playB from "./playB.png";
 import playW from "./playW.png";
-
+import mute from "./mute.png";
+import unmute from "./unmute.png";
 
 
 
@@ -97,6 +98,8 @@ export default {
   audio_image,
   audio_image2,
   audio_image3,
+  mute,
+  unmute,
   banner_1,
   bullet_1,
   bullet_2,

@@ -168,7 +168,7 @@ font-weight: 900;
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    line-height: 0;
+    line-height: 1;
     padding-left: 0rem;
     padding-right: 0rem;
     padding-bottom: 0rem;
