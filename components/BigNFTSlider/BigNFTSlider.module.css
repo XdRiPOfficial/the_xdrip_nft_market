@@ -27,7 +27,7 @@
 }
 
 .bigNFTSlider_box_left_id p{
-    margin-bottom: 1rem;
+    margin-bottom: 0rem;
     margin-top: 0rem;
     display: inline-block;
     border: 4px double rgba(1,122,254,255);
@@ -36,10 +36,10 @@
 }
 
 .bigNFTSlider_box_left_name h2{
-    
+    margin-bottom:  1.75rem;
     font-size: 3rem;
     line-height: 1;
-    margin-top: 1.5rem;
+    margin-top: 1.75rem;
 }
 .detailsButton{
 font-size: 1.1rem;
@@ -100,7 +100,8 @@ box-shadow: 0px 0px 60px #1f4c65;
     display: grid;
     grid-template-columns: 33% 33% 33%;
     align-items: center;
-    padding-top: 1rem; 
+    padding-top: 0rem; 
+    margin-bottom: 1rem;
     width: 100%; 
    
 }
