@@ -36,6 +36,7 @@
     align-items: center;
     gap: 1rem;
     margin-top: 2rem;
+    
 }
 
 .Brand_box_left_box small{
@@ -51,11 +52,7 @@
     margin-top: -.5rem;
 }
 
-.Brand_box_left p{
-    font-size: 1.3rem;
-    margin-top: -2.5rem;
-    
-}
+
 
 .Brand_box_left_box small{
     font-size: 1rem;

@@ -1,36 +1,41 @@
-import React, { useState, useEffect, useContext } from "react";
-import Image from "next/image";
-import { MdVerified } from "react-icons/md";
+import React, { useState, useEffect, useContext, useRef } from "react";
+import { Loader } from "../../components/componentsindex";
 import Style from "./BigNFTSlider.module.css";
+import Rating from "react-rating";
+import { FaRegStar, FaStar } from "react-icons/fa";
 import images from "../../img";
-import Button from "../Button/Button";
-import Link from "next/link";
+import Image from "next/image";
 import ReactPlayer from "react-player";
+import { LazyLoadComponent } from "react-lazy-load-image-component";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
+import Link from "next/link";
 import { NFTMarketplaceContext } from "../../Context/NFTMarketplaceContext";
+import { getUserProfile } from '../../firebase/services';
 
-const mp3Image = "/mp3.jpg";
+
 
 const BigNFTSlider = () => {
-  const { fetchNFTS, setError } = useContext(NFTMarketplaceContext);
-  const [nfts, setNFTs] = useState([]);
-  const [currentItemIndex, setCurrentItemIndex] = useState(0);
   const [fileTypes, setFileTypes] = useState({});
+  const [loading, setLoading] = useState(true);
+  const { fetchNFTs, setError } = useContext(NFTMarketplaceContext);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [nfts, setNfts] = useState([]);
+  const audioRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [profilePic, setProfilePic] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const items = await fetchNFTS();
-        setNFTs(items.reverse());
-        setCurrentItemIndex(0);
+        const items = await fetchNFTs();
+        setNfts(items.reverse());
       } catch (error) {
         setError("Please reload the browser", error);
       }
     };
-
     fetchData();
-  }, [fetchNFTS, setError]);
+  }, []);
 
   useEffect(() => {
     const fetchFileTypes = async () => {
@@ -41,163 +46,247 @@ const BigNFTSlider = () => {
         fileTypesObj = JSON.parse(savedData);
       }
 
-      const newFileTypesObj = await nfts.reduce(async (acc, el) => {
-        const response = await fetch(el.image);
-        const contentType = response.headers.get("content-type");
-        return { ...(await acc), [el.image]: contentType };
-      }, Promise.resolve(fileTypesObj));
+      for (const el of nfts) {
+        if (!fileTypesObj[el.image]) {
+          try {
+            const response = await fetch(el.image);
+            const contentType = response.headers.get("content-type");
+            fileTypesObj[el.image] = contentType;
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      }
 
-      localStorage.setItem("fileTypesObj", JSON.stringify(newFileTypesObj));
-      setFileTypes(newFileTypesObj);
+      localStorage.setItem("fileTypesObj", JSON.stringify(fileTypesObj));
+
+      setFileTypes(fileTypesObj);
+      setLoading(false);
     };
 
     fetchFileTypes();
-  }, [nfts, setFileTypes]);
+  }, [nfts]);
 
-  const renderFilePreview = (nft) => {
-    if (!nft || !nft.image) {
-      return (
-        <Image
-          src={images.invalidImage}
-          alt="NFT"
-          width={350}
-          height={300}
-          objectFit="cover"
-          className={Style.NFTCard_box_img_img}
-          controls
-        />
-      );
-    }
-  
-    const fileType = fileTypes[nft.image];
-  
-    const RenderDefault = () => (
-      <Image
-        src={images.invalidImage}
-        alt="NFT"
-        width={350}
-        height={300}
-        objectFit="cover"
-        className={Style.NFTCard_box_img_img}
-        controls
-      />
-    );
-  
-    const RenderMedia = ({ src }) => {
-      const isImage = fileType && fileType.startsWith("image");
-      const isAudio = fileType && fileType.startsWith("audio");
-  
-      return (
-        <LazyLoadImage
-          src={src}
-          alt="NFT"
-          width={350}
-          height={300}
-          effect="blur"
-          className={Style.NFTCardTwo_box_img_img}
-          placeholderSrc={images.placeholderImage}
-        />
-      );
+  useEffect(() => {
+    const fetchProfilePic = async () => {
+      try {
+        const userProfile = await getUserProfile(nfts[currentIndex].seller);
+        if (userProfile && userProfile.profilePictureUrl) {
+          setProfilePic(userProfile.profilePictureUrl);
+        }
+      } catch (error) {
+        console.error(error);
+      }
     };
-  
-    return fileType ? <RenderMedia src={nft.image} /> : <RenderDefault />;
-  };
-  
 
-  const handleNext = () => {
-    setCurrentItemIndex((prevIndex) => (prevIndex + 1) % nfts.length);
-  };
+    fetchProfilePic();
+  }, nfts.seller);
 
-  const handlePrevious = () => {
-    setCurrentItemIndex((prevIndex) =>
-      prevIndex === 0 ? nfts.length - 1 : prevIndex - 1
+  const RenderDefault = () => (
+    <Image
+      src={images.invalidImage}
+      alt="NFT"
+      width="725px"
+      height="700px"
+      objectFit="cover"
+      className={Style.bigNFTSlider_box_img_img}
+      controls
+    />
+  );
+
+  const RenderMedia = ({ el }) => {
+    const fileType = fileTypes[el.image];
+    const isImage = fileType && fileType.startsWith("image");
+    const isAudio = fileType && fileType.startsWith("audio");
+
+    return (
+      <LazyLoadComponent>
+        {isImage ? (
+          <LazyLoadImage
+            src={el.image}
+            alt="NFT"
+            width="765px"
+            height="700px"
+            effect="blur"
+            className={Style.bigNFTSlider_box_img_img}
+          />
+        ) : isAudio ? (
+          <div className={Style.bigNFTSlider_box_audio}>
+            <div className={Style.bigNFTSlider_box_img}>
+              <Image
+                src={images.audio_image2}
+                alt="Default"
+                width="765px"
+                height="700px"
+                objectFit="cover"
+                className={Style.bigNFTSlider_box_img_img}
+              />
+              <div className={Style.bigNFTSlider_box_audio_controls_wrapper}>
+                <audio
+                  src={el.image}
+                  ref={audioRef}
+                  className={Style.bigNFTSlider_box_audio}
+                />
+                <button onClick={togglePlay} className={Style.audioControlButton}>
+                  {isPlaying ? (
+                    <Image
+                      src={images.play}
+                      width={175}
+                      height={175}
+                      alt="Play"
+                    />
+                  ) : (
+                    <Image
+                      src={images.playW}
+                      width={175}
+                      height={175}
+                      alt="Pause"
+                    />
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <ReactPlayer
+            url={el.image}
+            playing={true}
+            muted={true}
+            width="765px"
+            height="700px"
+            className={Style.bigNFTSlider_box_img_rp}
+          />
+        )}
+      </LazyLoadComponent>
     );
   };
 
-  const currentNFT = nfts[currentItemIndex];
+  const togglePlay = () => {
+    if (audioRef.current.paused) {
+      audioRef.current.play();
+      setIsPlaying(true);
+    } else {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    }
+  };
+
+
+
+  const renderFilePreview = (el) => {
+    const fileType = fileTypes[el.image];
+
+    return fileType ? <RenderMedia el={el} /> : <RenderDefault />;
+  };
+
+  const inc = () => {
+    if (currentIndex + 1 < nfts.length) {
+      setCurrentIndex(currentIndex + 1);
+    } else {
+      setCurrentIndex(0);
+    }
+  };
+
+  const dec = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    } else {
+      setCurrentIndex(nfts.length - 1);
+    }
+  };
 
   return (
     <div className={Style.bigNFTSlider}>
-      <div className={Style.bigNFTSlider_box}>
-        <div className={Style.bigNFTSlider_box_left}>
-          <h2>{currentNFT?.name}</h2>
-          <div className={Style.bigNFTSlider_box_left_creator}>
-            <div className={Style.bigNFTSlider_box_left_creator_profile}>
-              {renderFilePreview(currentNFT)}
-              <div className={Style.bigNFTSlider_box_left_creator_profile_info}>
-                <p>CREATOR</p>
-                <h4>
-                  {currentNFT?.name}{" "}
-                  <span>
-                    <MdVerified />
-                  </span>
-                </h4>
+      {nfts.length > 0 && (
+        <div
+          key={`${nfts[currentIndex].tokenId}-${currentIndex}`}
+          className={Style.bigNFTSlider_box}
+        >
+          <div className={Style.bigNFTSlider_box_left}>
+          <div className={Style.bigNFTSlider_box_left_id}>
+            <p>TOKEN ID #{nfts[currentIndex].tokenId}</p>
+            </div>
+            <div className={Style.bigNFTSlider_box_left_name}>
+              <h2>{nfts[currentIndex].name}</h2>
+            </div>
+            <div className={Style.bigNFTSlider_box_left_creator}>
+              <div className={Style.bigNFTSlider_box_left_creator_profile}>
+                <div className={Style.bigNFTSlider_box_left_creator_profile_info}>
+                  <p>SELLER ID</p>
+                  <img
+                    src={profilePic}
+                    alt="Profile Pic"
+                    width={50}
+                    height={50}
+                    className={Style.bigNFTSlider_box_left_creator_profile_img}
+                  />
+                </div>
+                <div className={Style.bigNFTSlider_box_left_creator_profile_info_middle}>
+                  <p>CATEGORY</p>
+                  <h4>
+                    {nfts[currentIndex].category}{" "}
+                  </h4>
+                </div>
+                <div className={Style.bigNFTSlider_box_left_creator_profile_info_right}>
+                  <p>COLLECTION</p>
+                  <h4>{nfts[currentIndex].collection || "N/A"}</h4>
+                </div>
+
               </div>
             </div>
-            <div className={Style.bigNFTSlider_box_left_creator_collection}>
-              <Image
-                src={images.xm2}
-                alt="Logo"
-                width={50}
-                height={50}
-                className={Style.bigNFTSlider_box_left_creator_collection_icon}
-              />
-              <div className={Style.bigNFTSlider_box_left_creator_collection_info}>
-                <p>COLLECTION</p>
-                <h4>{currentNFT?.collection}</h4>
+
+            <div className={Style.bigNFTSlider_box_left_bidding}>
+
+              <div className={Style.bigNFTSlider_box_left_bidding_box}>
+                <small>CURRENT PRICE</small>
+                <p>{parseFloat(nfts[currentIndex].price) * 10 ** 9} BNB</p>
+              </div>
+              <div className={Style.bigNFTSlider_box_left_bidding_box_auction}>
+                <p>DESCRIPTION:</p>
+              </div>
+              <div className={Style.description}>
+                <p>{nfts[currentIndex].description}</p>
+              </div>
+              <div className={Style.bigNFTSlider_box_left_bidding_box_timer}>
+                <div className={Style.bigNFTSlider_box_left_bidding_box_timer_item}>
+                  <p></p>
+                  <span></span>
+                </div>
+                <div className={Style.bigNFTSlider_box_left_bidding_box_timer_item}>
+                  <p></p>
+                  <span></span>
+                </div>
+              </div>
+              <div className={Style.bigNFTSlider_box_left_button}>
+                <div className={Style.sliderCard_box_price_box_btn_btn}>
+                  <Link
+                    href={{ pathname: "/NFTDetails", query: nfts[currentIndex] }}
+                    key={`${nfts[currentIndex].tokenId}`}
+                  >
+                    <button className={Style.detailsButton}>NFT DETAILS</button>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
-          <div className={Style.bigNFTSlider_box_left_bidding}>
-            <div className={Style.bigNFTSlider_box_left_bidding_box}>
-              <small>CURRENT PRICE</small>
-              <p>{currentNFT?.price}</p>
-            </div>
-            <div className={Style.bigNFTSlider_box_left_bidding_box_auction}>
-              {currentNFT?.description}
-            </div>
-            <div className={Style.bigNFTSlider_box_left_bidding_box_timer}>
-              <div className={Style.bigNFTSlider_box_left_bidding_box_timer_item}>
-                <p>{currentNFT?.inventory}</p>
-                <span>TOTAL FORGED</span>
-              </div>
-              <div className={Style.bigNFTSlider_box_left_bidding_box_timer_item}>
-                <p>{currentNFT?.inventory}</p>
-                <span>TOTAL AVAILABLE</span>
-              </div>
-            </div>
-            <div className={Style.bigNFTSlider_box_left_button}>
-              <Button
-                btnName="BUY"
-                handleClick={() =>
-                  mint(currentNFT?.title, currentNFT?.ipfsHash)
-                }
-              />
-              <div className={Style.sliderCard_box_price_box_btn_btn}>
-                <Link
-                  href={{ pathname: "/NFTDetails", query: currentNFT }}
-                  key={`${currentNFT?.tokenId}`}
-                >
-                  <button className={Style.detailsButton}>DETAILS</button>
-                </Link>
+          <div className={Style.bigNFTSlider_box_right}>
+            <div className={Style.bigNFTSlider_box_right_box}>
+              {renderFilePreview(nfts[currentIndex])}
+
+              <div className={Style.sliderBtnContainer}>
+                <button className={Style.bigNFTSlider_box_left_sliderBtn_icon} onClick={dec}>
+                  <Image src={images.left_arrow} width={25}
+                    height={25} alt="Previous" />
+                </button>
+                <button className={Style.bigNFTSlider_box_left_sliderBtn_icon} onClick={inc}>
+                  <Image src={images.right_arrow} width={25}
+                    height={25} alt="Next" />
+                </button>
               </div>
             </div>
           </div>
         </div>
-        <div className={Style.bigNFTSlider_box_right}>
-          <div className={Style.bigNFTSlider_box_right_box}>
-            {renderFilePreview(currentNFT)}
-            <div className={Style.sliderBtnContainer}>
-              <button className={Style.sliderBtn} onClick={handlePrevious}>
-                Prev
-              </button>
-              <button className={Style.sliderBtn} onClick={handleNext}>
-                Next
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   );
 };

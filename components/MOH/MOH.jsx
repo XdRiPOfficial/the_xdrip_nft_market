@@ -23,7 +23,7 @@ const MOH = () => {
             alt="MOH IMAGE"
             width={550}
             height={70}
-            className={Style.Brand_box_right_img}
+            className={Style.Brand_box_left_img}
           />
           <h2>XDRIP MEDALS OF HONOR</h2>
           

@@ -20,7 +20,7 @@ const aboutus = () => {
     },
     {
       name: "OG Jim",
-      position: "CHIEF OPERATING OFFICER",
+      position: "CHIEF DEVELOPMENT OFFICER",
       images: images.founder3,
     },
     {

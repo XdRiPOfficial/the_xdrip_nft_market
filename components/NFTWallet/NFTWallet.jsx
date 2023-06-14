@@ -46,7 +46,7 @@ const NFTWallet = () => {
       <h1 className={Style.page_title}>MY MEDALS OF HONOR</h1>
       
       <NFTWalletCard nfts={nfts} renderMedia={renderMedia} />
-      <Slider />
+      
       <Brand />
     </div>
   );

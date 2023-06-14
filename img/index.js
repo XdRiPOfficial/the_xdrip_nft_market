@@ -45,6 +45,7 @@ import xm from "./xm.png";
 import xm2 from "./xm-circle.png";
 import logo from "./logo.png";
 import logo2 from "./logo_2.png";
+import logo3 from "./logo_3.png";
 import facebook from "./facebook.svg";
 import google from "./google.svg";
 import twitter from "./twitter.svg";
@@ -80,6 +81,12 @@ import left_arrow from "./left-arrow.png";
 import right_arrow from "./right-arrow.png";
 import moh_entry from "./moh_entry.png";
 import bullet_12 from "./bullet-12.jpg";
+import play from "./play.png";
+import play2 from "./play2.png";
+import playB from "./playB.png";
+import playW from "./playW.png";
+
+
 
 
 
@@ -104,6 +111,10 @@ export default {
   bullet_11,
   bullet_12,
   hero2,
+  play,
+  play2,
+  playB,
+  playW,
   founder1,
   founder2,
   founder3,
@@ -152,6 +163,7 @@ export default {
   user10,
   logo,
   logo2,
+  logo3,
   facebook,
   google,
   telegram,
