@@ -6,17 +6,15 @@ import { TiTick } from "react-icons/ti";
 import Image from "next/image";
 import { NFTStorage } from "nft.storage";
 
-//INTERNAL IMPORT
+// INTERNAL IMPORT
 import Style from "./CreateCollection.module.css";
 import formStyle from "../AccountPage/Form/Form.module.css";
 import images from "../img";
 import { Button } from "../components/componentsindex.js";
 import { DropZoneB } from "./createCollectionIndex.js";
 
-
-
+import { createCollection } from "../firebase/services";
 const CreateCollection = ({ }) => {
-
     const [active, setActive] = useState(0);
     const [collectionName, setCollectionName] = useState("");
     const [website, setWebsite] = useState("");
@@ -39,19 +37,53 @@ const CreateCollection = ({ }) => {
     const [instagram, setInstagram] = useState("");
     const [discord, setDiscord] = useState("");
 
-    const togglePreview = () => {
-        setShowPreview(!showPreview);
-    };
-
-    //const router = useRouter();
-
    
+
+    const saveCollectionDetails = async () => {        
+        const collectionData = {
+            collectionName,
+            website,
+            description,
+            facebook,
+            twitter,
+            instagram,
+            discord,
+        };
+
+        try {
+            await createCollection(collectionData);
+            console.log("Collection created successfully");
+        } catch (error) {
+            console.error("Error creating collection: ", error);
+        }
+    };
 
     const [isLoading, setIsLoading] = useState(false);
 
+    const handleClick = async () => {
+        const collectionData = {
+            collectionName,
+            website,
+            description,
+            facebook,
+            twitter,
+            instagram,
+            discord,
+            logoImage: image,
+            featuredImage: image,
+            bannerImage: image,
+        };
+
+        try {
+            await saveCollectionDetails(collectionData);
+            console.log("Collection created successfully");
+        } catch (error) {
+            console.error("Error creating collection: ", error);
+        }
+    };
+
     return (
         <div className={Style.CreateCollection}>
-
             <div className={Style.right_box}>
                 <div className={Style.upload_details_title}>
                     <h2>COLLECTION DETAILS + SOCIALS</h2>
@@ -69,8 +101,6 @@ const CreateCollection = ({ }) => {
                     <div className={formStyle.Form_box_input}>
                         <label htmlFor="website">YOUR COLLECTIONS WEBSITE</label>
                         <div className={formStyle.Form_box_input_box}>
-
-
                             <input
                                 type="text"
                                 placeholder="ENTER YOUR COLLECTIONS WEBSITE"
@@ -225,10 +255,7 @@ const CreateCollection = ({ }) => {
                 <div className={Style.upload_box_btn}>
                     <Button
                         btnName="CREATE YOUR NEW COLLECTION"
-                        handleClick={() => {
-                            togglePreview();
-                            saveCollectionDetails();
-                        }}
+                        handleClick={handleClick} // Use the modified handleClick function
                         classStyle={Style.upload_box_btn_style}
                     />
 
