@@ -100,15 +100,16 @@ const Account = () => {
     <div className={Style.account}>
       <div className={Style.account_box_box}>
         <div className={Style.account_info}>
-          <div className={Style.account_pfp}>
+          <div className={Style.account_pfp} {...getRootProps()}>
+          <input {...getInputProps()} />
             {profilePictureUrl ? (
               <img src={profilePictureUrl} alt="profile" className={Style.account_box_pfp} />
             ) : (
               <Image
-                src={images.user1}
-                alt="account upload"
-                width={25}
-                height={25}
+              src={images.user1}
+              alt="account upload"
+              layout="fill"
+              objectFit="cover"
               />
             )}
           </div>
@@ -163,11 +164,26 @@ const Account = () => {
             <div className={Style.profile}>
               <h1>UPDATE PROFILE INFORMATION</h1>
             </div>
-            <div className={Style.account_box_img} {...getRootProps()}>
-              <input {...getInputProps()} />
-            </div>
+           
 
-            <Form setUsername={setUsername} setEmail={setEmail} username={username} email={email} />
+            <Form 
+            setUsername={setUsername} 
+            setEmail={setEmail} 
+            username={username} 
+            email={email} 
+            website={website}
+            facebook={facebook}
+            twitter={twitter}
+            instagram={instagram}
+            tiktok={tiktok}
+            discord={discord}
+            setWebsite={setWebsite} 
+            setFacebook={setFacebook} 
+            setTwitter={setTwitter} 
+            setInstagram={setInstagram}
+            setTikTok={setTikTok}
+            setDiscord={setDiscord}
+            />
           </div>
         </div>
       </div>
