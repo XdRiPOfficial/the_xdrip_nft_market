@@ -16,6 +16,10 @@ const Discover = () => {
       link: "categoriesPage",
     },
     {
+      name: "THE FORGE",
+      link: "theForge",
+    },
+    {
       name: "XNEWS",
       link: "https://www.xdrip.io/news",
     },

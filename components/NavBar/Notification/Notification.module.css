@@ -60,6 +60,10 @@
     align-items: center;
 }
 
+.notification_img_wrapper_img {
+ border-radius: 50%;
+}
+
 .notification_box_info{
     line-height: 0;
     flex: 1 1 auto;

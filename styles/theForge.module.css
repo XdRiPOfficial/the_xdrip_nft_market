@@ -3,27 +3,17 @@
  
 }
 
+
 .theForge {
-    margin-top: 6rem;
-    position: relative;
-    padding-bottom: 6rem;
+  margin-top: 6rem;
+  position: relative;
+  padding-bottom: 6rem;
+  background-image: url(../img/bullet-5.png);
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
-.theForge::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background-image: url(../img/bullet-5.png);
-    opacity: 0.15; /* Adjust the value as needed (0.0 to 1.0) */
-    z-index: -1;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 100%;
-    background-attachment: fixed;
-}
 
 .video {
 
@@ -36,7 +26,7 @@
     align-content: center;
     justify-content: center;
     margin-top: 6rem;
-    
+    background: black;
 }
 
 .theForge_container h1 {

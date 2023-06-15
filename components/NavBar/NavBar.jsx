@@ -76,7 +76,7 @@ const NavBar = () => {
     from: { opacity: 0, transform: 'translateY(0) translateX(-50%)', height: '0px' },
     // if nav links are added must manually adjust this height below,
     // very difficult to get the height of these containers when they are not rendered on load:
-    enter: { opacity: 1, transform: 'translateY(0) translateX(-50%)', height: '125px' },
+    enter: { opacity: 1, transform: 'translateY(0) translateX(-50%)', height: '165px' },
     leave: { opacity: 0, transform: 'translateY(0) translateX(-50%)', height: '0px' },
     config: config.stiff,
   });

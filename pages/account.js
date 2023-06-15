@@ -107,8 +107,7 @@ const Account = () => {
             ) : (
               <Image
               src={images.user1}
-              alt="account upload"
-              layout="fill"
+              alt="account upload"              
               objectFit="cover"
               />
             )}

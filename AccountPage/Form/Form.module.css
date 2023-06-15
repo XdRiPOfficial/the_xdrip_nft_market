@@ -84,8 +84,7 @@
   }
   
   .Form_box_input input {
-    width: 100%;
-    border: 4px double rgba(1, 122, 254, 255);
+    width: 100%;    
     padding: 1rem;
     border-radius: 0.5rem;
     background-color: black;
@@ -94,13 +93,23 @@
   }
   
   .Form_box_input_userName {
-    width: 100%;
-    border: 4px double rgba(1, 122, 254, 255);
+    width: 100%;    
     padding: 1rem;
     border-radius: 0.5rem;
     background-color: transparent;
     margin-top: 0.5rem;
     outline: none;
+    box-shadow:        0 0 2px rgb(1, 122, 254, 255),
+    0 0 2px rgb(1, 122, 254, 255),
+    0 0 2px rgb(1, 122, 254, 255), 
+    0 0 2px rgb(1, 122, 254, 255),
+    0 0 3px rgb(1, 122, 254, 255),
+    0 0 3px rgb(1, 122, 254, 255),
+    0 0 3px rgb(1, 122, 254, 255), 
+    0 0 5px rgb(1, 122, 254, 255), 
+    0 0 5px rgb(1, 122, 254, 255), 
+    0 0 8px rgb(1, 122, 254, 255), 
+    0 0 10px rgb(1, 122, 254, 255);
   }
   
   .Form_box_input::placeholder {
@@ -109,22 +118,34 @@
   }
   
   .Form_box_input_box {
-    width: 100%;
-    border: 4px double rgba(1, 122, 254, 255);
+    width: 100%;    
     border-radius: 0.5rem;
     align-items: center;
     display: flex;
     gap: 1rem;
     overflow: hidden;
+    box-shadow:        0 0 2px rgb(1, 122, 254, 255),
+    0 0 2px rgb(1, 122, 254, 255),
+    0 0 2px rgb(1, 122, 254, 255), 
+    0 0 2px rgb(1, 122, 254, 255),
+    0 0 3px rgb(1, 122, 254, 255),
+    0 0 3px rgb(1, 122, 254, 255),
+    0 0 3px rgb(1, 122, 254, 255), 
+    0 0 5px rgb(1, 122, 254, 255), 
+    0 0 5px rgb(1, 122, 254, 255), 
+    0 0 8px rgb(1, 122, 254, 255), 
+    0 0 10px rgb(1, 122, 254, 255);
   }
   
   .Form_box_input_box_icon {
     font-size: 2rem;
-    background-color: var(--icons-color);
+    background-color: rgba(15, 15, 15, 0.863);
     padding: 0.5rem 1rem;
-    color: var(--main-bg-color);
+    color: white;
     display: grid;
     cursor: pointer;
+    border-right: .2rem solid rgb(54, 52, 52);
+  
   }
   
   .Form_box_input_box input {
@@ -152,7 +173,7 @@
 
   .Form_box_input_creator{
     display: flex;
-    margin-top: 2rem;
+    margin-top: 3rem;
     font-size: 1.2rem;
     font-weight: 400;
     gap: 1rem;

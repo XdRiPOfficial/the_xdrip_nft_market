@@ -12,12 +12,14 @@ import { LazyLoadComponent } from 'react-lazy-load-image-component';
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 
-//import { AiOutlineHeart, AiFillHeart } from "react-icons/ai"; Can use hearts instead of stars
+//import { AiOutlineHeart, AiFillHeart } from "react-icons/ai"; Can use hearts insetad of stars
 import Link from "next/link";
 
 const mp3Image = "/mp3.jpg";
 
 const NFTCard = ({ NFTData }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 8;
   const [fileTypes, setFileTypes] = useState({});
   const [loading, setLoading] = useState(true);
 
@@ -45,99 +47,108 @@ const NFTCard = ({ NFTData }) => {
     });
   };
 
-  useEffect(() => {
-    const fetchFileTypes = async () => {
-      let fileTypesObj = {};
 
-      const savedData = localStorage.getItem('fileTypesObj');
-      if (savedData) {
-        fileTypesObj = JSON.parse(savedData);
-      }
+useEffect(() => {
+  const fetchFileTypes = async () => {
+    let fileTypesObj = {};
 
-      for (const el of NFTData) {
-        if (!fileTypesObj[el.image]) {
-          try {
-            const response = await fetch(el.image);
-            const contentType = response.headers.get("content-type");
-            fileTypesObj[el.image] = contentType;
-          } catch (error) {
-            console.log(error);
-          }
+    const savedData = localStorage.getItem('fileTypesObj');
+    if (savedData) {
+      fileTypesObj = JSON.parse(savedData);
+    }
+
+    for (const el of NFTData) {
+      if (!fileTypesObj[el.image]) {
+        try {
+          const response = await fetch(el.image);
+          const contentType = response.headers.get("content-type");
+          fileTypesObj[el.image] = contentType;
+        } catch (error) {
+          console.log(error);
         }
       }
+    }
 
-      localStorage.setItem('fileTypesObj', JSON.stringify(fileTypesObj));
+    localStorage.setItem('fileTypesObj', JSON.stringify(fileTypesObj));
 
-      setFileTypes(fileTypesObj);
-      setLoading(false);
-    };
+    setFileTypes(fileTypesObj);
+    setLoading(false);
+  };
 
-    fetchFileTypes();
-  }, [NFTData]);
+  fetchFileTypes();
+}, [NFTData]);
 
-  const RenderDefault = () => (
-    <Image
-      src={images.invalidImage}
-      alt="NFT"
-      width={350}
-      height={300}
-      objectFit="cover"
-      className={Style.NFTCard_box_img_img}
-      controls
-    />
-  );
 
-  const RenderMedia = ({ src }) => {
-    const fileType = fileTypes[src];
 
-    const isImage = fileType && fileType.startsWith("image");
-    const isAudio = fileType && fileType.startsWith("audio");
+const RenderDefault = () => (
+  <Image
+    src={images.invalidImage}
+    alt="NFT"
+    width={350}
+    height={300}
+    objectFit="cover"
+    className={Style.NFTCard_box_img_img}
+    controls
+  />
+);
 
-    return (
-      <LazyLoadComponent>
-        {isImage ? (
-          <LazyLoadImage
-            src={src}
-            alt="NFT"
+const RenderMedia = ({ src }) => {
+  const fileType = fileTypes[src];
+  
+  const isImage = fileType && fileType.startsWith("image");
+  const isAudio = fileType && fileType.startsWith("audio");
+  
+  return (
+    <LazyLoadComponent>
+      {isImage ? (
+        <LazyLoadImage
+          src={src}
+          alt="NFT"
+          width={350}
+          height={300}
+          effect="blur"
+          className={Style.NFTCardTwo_box_img_img}
+        />
+      ) : isAudio ? (
+        <div className={Style.NFTCardTwo_box_audio}>
+          <Image
+            src={images.audio_image}
+            alt="Default"
             width={350}
-            height={300}
-            effect="blur"
-            className={Style.NFTCardTwo_box_img_img}
+            height={255}
+            objectFit="cover"
+            className={Style.NFTCardTwo_box_img_audio}
           />
-        ) : isAudio ? (
-          <div className={Style.NFTCardTwo_box_audio}>
-            <Image
-              src={images.audio_image}
-              alt="Default"
-              width={350}
-              height={255}
-              objectFit="cover"
-              className={Style.NFTCardTwo_box_img_audio}
-            />
-            <audio
-              src={src}
-              controls
-              className={Style.NFTCardTwo_box_audio_controls}
-            />
-          </div>
-        ) : (
-          <ReactPlayer 
-            url={src}
+          <audio
+            src={src}
             controls
-            width='350px'
-            height='300px'
-            className={Style.NFTCardTwo_box_img_img}
+            className={Style.NFTCardTwo_box_audio_controls}
           />
-        )}
-      </LazyLoadComponent>
-    );
-  };
+        </div>
+      ) : (
+        <ReactPlayer 
+          url={src}
+          controls
+          width='350px'
+          height='300px'
+          className={Style.NFTCardTwo_box_img_img}
+        />
+      )}
+    </LazyLoadComponent>
+  );
+};
 
-  const renderFilePreview = (el) => {
-    const fileType = fileTypes[el.image];
+const renderFilePreview = (el) => {
+  const fileType = fileTypes[el.image];
 
-    return fileType ? <RenderMedia src={el.image} /> : <RenderDefault />;
-  };
+  return fileType ? <RenderMedia src={el.image} /> : <RenderDefault />;
+};
+
+
+
+  const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
+  const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
+  const currentItems = NFTData.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <div className={Style.NFTCard_container}>
@@ -151,25 +162,28 @@ const NFTCard = ({ NFTData }) => {
           </p>
         </div>
       ) : (
-        <div className={Style.NFTCard}>
-          {NFTData.map((el, i) => (
-            <Link
-              href={{ pathname: "/NFTDetails", query: el }}
-              key={`${el.tokenId}-${i}`}
-            >
-              <div className={Style.NFTCard_box}>
-                <div className={Style.NFTCard_box_img}>
-                  {renderFilePreview(el)}
-                </div>
-                <div className={Style.NFTCard_box_box_info}>
+        <>
+          <div className={Style.NFTCard}>
+            {currentItems.map((el, i) => (
+              <Link
+                href={{ pathname: "/NFTDetails", query: el }}
+                key={`${el.tokenId}-${i}`}
+              >
+                <div className={Style.NFTCard_box}>
+                  <div className={Style.NFTCard_box_img}>
+                    {renderFilePreview(el)}
+                  </div>
+                  <div className={Style.NFTCard_box_box_info}>
                   <div className={Style.NFTCard_box_info_info}>
                     <div className={Style.NFTCard_box_info_left}>
                       <p>{el.name}</p>
                     </div>
-                    <div className={Style.NFTCard_box_tokenid}>
-                      <small> # {el.tokenId}</small>
+
+                  
+                  <div className={Style.NFTCard_box_tokenid}>
+                    <small> # {el.tokenId}</small>
                     </div>
-                  </div>
+                    </div>
                   <div className={Style.NFTCard_box_price}>
                     <div className={Style.likesContainer}>
                       <div className={Style.NFTCard_box_like_box}></div>
@@ -179,6 +193,10 @@ const NFTCard = ({ NFTData }) => {
                       <p>{parseFloat(el.price) * 10 ** 9} BNB</p>
                     </div>
                     <p className={Style.NFTCard_box_price_stock}>
+                      {/* future auciton functionality 
+                    <MdTimer /> <span>{i + 1} HOURS LEFT</span>
+                    */}
+
                       <Rating
                         emptySymbol={
                           <FaRegStar style={{ marginRight: "5px" }} />
@@ -189,6 +207,7 @@ const NFTCard = ({ NFTData }) => {
                           likes[el.tokenId] ? likes[el.tokenId].rating : 0
                         }
                       />
+
                       <div className={Style.likesNumber}>
                         <span>
                           {likes[el.tokenId] ? likes[el.tokenId].count : 0}
@@ -196,11 +215,40 @@ const NFTCard = ({ NFTData }) => {
                       </div>
                     </p>
                   </div>
+                  </div>
                 </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+              </Link>
+            ))}
+          </div>
+          <div className={Style.pagination}>
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(currentPage - 1)}
+            >
+              Prev
+            </button>
+            {Array.from(
+              { length: Math.ceil(NFTData.length / ITEMS_PER_PAGE) },
+              (_, i) => (
+                <button
+                  key={`page-${i}`}
+                  onClick={() => setCurrentPage(i + 1)}
+                  className={currentPage === i + 1 ? Style.active : ""}
+                >
+                  {i + 1}
+                </button>
+              )
+            )}
+            <button
+              disabled={
+                currentPage === Math.ceil(NFTData.length / ITEMS_PER_PAGE)
+              }
+              onClick={() => setCurrentPage(currentPage + 1)}
+            >
+              Next
+            </button>
+          </div>
+        </>
       )}
     </div>
   );
