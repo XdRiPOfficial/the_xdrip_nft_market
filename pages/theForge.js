@@ -5,7 +5,6 @@ import React from "react";
 import TheForge from "../components/TheForge/TheForge";
 import NFTWallet from "../components/NFTWallet/NFTWallet";
 import MyNFTData from "../Context/MyNFTDataContext";
-import { Slider, Brand, Loader, Title } from "../components/componentsindex";
 import Style from "../styles/theForge.module.css";
 import videos from "../public/videos";
 
@@ -16,8 +15,7 @@ const theForge = () => {
         <video
           className={Style.video}
           src={videos.Forge1}
-          width="1800rem"
-          height="900rem"
+          width="100%"          
           loop
           muted
           autoPlay

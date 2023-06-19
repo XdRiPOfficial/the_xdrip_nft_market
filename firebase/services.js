@@ -1,5 +1,5 @@
 import firebaseApp from "./config";
-import { getFirestore, collection, query, where, addDoc, updateDoc, doc, getDocs } from "firebase/firestore";
+import { getFirestore, collection, query, where, addDoc, updateDoc, doc, getDocs, deleteDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import firebase from 'firebase/app';
 import 'firebase/firestore';
@@ -8,20 +8,27 @@ const firestore = getFirestore();
 const storage = getStorage();
 //const db = firebase.firestore();
 
-export const addUser = async (username, email, walletAddress, profilePicture,) => {
+export const addUser = async (username, email, website, walletAddress, profilePicture, isCreator, creatorPage, socials) => {
   const userRef = collection(firestore, "users");
   const newUser = {
     email,
     username,
+    website,
     walletAddress,
     profilePictureUrl: "",
-    isCreator: false,
-    creatorPage: "",
+    isCreator: isCreator || false,
+    creatorPage: creatorPage || "",
     nftsCreated: [],
     nftsListed: [],
     nftsSold: [],
+    socials: socials || {
+      twitter: "",
+      facebook: "",
+      instagram: "",
+      tiktok: "",
+      discord: "",
+    },
     collectionsCreated: [],
-
   };
 
   try {
@@ -99,8 +106,8 @@ export const getUser = async (userId) => {
 
     if (userSnapshot.exists()) {
       const userData = userSnapshot.data();
-      const { username, email, walletAddress, profilePictureUrl } = userData;
-      return { id: userSnapshot.id, username, email, walletAddress, profilePictureUrl };
+      const { username, email, walletAddress, profilePictureUrl, isCreator } = userData;
+      return { id: userSnapshot.id, username, email, walletAddress, profilePictureUrl, isCreator };
     } else {
       console.error("User does not exist");
     }

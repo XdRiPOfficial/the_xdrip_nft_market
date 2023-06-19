@@ -117,8 +117,7 @@ const BigNFTSlider = () => {
                 src={images.audio_image2}
                 alt="Default"
                 width="765px"
-                height="700px"
-                objectFit="cover"
+                height="700px"                
                 className={Style.bigNFTSlider_box_img_img}
               />
               <div className={Style.bigNFTSlider_box_audio_controls_wrapper}>

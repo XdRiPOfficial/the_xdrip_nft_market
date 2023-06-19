@@ -29,6 +29,7 @@
   
   
   
+  
   .likesContainer .ReactRating {
     margin: 0 auto;
   }
@@ -141,24 +142,34 @@
   display: flex;
   justify-content: center;
   text-align: center;
-  line-height: 1.5em;
+  line-height: 1rem;
   text-transform: uppercase;
+
 }
 
 
 .NFTCard_box_info_left p{
   
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     font-weight: 400;
-    
+    text-shadow: 
+    0 0 2px rgb(1, 122, 254, 255),
+    0 0 2px rgb(1, 122, 254, 255),
+    0 0 2px rgb(1, 122, 254, 255), 
+    0 0 2px rgb(1, 122, 254, 255),
+    0 0 3px rgb(1, 122, 254, 255),
+    0 0 3px rgb(1, 122, 254, 255),
+    0 0 3px rgb(1, 122, 254, 255), 
+    0 0 5px rgb(1, 122, 254, 255), 
+    0 0 5px rgb(1, 122, 254, 255);
 }
 
 .NFTCard_box_tokenid{
 display: flex;
 justify-content: center;
 align-content: center;
-margin-bottom: 1.2rem;
-font-size: 1.2rem;
+margin-bottom: 1rem;
+font-size: 1.3rem;
 font-weight: 900;
 }
 

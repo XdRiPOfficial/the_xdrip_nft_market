@@ -65,7 +65,17 @@
     align-items: center;
     padding-top: 1rem;
     font-size: 1.2rem;
-    
+    text-shadow: 
+    0 0 2px rgb(1, 122, 254, 255),
+    0 0 2px rgb(1, 122, 254, 255),
+    0 0 2px rgb(1, 122, 254, 255), 
+    0 0 2px rgb(1, 122, 254, 255),
+    0 0 3px rgb(1, 122, 254, 255),
+    0 0 3px rgb(1, 122, 254, 255),
+    0 0 3px rgb(1, 122, 254, 255), 
+    0 0 5px rgb(1, 122, 254, 255), 
+    0 0 5px rgb(1, 122, 254, 255);
+
 }
 
 .category_box_title span{

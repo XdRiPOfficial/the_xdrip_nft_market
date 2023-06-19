@@ -5,10 +5,10 @@
 
 
 .theForge {
-  margin-top: 6rem;
+  margin-top: 0rem;
   position: relative;
   padding-bottom: 6rem;
-  background-image: url(../img/bullet-5.png);
+  
   background-position: center center;
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -17,7 +17,7 @@
 
 .video {
 
-    opacity: 0.7; /* Adjust the opacity value as per your preference */
+    opacity: 0.7; 
   }
 
 
@@ -25,7 +25,7 @@
      display: flex;
     align-content: center;
     justify-content: center;
-    margin-top: 6rem;
+    margin-top: 8rem;
     background: black;
 }
 
@@ -39,7 +39,7 @@
 
 .theForge_content {
     
-    margin-top: 4rem;
+    margin-top: 6rem;
     justify-content: center;
   }
 
@@ -47,6 +47,7 @@
     font-size: 4rem;
     margin-left: 7rem;
     margin-bottom: 2rem;
+    margin-top: 3rem;
     display: inline-block;
     border-bottom: .5rem double white;
   }
@@ -54,7 +55,15 @@
   .medalsText {
     font-size: 1.3rem;
     line-height: 1.4;
-    max-width: 1500px;
+    max-width: 100rem;
     margin: 0 auto;
+    margin-top: 2rem;
     margin-bottom: 8rem;
+    padding-block: 3rem;
+    padding-right: 3rem;
+    padding-left: 3rem;
+    border-radius: .5rem;
+    box-shadow: var(--white-glow);
+    background-image: url(../img/card-background-5.png);
+    
   }

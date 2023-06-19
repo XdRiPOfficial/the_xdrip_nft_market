@@ -1,5 +1,5 @@
 .nft_wallet{
-  padding-top: 7rem;
+  margin-top: 12rem;
 }
 .nft_wallet_box{
   width: 100%;
@@ -11,6 +11,8 @@
 .page_title {
   font-size: 4rem;
   margin-bottom: 4rem;
-  padding-left: 7rem;
+  margin-left: 7rem;
+  display: inline-block;
+  border-bottom: .5rem double white;
 }
  

@@ -41,6 +41,16 @@
     justify-content: center;
     justify-items: center;
     text-align: center;
+    text-shadow: 
+    0 0 2px rgb(1, 122, 254, 255),
+    0 0 2px rgb(1, 122, 254, 255),
+    0 0 2px rgb(1, 122, 254, 255), 
+    0 0 2px rgb(1, 122, 254, 255),
+    0 0 3px rgb(1, 122, 254, 255),
+    0 0 3px rgb(1, 122, 254, 255),
+    0 0 3px rgb(1, 122, 254, 255), 
+    0 0 5px rgb(1, 122, 254, 255), 
+    0 0 5px rgb(1, 122, 254, 255);
 }
 
 .daysComponent_box_title_info_profile{

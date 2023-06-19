@@ -24,8 +24,8 @@ const LoginAndSignUp = ({ currentAccount, setProfileImageSrc }) => {
   const [message, setMessage] = useState("");
   const [isCreator, setIsCreator] = useState(false); // State for the creator selection
 
-  const handleCreatorChange = (event) => {
-    setIsCreator(event.target.checked);
+  const handleCreatorChange = (e) => {
+    setIsCreator(e.target.checked);
   };
 
   const address = useAddress();
@@ -136,7 +136,7 @@ const handleSubmit = async (e) => {
   try {
     // Sign up new users
     const { user } = await createUserWithEmailAndPassword(auth, email, password);
-    await addUser(username, email, walletAddress, profileImage);
+    await addUser(username, email, walletAddress, profileImage, isCreator);
 
     if (profileImage) {
       

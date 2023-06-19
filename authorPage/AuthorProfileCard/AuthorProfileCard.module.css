@@ -12,10 +12,19 @@
     display: grid;
     grid-template-columns: 1fr 4fr 1.3fr;
     align-items: center;
-    background-color: var(--main-bg-color);
+    
     padding: 2.5rem 2rem;
-    border-radius: 1rem;
-    box-shadow: var(--box-shadow);
+    border-radius: .5rem;
+    border: .1rem solid white;
+    box-shadow:  0 0 2px rgb(1, 122, 254, 255),
+    0 0 2px rgb(1, 122, 254, 255),
+    0 0 2px rgb(1, 122, 254, 255), 
+    0 0 2px rgb(1, 122, 254, 255),
+    0 0 3px rgb(1, 122, 254, 255),
+    0 0 3px rgb(1, 122, 254, 255),
+    0 0 3px rgb(1, 122, 254, 255), 
+    0 0 5px rgb(1, 122, 254, 255), 
+    0 0 5px rgb(1, 122, 254, 255);;
     gap: 3rem;
 }
 

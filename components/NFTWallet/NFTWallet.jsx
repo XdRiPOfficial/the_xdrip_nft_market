@@ -2,8 +2,6 @@ import React, { useContext } from "react";
 import Style from "./NFTWallet.module.css";
 import images from "../../img";
 import videos from "../../public/videos";
-import { Banner } from "../../collectionPage/collectionIndex";
-import { Slider, Brand } from "../../components/componentsindex";
 import NFTWalletCard from "./NFTWalletCard/NFTWalletCard";
 
 import MyNFTData, { MyNFTDataContext } from '../../Context/MyNFTDataContext';
@@ -45,9 +43,8 @@ const NFTWallet = () => {
       
       <h1 className={Style.page_title}>MY MEDALS OF HONOR</h1>
       
-      <NFTWalletCard nfts={nfts} renderMedia={renderMedia} />
-      
-      <Brand />
+      <NFTWalletCard nfts={nfts} renderMedia={renderMedia} />   
+     
     </div>
   );
 };

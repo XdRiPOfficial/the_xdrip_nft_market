@@ -33,6 +33,7 @@
     border: 4px double rgba(1,122,254,255);
     padding: .2rem;
     font-size: .9rem;
+    
 }
 
 .bigNFTSlider_box_left_name h2{
@@ -40,13 +41,23 @@
     font-size: 3rem;
     line-height: 1;
     margin-top: 1.75rem;
+    text-shadow: 
+    0 0 2px rgb(1, 122, 254, 255),
+    0 0 2px rgb(1, 122, 254, 255),
+    0 0 2px rgb(1, 122, 254, 255), 
+    0 0 2px rgb(1, 122, 254, 255),
+    0 0 3px rgb(1, 122, 254, 255),
+    0 0 3px rgb(1, 122, 254, 255),
+    0 0 3px rgb(1, 122, 254, 255), 
+    0 0 5px rgb(1, 122, 254, 255), 
+    0 0 5px rgb(1, 122, 254, 255);
 }
 .detailsButton{
 font-size: 1.1rem;
 padding: 1rem 2.5rem;
 border-left: 4px double rgba(1,122,254,255);
 outline: none;
-border-radius: 0.4rem;
+border-radius: .4rem;
 cursor: pointer;
 text-transform: uppercase;
 background-color: rgb(14, 14, 26);
@@ -349,6 +360,7 @@ box-shadow: 0px 0px 60px #1f4c65;
 .bigNFTSlider_box_img{
     padding: .5rem;
     border-radius: .5rem;
+   
 }
 
 .bigNFTSlider_box_img_img{

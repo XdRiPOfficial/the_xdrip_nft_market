@@ -2,17 +2,21 @@ import React, { useState, useEffect, useContext } from "react";
 import Image from "next/image";
 import { useDropzone } from "react-dropzone";
 import { useAddress } from "@thirdweb-dev/react";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from '../firebase/config';
+import { doc, updateDoc } from "firebase/firestore";
+import { auth, firestore } from "../firebase/config";
+import { addUser, getUser, updateUser } from "../firebase/services";
+
 
 import Style from "../styles/account.module.css";
 import images from "../img";
 import Form from "../AccountPage/Form/Form";
-import { NFTMarketplaceContext } from "../Context/NFTMarketplaceContext";
+
 import { updateUserProfilePicture, getUserProfile } from '../firebase/services';
 
 const Account = () => {
-  const { currentAccount, connectWallet, openError } = useContext(NFTMarketplaceContext);
+  const storage = getStorage();
   const [profileImage, setProfileImage] = useState(null);
   const [profilePictureUrl, setProfilePictureUrl] = useState(null);
   const [username, setUsername] = useState("");
@@ -28,12 +32,14 @@ const Account = () => {
   const [showFullAddress, setShowFullAddress] = useState(false); // New state variable
   const address = useAddress();
   const [isAddressCopied, setIsAddressCopied] = useState(false);
+ 
+  
 
   const uploadNewProfilePicture = async () => {
     if (!selectedFile) return;
 
     const fileRef = ref(storage, `profileImages/${selectedFile.name}`);
-    await uploadBytes(fileRef, selectedFile);
+    await uploadBytes(fileRef, profileImage);
     const imageUrl = await getDownloadURL(fileRef);
     await updateUserProfilePicture(address, imageUrl);
 
@@ -87,7 +93,10 @@ const Account = () => {
           } else {
             setProfilePictureUrl(null);
           }
+          setIsCreator(userProfile.isCreator);
         }
+
+
       }
     };
 
@@ -96,19 +105,22 @@ const Account = () => {
     });
   }, [address]);
 
+ 
+  
+  
   return (
     <div className={Style.account}>
       <div className={Style.account_box_box}>
         <div className={Style.account_info}>
           <div className={Style.account_pfp} {...getRootProps()}>
-          <input {...getInputProps()} />
+            <input {...getInputProps()} />
             {profilePictureUrl ? (
               <img src={profilePictureUrl} alt="profile" className={Style.account_box_pfp} />
             ) : (
               <Image
-              src={images.user1}
-              alt="account upload"              
-              objectFit="cover"
+                src={images.user1}
+                alt="account upload"
+                objectFit="cover"
               />
             )}
           </div>
@@ -129,7 +141,7 @@ const Account = () => {
             </div>
             <div className={Style.account_email}>
               <p>CREATOR</p>
-              <small>{isCreator}</small>
+              <small>{isCreator ? "Yes" : "No"}</small>
             </div>
             <div className={Style.account_email}>
               <p>WEBSITE</p>
@@ -154,7 +166,7 @@ const Account = () => {
                 {showFullAddress ? address : truncateAddress(address)}
               </small>
 
-            </div>      
+            </div>
           </div>
         </div>
 
@@ -163,25 +175,26 @@ const Account = () => {
             <div className={Style.profile}>
               <h1>UPDATE PROFILE INFORMATION</h1>
             </div>
-           
 
-            <Form 
-            setUsername={setUsername} 
-            setEmail={setEmail} 
-            username={username} 
-            email={email} 
-            website={website}
-            facebook={facebook}
-            twitter={twitter}
-            instagram={instagram}
-            tiktok={tiktok}
-            discord={discord}
-            setWebsite={setWebsite} 
-            setFacebook={setFacebook} 
-            setTwitter={setTwitter} 
-            setInstagram={setInstagram}
-            setTikTok={setTikTok}
-            setDiscord={setDiscord}
+
+            <Form
+            
+              setUsername={setUsername}
+              setEmail={setEmail}
+              username={username}
+              email={email}
+              website={website}
+              facebook={facebook}
+              twitter={twitter}
+              instagram={instagram}
+              tiktok={tiktok}
+              discord={discord}
+              setWebsite={setWebsite}
+              setFacebook={setFacebook}
+              setTwitter={setTwitter}
+              setInstagram={setInstagram}
+              setTikTok={setTikTok}
+              setDiscord={setDiscord}
             />
           </div>
         </div>
