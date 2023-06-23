@@ -46,11 +46,6 @@ const Form = (props) => {
         tiktok: e.target.elements.tiktok.value || props.tiktok,
         discord: e.target.elements.discord.value || props.discord,
       },
-      collectionsCreated: [],
-      creatorPage: "",
-      nftsCreated: [],
-      nftsListed: [],
-      nftsSold: [],
     };
   
     try {
