@@ -25,6 +25,18 @@ const BigNFTSlider = () => {
   const [profilePic, setProfilePic] = useState(null);
 
   useEffect(() => {
+    const interval = setInterval(() => {
+      if (currentIndex + 1 < nfts.length) {
+        setCurrentIndex(currentIndex + 1);
+      } else {
+        setCurrentIndex(0);
+      }
+    }, 10000); // Change slide every 10 seconds
+
+    return () => clearInterval(interval);
+  }, [currentIndex, nfts.length]);
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const items = await fetchNFTs();
