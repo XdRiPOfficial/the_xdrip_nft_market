@@ -85,8 +85,7 @@ const BigNFTSlider = () => {
     <Image
       src={images.invalidImage}
       alt="NFT"
-      width="725px"
-      height="700px"
+      /*fill="true"*/
       objectFit="cover"
       className={Style.bigNFTSlider_box_img_img}
       controls
@@ -105,8 +104,8 @@ const BigNFTSlider = () => {
           <LazyLoadImage
             src={el.image}
             alt="NFT"
-            width="765px"
-            height="700px"
+            /*fill="true"*/
+            objectFit="cover"
             effect="blur"
             className={Style.bigNFTSlider_box_img_img}
           />
@@ -116,8 +115,9 @@ const BigNFTSlider = () => {
               <Image
                 src={images.audio_image2}
                 alt="Default"
-                width="765px"
-                height="700px"                
+                width="760"
+                height="450"
+                objectFit="cover"
                 className={Style.bigNFTSlider_box_img_img}
               />
               <div className={Style.bigNFTSlider_box_audio_controls_wrapper}>
@@ -148,13 +148,13 @@ const BigNFTSlider = () => {
             </div>
           </div>
         ) : isVideo ? (
-          <div>
+          <div className={Style.bigNFTSlider_box_img_rp_wrapper}>
             <ReactPlayer
               url={el.image}
               playing={true}
               muted={muted}
-              width="765px"
-              height="700px"
+              width="100%" /*"765px"*/
+              height="100%" /*"700px"*/
               className={Style.bigNFTSlider_box_img_rp}
             />
             <div className={Style.bigNFTSlider_box_video_controls_wrapper}>
@@ -227,24 +227,26 @@ const BigNFTSlider = () => {
           key={`${nfts[currentIndex].tokenId}-${currentIndex}`}
           className={Style.bigNFTSlider_box}
         >
-          <div className={Style.bigNFTSlider_box_left}>
-            <div className={Style.bigNFTSlider_box_left_id}>
-              <p>TOKEN ID #{nfts[currentIndex].tokenId}</p>
-            </div>
-            <div className={Style.bigNFTSlider_box_left_name}>
-              <h2>{nfts[currentIndex].name}</h2>
-            </div>
-            <div className={Style.bigNFTSlider_box_left_creator}>
-              <div className={Style.bigNFTSlider_box_left_creator_profile}>
-                <div className={Style.bigNFTSlider_box_left_creator_profile_info}>
+          <div className={Style.bigNFTSlider_box_left}>	
+            <div className={Style.bigNFTSlider_box_left_id}>	
+              <p>TOKEN ID #{nfts[currentIndex].tokenId}</p>	
+            </div>	
+            <div className={Style.bigNFTSlider_box_left_name}>	
+              <h2>{nfts[currentIndex].name}</h2>	
+            </div>	
+            <div className={Style.bigNFTSlider_box_left_creator}>	
+              <div className={Style.bigNFTSlider_box_left_creator_profile}>	
+                <div className={Style.bigNFTSlider_box_left_creator_profile_info}>	
                   <p>SELLER ID</p>
-                  <img
-                    src={profilePic}
-                    alt="Profile Pic"
-                    width={50}
-                    height={50}
-                    className={Style.bigNFTSlider_box_left_creator_profile_img}
-                  />
+                  <div className={Style.bigNFTSlider_box_left_creator_profile_info_img_wrapper}>	
+                    <img	
+                      src={profilePic}	
+                      alt="Profile Pic"	
+                      width={50}	
+                      height={50}	
+                      className={Style.bigNFTSlider_box_left_creator_profile_img}	
+                    />	
+                  </div>
                 </div>
                 <div className={Style.bigNFTSlider_box_left_creator_profile_info_middle}>
                   <p>CATEGORY</p>
@@ -259,7 +261,7 @@ const BigNFTSlider = () => {
 
             <div className={Style.bigNFTSlider_box_left_bidding}>
               <div className={Style.bigNFTSlider_box_left_bidding_box}>
-                <small>CURRENT PRICE</small>
+                <small>CURRENT PRICE:</small>
                 <p>{parseFloat(nfts[currentIndex].price) * 10 ** 9} BNB</p>
               </div>
               <div className={Style.bigNFTSlider_box_left_bidding_box_auction}>
