@@ -1,10 +1,9 @@
-import firebaseApp from "./config";
-import { getFirestore, collection, query, where, addDoc, updateDoc, doc, getDocs, deleteDoc } from "firebase/firestore";
+import { getFirestore, collection, query, where, addDoc, getDocs, deleteDoc, updateDoc, doc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import firebase from 'firebase/app';
-import 'firebase/firestore';
 
-const firestore = getFirestore();
+import { firestore, db } from "./config";
+
+
 const storage = getStorage();
 //const db = firebase.firestore();
 
@@ -52,6 +51,37 @@ export const addUser = async (username, email, website, walletAddress, profilePi
   }
 };
 
+
+export const updateUser = async (walletAddress, updates) => {
+  try {
+    const usersCollection = collection(db, "users");
+    const q = query(usersCollection, where("walletAddress", "==", walletAddress));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      const userDoc = querySnapshot.docs[0];
+      const userRef = doc(db, "users", userDoc.id);
+      await updateDoc(userRef, updates);
+      console.log("User document updated successfully");
+    } else {
+      console.error("User does not exist");
+      throw new Error("User does not exist"); // Throw an error to handle the case where the user does not exist
+    }
+  } catch (error) {
+    console.error("Error updating user: ", error);
+    throw error; // Throw the error to handle it in the calling code
+  }
+};
+
+
+
+const updateUserProfilePicture = async (userId, profilePictureUrl) => {
+  const db = getFirestore();
+  const userRef = doc(db, "users", userId);
+  await updateDoc(doc(firestore, "users", docRef.id), {
+    profilePictureUrl: profilePictureUrl,
+  });
+};
 
 
 export const addNft = async (userId, tokenURI) => {
@@ -116,23 +146,7 @@ export const getUser = async (userId) => {
   }
 };
 
-export const updateUser = async (userId, updates) => {
-  const userRef = doc(firestore, "users", userId);
 
-  try {
-    await updateDoc(userRef, updates);
-  } catch (error) {
-    console.error("Error updating user: ", error);
-  }
-};
-
-const updateUserProfilePicture = async (userId, profilePictureUrl) => {
-  const db = getFirestore();
-  const userRef = doc(db, "users", userId);
-  await updateDoc(userRef, {
-    profilePictureUrl: profilePictureUrl,
-  });
-};
 
 
 export const getUserProfile = async (walletAddress) => {

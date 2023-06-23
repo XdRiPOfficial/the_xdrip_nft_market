@@ -7,6 +7,7 @@ import { storage } from '../firebase/config';
 import { doc, updateDoc } from "firebase/firestore";
 import { auth, firestore } from "../firebase/config";
 import { addUser, getUser, updateUser } from "../firebase/services";
+import { FaFacebookF, FaTwitter, FaInstagram, FaTiktok, FaDiscord } from "react-icons/fa";
 
 
 import Style from "../styles/account.module.css";
@@ -32,8 +33,8 @@ const Account = () => {
   const [showFullAddress, setShowFullAddress] = useState(false); // New state variable
   const address = useAddress();
   const [isAddressCopied, setIsAddressCopied] = useState(false);
- 
-  
+
+
 
   const uploadNewProfilePicture = async () => {
     if (!selectedFile) return;
@@ -94,6 +95,12 @@ const Account = () => {
             setProfilePictureUrl(null);
           }
           setIsCreator(userProfile.isCreator);
+          setWebsite(userProfile.website)
+          setFacebook(userProfile.socials.facebook);
+          setTikTok(userProfile.socials.tiktok);
+          setInstagram(userProfile.socials.instagram);
+          setTwitter(userProfile.socials.twitter);
+          setDiscord(userProfile.socials.discord);
         }
 
 
@@ -105,9 +112,9 @@ const Account = () => {
     });
   }, [address]);
 
- 
-  
-  
+
+
+
   return (
     <div className={Style.account}>
       <div className={Style.account_box_box}>
@@ -149,12 +156,36 @@ const Account = () => {
             </div>
             <div className={Style.account_socials}>
               <p>SOCIALS</p>
-              <small>{facebook}</small>
-              <small>{twitter}</small>
-              <small>{instagram}</small>
-              <small>{tiktok}</small>
-              <small>{discord}</small>
+              <div className={Style.social_icons}>
+                {facebook && (
+                  <a href={facebook} target="_blank" rel="noopener noreferrer">
+                    <FaFacebookF />
+                  </a>
+                )}
+                {twitter && (
+                  <a href={twitter} target="_blank" rel="noopener noreferrer">
+                    <FaTwitter />
+                  </a>
+                )}
+                {instagram && (
+                  <a href={instagram} target="_blank" rel="noopener noreferrer">
+                    <FaInstagram />
+                  </a>
+                )}
+                {tiktok && (
+                  <a href={tiktok} target="_blank" rel="noopener noreferrer">
+                    <FaTiktok />
+                  </a>
+                )}
+                {discord && (
+                  <a href={discord} target="_blank" rel="noopener noreferrer">
+                    <FaDiscord />
+                  </a>
+                )}
+              </div>
             </div>
+
+
             <div className={Style.account_wallet}>
               <p>CONNECTED WALLET</p>
               <small
@@ -178,9 +209,6 @@ const Account = () => {
 
 
             <Form
-            
-              setUsername={setUsername}
-              setEmail={setEmail}
               username={username}
               email={email}
               website={website}
@@ -189,12 +217,9 @@ const Account = () => {
               instagram={instagram}
               tiktok={tiktok}
               discord={discord}
-              setWebsite={setWebsite}
-              setFacebook={setFacebook}
-              setTwitter={setTwitter}
-              setInstagram={setInstagram}
-              setTikTok={setTikTok}
-              setDiscord={setDiscord}
+              isCreator={isCreator}
+
+
             />
           </div>
         </div>
