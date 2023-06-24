@@ -1,21 +1,18 @@
 
 import React, { useState, useEffect } from "react";
-import { create as ipfsHttpClient } from "ipfs-http-client";
+//import { create as ipfsHttpClient } from "ipfs-http-client";
 import Web3Modal from "web3modal";
 import { NFTStorage, Blob } from 'nft.storage';
 import marketplaceCA_ABI from "./marketplaceCA_ABI.json";
 import mohCA_ABI from "./mohCA_ABI.json";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
 import {uploadToIPFS } from "../UploadNFT/UploadNFT"
-
 import Web3 from 'web3';
 
 const web3 = new Web3(Web3.givenProvider);
 
 const apiKey = process.env.NEXT_PUBLIC_NFT_STORAGE_API_KEY;
-
 const client = new NFTStorage({ token: apiKey });
-
 
 
 const NFTMarketplaceAddress = marketplaceCA_ABI.address;
@@ -128,11 +125,18 @@ async function createNFT(name, price, description, category, website, royalties,
 
     // convert the price to gwei before passing it to createSale
     const priceInGwei = ethers.utils.parseUnits(price.toString(), "gwei");
+    //const priceInWei = ethers.utils.parseUnits(price.toString(), "wei");
+
 
     await createSale(url, priceInGwei, currentAccount); 
     router.push("/searchPage");
   } catch (error) {
+     if (error.code === 4001) {
+       // denied transaction signature
+    setError("Transaction rejected by the user");
+     } else {
     setError("Error while creating NFT");
+     }
     setOpenError(true);
   }
 }
@@ -148,7 +152,7 @@ async function createNFT(name, price, description, category, website, royalties,
     from: account,
     data: nftMarketplaceContract.methods.createToken(tokenURI, price).encodeABI(),
     
-    //Hardcoded price - needs to be updated to form input price (gas issues below .025)
+    // made this updatable in contract - have to update funciton now to pass it
     value: web3.utils.toHex(web3.utils.toWei('0.025', 'ether')) // Assuming the listing price is 0.025 ETH
   };
 
@@ -296,36 +300,72 @@ async function fetchNFTs() {
   
   
 
-
 const buyNFT = async (nft) => {
   try {
+    console.log("Gettin' Access to Your Account...");
     const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
     const account = accounts[0];
+    console.log(`Account: ${account}`);
 
+    console.log("Getting the Marketplace Contract...");
     const nftMarketplaceContract = new web3.eth.Contract(NFTMarketplaceABI, NFTMarketplaceAddress);
-    
-    const price = web3.utils.toWei(nft.price.toString(), "ether");  // Convert price back to Wei from Ether
 
+    console.log("Retrieving NFT data from IPFS...");
+    const response = await fetch(nft.tokenURI);
+    const data = await response.json();
+    console.log(`Data: ${JSON.stringify(data)}`);
+    console.log("NFT Metadata Price: ", data.price);
+
+    console.log("Converting Price To Wei...");
+    const priceInWei = web3.utils.toWei(data.price.split(" ")[0]);
+    console.log(`Price in Wei: ${priceInWei}`);
+
+    console.log("Gettin Your Deal Put Together...");
     const transactionParameters = {
-      to: NFTMarketplaceAddress,  // Address of NFT Marketplace Contract
-      from: account, // User's address
+      to: NFTMarketplaceAddress,
+      from: account,
       data: nftMarketplaceContract.methods.createMarketSale(nft.tokenId).encodeABI(),
-      value: web3.utils.toHex(price), // Purchase price of NFT
+      value: web3.utils.toHex(web3.utils.toWei(data.price, 'ether')), //priceInWei
     };
 
-    const txHash = await window.ethereum.request({
+    console.log("Gonna Need Some Gas ...");
+    const gasEstimate = await window.ethereum.request({
+      method: 'eth_estimateGas',
+      params: [{...transactionParameters}],
+    });
+    console.log(`Gas Estimate : ${gasEstimate}`);
+
+    // add gas estimate 
+    transactionParameters.gas = gasEstimate;
+
+    console.log(`Transaction Parameters: ${JSON.stringify(transactionParameters)}`);
+
+    console.log("Ok, Let's Do It!");
+    const txReceipt = await window.ethereum.request({
       method: 'eth_sendTransaction',
       params: [transactionParameters],
     });
+    console.log(`Transaction Receipt:`, txReceipt);
 
-    await transaction.wait();
+    const msgValueWei = txReceipt.value;
 
+    console.log("Sent :", msgValueWei);
+
+    console.log("Redirecting to /author");
     router.push("/author");
   } catch (error) {
-    setError("Error While buying NFT");
+    console.error("Error while buying NFT", error);
+    if (error.code === 4001) {
+      // denied transaction signature
+      setError("You rejected the transaction, signature denied.");
+    } else {
+      setError("Error while buying NFT");
+    }
     setOpenError(true);
   }
 };
+
+
 
 
   //----TRANSFER FUNDS
