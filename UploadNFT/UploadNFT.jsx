@@ -290,7 +290,7 @@ const UloadNFT = ({ createNFT }) => {
                         return;
                       }
                     }
-                    setPrice(newValue);
+                    setPrice(newValue.toString());
                   }}
                 />
               </div>
