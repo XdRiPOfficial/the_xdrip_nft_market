@@ -1,3 +1,5 @@
+
+import { doc, updateDoc, getFirestore } from "firebase/firestore";
 import React, { useState, useEffect, useContext } from "react";
 import {
   FaFilter,
@@ -32,6 +34,8 @@ const Filter2 = () => {
   const [selectedCategoryData, setSelectedCategoryData] = useState([]);
   const [fileTypes, setFileTypes] = useState({});
   const [loading, setLoading] = useState(true);
+  const db = getFirestore(); 
+  
 
   useEffect(() => {
     const fetchData = async () => {
