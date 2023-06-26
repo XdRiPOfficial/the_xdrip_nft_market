@@ -62,6 +62,12 @@
   border-top-color: var(--icons-color); 
   transform: translateX(-50%);
 }
+
+.toast_container_center {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
   
   
   .Form_box_input select {

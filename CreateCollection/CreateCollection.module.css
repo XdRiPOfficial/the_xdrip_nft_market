@@ -1,5 +1,5 @@
 
-.CreateCollection{
+.CreateCollection_box{
     display: grid;
     grid-template-columns: 50% 50%;
     margin-bottom: 14rem;
@@ -8,8 +8,39 @@
 
 }
 
-.dropzone_container{
+/* all input boxes */
+.user_box_input_box {
+    display: flex;
+    flex-direction: column;
+    font-size: 1.2rem;
+    font-weight: 600;
+    justify-content: space-between;
+    width: 100%;
+    margin: 0 auto 25px auto;
+}
 
+.user_box_input_box_label {
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    line-height: 0;
+    margin-bottom: -.5rem;
+}
+
+.user_box_input_box_label a {
+    font-size: .7rem;
+
+}
+
+/* all input boxes */
+.user_box_input_box input {
+    padding: .75rem;
+    border-radius: .5rem;
+    margin-top: .5rem;
+    outline: 0;
+    border: 4px double rgba(1, 122, 254, 255);
+    background-color: transparent;
 }
 
 .dropzone{

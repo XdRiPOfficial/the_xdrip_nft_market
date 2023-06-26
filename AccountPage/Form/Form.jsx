@@ -251,6 +251,7 @@ const Form = (props) => {
         )}
         {error && <div className={Style.errorMessage}>{error}</div>}
       </div>
+      
     </div>
   );
 };

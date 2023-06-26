@@ -70,6 +70,7 @@
 }
 
 .account_socials,
+.account_website,
 .account_email,
 .account_wallet,
 .account_username{
@@ -83,7 +84,7 @@
     
 }
 
-
+.account_website p,
 .account_socials p,
 .account_email p,
 .account_wallet p,
@@ -105,6 +106,7 @@
     0 0 5px rgb(1, 122, 254, 255);
 }
 
+.account_website small,
 .account_socials small,
 .account_email small,
 .account_wallet small,
@@ -112,6 +114,20 @@
     margin-top: 0rem;    
     font-size: 1rem;
 
+}
+.toast_container_center {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+
+.account_wallet small:hover{
+    margin-top: 0rem;    
+    font-size: .8rem;
+    cursor: pointer;
+    cursor: pointer;
+    color: rgba(1,122,254,255);
 }
   
   .social_icons {
