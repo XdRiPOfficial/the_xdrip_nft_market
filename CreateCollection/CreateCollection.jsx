@@ -1,269 +1,227 @@
-import React, { useState } from "react";
-import { MdOutlineHttp, MdOutlineAttachFile } from "react-icons/md";
-import { FaPercent } from "react-icons/fa";
-import { AiTwotonePropertySafety } from "react-icons/ai";
-import { TiTick } from "react-icons/ti";
-import Image from "next/image";
-import { NFTStorage } from "nft.storage";
-
-// INTERNAL IMPORT
+import React, { useState, useEffect } from "react";
+import { useAddress } from "@thirdweb-dev/react";
 import Style from "./CreateCollection.module.css";
 import formStyle from "../AccountPage/Form/Form.module.css";
-import images from "../img";
 import { Button } from "../components/componentsindex.js";
-import { DropZoneB } from "./createCollectionIndex.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { addCollection, updateCollection } from "../firebase/services";
 
-import { createCollection } from "../firebase/services";
-const CreateCollection = ({ }) => {
-    const [active, setActive] = useState(0);
-    const [collectionName, setCollectionName] = useState("");
-    const [website, setWebsite] = useState("");
-    const [description, setDescription] = useState("");
 
-    const [fileSize, setFileSize] = useState("");
-    const [category, setCategory] = useState(0);
-    const [selectedCategory, setSelectedCategory] = useState("");
-    const [selectedCollection, setSelectedCollection] = useState("");
-    const [newCollectionName, setNewCollectionName] = useState("");
-    const [editions, setEditions] = useState([]);
 
-    const [image, setImage] = useState(null);
-    const [imagePreview, setImagePreview] = useState(null);
-    const [showPreview, setShowPreview] = useState(false);
-    const [fileType, setFileType] = useState(null);
+const CreateCollection = ({ currentAccount }) => {
+  const [collectionImage, setCollectionImage] = useState(null);
+  const [collectionName, setCollectionName] = useState("");
+  const [website, setWebsite] = useState("");
+  const [facebook, setFacebook] = useState("");
+  const [twitter, setTwitter] = useState("");
+  const [instagram, setInstagram] = useState("");
+  const [discord, setDiscord] = useState("");
+  const [tiktok, setTiktok] = useState("");
+  const [description, setDescription] = useState("");
+  const [walletAddress, setWalletAddress] = useState("");
+  const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const connectedWalletAddress = useAddress();
+  const address = useAddress();
 
-    const [facebook, setFacebook] = useState("");
-    const [twitter, setTwitter] = useState("");
-    const [instagram, setInstagram] = useState("");
-    const [discord, setDiscord] = useState("");
+  useEffect(() => {
+    if (address) {
+      setWalletAddress(address);
+    }
+  }, [address]);
 
-   
+  useEffect(() => {
+    if (currentAccount) {
+      setWalletAddress(currentAccount);
+    }
+  }, [currentAccount]);
 
-    const saveCollectionDetails = async () => {        
-        const collectionData = {
-            collectionName,
-            website,
-            description,
-            facebook,
-            twitter,
-            instagram,
-            discord,
-        };
-
-        try {
-            await createCollection(collectionData);
-            console.log("Collection created successfully");
-        } catch (error) {
-            console.error("Error creating collection: ", error);
-        }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const walletAddress = connectedWalletAddress;
+    const collectionData = {
+      collectionName,
+      website,
+      walletAddress,
+      description,
+      socials: {
+        twitter,
+        facebook,
+        instagram,
+        tiktok,
+        discord,
+      },
     };
 
-    const [isLoading, setIsLoading] = useState(false);
+    try {
+      await addCollection(collectionData);
 
-    const handleClick = async () => {
-        const collectionData = {
-            collectionName,
-            website,
-            description,
-            facebook,
-            twitter,
-            instagram,
-            discord,
-            logoImage: image,
-            featuredImage: image,
-            bannerImage: image,
-        };
+      
+      setMessage("Collection added successfully!");
+    } catch (error) {
+      setMessage(`Error: ${error.message}`);
+    }
+  };
 
-        try {
-            await saveCollectionDetails(collectionData);
-            console.log("Collection created successfully");
-        } catch (error) {
-            console.error("Error creating collection: ", error);
-        }
-    };
+  const handleImageUpload = (e) => {
+    setCollectionImage(e.target.files[0]);
+  };
 
-    return (
-        <div className={Style.CreateCollection}>
-            <div className={Style.right_box}>
-                <div className={Style.upload_details_title}>
-                    <h2>COLLECTION DETAILS + SOCIALS</h2>
-                </div>
-                <div className={Style.upload_box}>
-                    <div className={formStyle.Form_box_input}>
-                        <label htmlFor="nft">NEW COLLECTION'S NAME</label>
-                        <input
-                            type="text"
-                            placeholder="ENTER COLLECTION NAME"
-                            className={formStyle.Form_box_input_userName}
-                            onChange={(e) => setCollectionName(e.target.value)}
-                        />
-                    </div>
-                    <div className={formStyle.Form_box_input}>
-                        <label htmlFor="website">YOUR COLLECTIONS WEBSITE</label>
-                        <div className={formStyle.Form_box_input_box}>
-                            <input
-                                type="text"
-                                placeholder="ENTER YOUR COLLECTIONS WEBSITE"
-                                onChange={(e) => setWebsite(e.target.value)}
-                            />
-                        </div>
-
-                        <p className={Style.upload_box_input_para}>
-                            A link to this URL will be included on the collections.
-                        </p>
-                    </div>
-
-
-                    <div className={formStyle.Form_box_input}>
-                        <label htmlFor="facebook">FACEBOOK</label>
-                        <div className={formStyle.Form_box_input_box}>
-                            <input
-                                type="text"
-                                placeholder="ENTER YOUR FACEBOOK LINK"
-                                onChange={(e) => setFacebook(e.target.value)}
-                            />
-                        </div>
-                    </div>
-
-                    <div className={formStyle.Form_box_input}>
-                        <label htmlFor="twitter">TWITTER</label>
-                        <div className={formStyle.Form_box_input_box}>
-                            <input
-                                type="text"
-                                placeholder="ENTER YOUR TWITTER LINK"
-                                onChange={(e) => setTwitter(e.target.value)}
-                            />
-                        </div>
-                    </div>
-
-                    <div className={formStyle.Form_box_input}>
-                        <label htmlFor="instagram">INSTAGRAM</label>
-                        <div className={formStyle.Form_box_input_box}>
-                            <input
-                                type="text"
-                                placeholder="ENTER YOUR INSTAGRAM LINK"
-                                onChange={(e) => setInstagram(e.target.value)}
-                            />
-                        </div>
-                    </div>
-
-                    <div className={formStyle.Form_box_input}>
-                        <label htmlFor="discord">DISCORD</label>
-                        <div className={formStyle.Form_box_input_box}>
-                            <input
-                                type="text"
-                                placeholder="ENTER YOUR DISCORD LINK"
-                                onChange={(e) => setDiscord(e.target.value)}
-                            />
-                        </div>
-                    </div>
-
-                    <div className={formStyle.Form_box_input}>
-                        <label htmlFor="description">DESCRIBE YOUR COLLECTION</label>
-                        <textarea
-                            name=""
-                            id=""
-                            cols="30"
-                            rows="6"
-                            placeholder="TELL US ABOUT YOUR NFT AND WHAT MAKES IT XCELLENT"
-                            onChange={(e) => setDescription(e.target.value)}
-                        ></textarea>
-                        <p>
-                            This description will be displayed on the collections page. Markdown syntex is supported.             </p>
-                    </div>
-
-                </div>
+  return (
+    <div className={Style.container}>
+      <div className={Style.CreateCollection}>
+        <div className={Style.CreateCollection_box}>
+          <div className={Style.right_box}>
+            <div className={Style.upload_details_title}>
+              <h2>COLLECTION DETAILS + SOCIALS</h2>
             </div>
-            <div className={Style.upload_dropzone}>
-                <div className={Style.upload_dropzone_title}>
-                    <h2> LOGO + FEATURED + BANNER IMAGES</h2>
-                </div>
-                <div className={Style.dropzone_container}>
-                    <div className={Style.dropzone_item}>
-                        <h3>LOGO IMAGE*</h3>
-                    </div>
-                    <DropZoneB
-                        heading="THIS IMAGE WILL BE USED FOR DISPLAY PURPOSES."
-                        subHeading="RECOMMENDED SIZE: 350 x 350"
-                        name={collectionName}
-                        description={description}
-                        category={category}
-                        website={website}
-                        setImage={setImage}
-                        setImagePreview={setImagePreview}
-                        imagePreview={imagePreview}
-                        fileSize={fileSize}
-                        isLoading={isLoading}
-                        setIsLoading={setIsLoading}
-                        setFileType={setFileType}
-                        fileType={fileType}
-
-
-                    />
-                </div>
-                <div className={Style.dropzone_container}>
-                    <div className={Style.dropzone_item}>
-                        <h3>FEATURED IMAGE</h3>
-                    </div>
-                    <div className={Style.dropzone}>
-                        <DropZoneB
-                            heading="THIS IMAGE WILL BE USED IN XMARKET FEATURED SPACES"
-                            subHeading="RECOMMENDED SIZE: 600 x 600 "
-                            name={collectionName}
-                            description={description}
-                            category={category}
-                            website={website}
-                            setImage={setImage}
-                            setImagePreview={setImagePreview}
-                            imagePreview={imagePreview}
-                            fileSize={fileSize}
-                            isLoading={isLoading}
-                            setIsLoading={setIsLoading}
-                            setFileType={setFileType}
-                            fileType={fileType}
-
-
-                        />
-                    </div>
+            <div className={Style.upload_box}>
+              <div className={formStyle.Form_box_input}>
+                <label htmlFor="nft">NEW COLLECTION'S NAME</label>
+                <input
+                  type="text"
+                  placeholder="ENTER COLLECTION NAME"
+                  className={formStyle.Form_box_input_userName}
+                  onChange={(e) => setCollectionName(e.target.value)}
+                  value={collectionName}
+                  name="collectionName"
+                />
+              </div>
+              <div className={formStyle.Form_box_input}>
+                <label htmlFor="website">YOUR COLLECTIONS WEBSITE</label>
+                <div className={formStyle.Form_box_input_box}>
+                  <input
+                    type="text"
+                    placeholder="ENTER YOUR COLLECTIONS WEBSITE"
+                    onChange={(e) => setWebsite(e.target.value)}
+                    value={website}
+                    name="website"
+                  />
                 </div>
 
-                <div className={Style.dropzone_container}>
-                    <div className={Style.dropzone_item}>
-                        <h3>BANNER IMAGE</h3>
-                    </div>
-                    <div className={Style.dropzone}>
-                        <DropZoneB
-                            heading="THIS IMAGE WILL APPEAR AT THE TOP OF YOUR COLLECTION PAGE"
-                            subHeading="RECOMMENDED SIZE: 1400 x 350"
-                            name={collectionName}
-                            description={description}
-                            category={category}
-                            website={website}
-                            setImage={setImage}
-                            setImagePreview={setImagePreview}
-                            imagePreview={imagePreview}
-                            fileSize={fileSize}
-                            isLoading={isLoading}
-                            setIsLoading={setIsLoading}
-                            setFileType={setFileType}
-                            fileType={fileType}
+                <p className={Style.upload_box_input_para}>
+                  A link to this URL will be included on the collections.
+                </p>
+              </div>
 
 
-                        />
-                    </div>
-                </div>
-                <div className={Style.upload_box_btn}>
-                    <Button
-                        btnName="CREATE YOUR NEW COLLECTION"
-                        handleClick={handleClick} // Use the modified handleClick function
-                        classStyle={Style.upload_box_btn_style}
-                    />
+                        <div className={formStyle.Form_box_input}>
+                            <label htmlFor="facebook">FACEBOOK</label>
+                            <div className={formStyle.Form_box_input_box}>
+                                <input
+                                    type="text"
+                                    placeholder="ENTER YOUR FACEBOOK LINK"
+                                    onChange={(e) => setFacebook(e.target.value)}
+                                    value={facebook}
+                                    name="facebook"
+                                />
+                            </div>
+                        </div>
 
-                </div>
+                        <div className={formStyle.Form_box_input}>
+                            <label htmlFor="tiktok">TikTok</label>
+                            <div className={formStyle.Form_box_input_box}>
+                                <input
+                                    type="text"
+                                    placeholder="ENTER YOUR Tiktok LINK"
+                                    onChange={(e) => setTiktok(e.target.value)}
+                                    value={tiktok}
+                                    name="tiktok"
+                                />
+                            </div>
+                        </div>
+
+                        <div className={formStyle.Form_box_input}>
+                            <label htmlFor="twitter">TWITTER</label>
+                            <div className={formStyle.Form_box_input_box}>
+                                <input
+                                    type="text"
+                                    placeholder="ENTER YOUR TWITTER LINK"
+                                    onChange={(e) => setTwitter(e.target.value)}
+                                    value={twitter}
+                                    name="twitter"
+                                />
+                            </div>
+                        </div>
+
+                        <div className={formStyle.Form_box_input}>
+                            <label htmlFor="instagram">INSTAGRAM</label>
+                            <div className={formStyle.Form_box_input_box}>
+                                <input
+                                    type="text"
+                                    placeholder="ENTER YOUR INSTAGRAM LINK"
+                                    onChange={(e) => setInstagram(e.target.value)}
+                                    value={instagram}
+                                    name="instagram"
+                                />
+                            </div>
+                        </div>
+
+                        <div className={formStyle.Form_box_input}>
+                            <label htmlFor="discord">DISCORD</label>
+                            <div className={formStyle.Form_box_input_box}>
+                                <input
+                                    type="text"
+                                    placeholder="ENTER YOUR DISCORD LINK"
+                                    onChange={(e) => setDiscord(e.target.value)}
+                                    value={discord}
+                                    name="discord"
+                                />
+                            </div>
+                        </div>
+
+                        <div className={formStyle.Form_box_input}>
+                            <label htmlFor="description">DESCRIBE YOUR COLLECTION</label>
+                            <textarea
+                                name="description"
+                                id=""
+                                cols="30"
+                                rows="6"
+                                placeholder="TELL US ABOUT YOUR NFT AND WHAT MAKES IT XCELLENT"
+                                onChange={(e) => setDescription(e.target.value)}
+                                value={description}
+                                
+                            ></textarea>
+                            <p>
+                                This description will be displayed on the collections page. Markdown syntex is supported.             </p>
+                        </div>
+
+                        <div className={Style.user_box_input_box}>
+                <label htmlFor="walletAddress">WALLET ADDRESS</label>
+                <input
+                  type="text"
+                  placeholder="Enter your wallet address"
+                  value={walletAddress}
+                  onChange={(e) => setWalletAddress(e.target.value)}
+                  name="walletAddress"
+                />
+              </div>
             </div>
-
+          </div>
+          <div className={Style.upload_dropzone}>
+            <div className={Style.upload_dropzone_title}>
+              <h2> LOGO + FEATURED + BANNER IMAGES</h2>
+            </div>
+            <div className={Style.dropzone_container}>
+              <label htmlFor="profilePicture">PROFILE PICTURE</label>
+              <input
+                type="file"
+                accept=".jpg,.jpeg,.png,.gif"
+                onChange={(e) => handleImageUpload(e)}
+              />
+            </div>
+            <div className={Style.upload_box_btn}>
+              <Button
+                btnName="CREATE YOUR NEW COLLECTION"
+                onClick={handleSubmit}
+                classStyle={Style.upload_box_btn_style}
+              />
+            </div>
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default CreateCollection;

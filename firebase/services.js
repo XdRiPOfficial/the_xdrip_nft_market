@@ -53,6 +53,7 @@ export const addUser = async (username, email, website, walletAddress, profilePi
 
 
 export const updateUser = async (walletAddress, updates) => {
+
   try {
     const usersCollection = collection(db, "users");
     const q = query(usersCollection, where("walletAddress", "==", walletAddress));
@@ -75,13 +76,45 @@ export const updateUser = async (walletAddress, updates) => {
 
 
 
-const updateUserProfilePicture = async (userId, profilePictureUrl) => {
+
+
+
+export const updateUserProfilePicture = async (walletAddress, profilePicture) => {
   const db = getFirestore();
-  const userRef = doc(db, "users", userId);
-  await updateDoc(doc(firestore, "users", docRef.id), {
-    profilePictureUrl: profilePictureUrl,
-  });
+  const storage = getStorage();
+  try {
+    if (profilePicture) {
+      const usersCollection = collection(db, "users");
+      const q = query(usersCollection, where("walletAddress", "==", walletAddress));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        const userDoc = querySnapshot.docs[0];
+        const userRef = doc(db, "users", userDoc.id);
+        const userData = userDoc.data();
+
+        const profilePictureRef = ref(storage, `users/${userDoc.id}/profilePicture.jpg`);
+
+        await uploadBytes(profilePictureRef, profilePicture);
+        const profilePictureUrl = await getDownloadURL(profilePictureRef);
+
+        await updateDoc(userRef, { profilePictureUrl });
+        console.log("User document updated successfully");
+      } else {
+        console.error("User does not exist");
+        throw new Error("User does not exist"); // Throw an error to handle the case where the user does not exist
+      }
+    } else {
+      console.error("Profile picture is missing");
+      throw new Error("Profile picture is missing"); // Throw an error to handle the case where the profile picture is missing
+    }
+  } catch (error) {
+    console.error("Error updating user profile picture: ", error);
+    throw error; // Throw the error to handle it in the calling code
+  }
 };
+
+  
 
 
 export const addNft = async (userId, tokenURI) => {
@@ -170,69 +203,67 @@ export const getUserProfile = async (walletAddress) => {
 };
 
 
-
-export const createCollection = async (userId, collectionData) => {
-  const userRef = doc(firestore, "users", userId);
-
-  try {
-    const userSnapshot = await getDoc(userRef);
-
-    if (userSnapshot.exists()) {
-      const userData = userSnapshot.data();
-      const collectionRef = collection(firestore, "collections");
-      const collectionDocRef = await addDoc(collectionRef, collectionData);
-      userData.collectionsCreated.push(collectionDocRef.id);
-
-      // Update the minted NFTs with the collection tag
-      for (const nftId of userData.nftsListed) {
-        const nftRef = doc(firestore, "nfts", nftId);
-        await updateDoc(nftRef, { collectionId: collectionDocRef.id });
-      }
-
-      await updateDoc(userRef, { collectionsCreated: userData.collectionsCreated });
-    } else {
-      console.error("User does not exist");
-    }
-  } catch (error) {
-    console.error("Error creating collection: ", error);
-  }
-};
-
-
-
-export const saveCollectionDetails = async (collectionName, website, description, facebook, twitter, instagram, discord, logoImage, featuredImage, bannerImage) => {
-  const collectionData = {
-    collectionName,
-    website,
-    description,
-    facebook,
-    twitter,
-    instagram,
-    discord,
+export const addCollection = async (collectionName, website, walletAddress, logoPicture, socials) => {
+  const userRef = collection(firestore, "userCollections");
+  const newCollection = {
+      collectionName,
+      website,
+      walletAddress,
+      logoImageUrl: "",
+      bannerImageUrl: "",
+      featuredImageUrl: "",
+      socials: socials || {
+        twitter: "",
+        facebook: "",
+        instagram: "",
+        tiktok: "",
+        discord: "",
+        description: "",
+      },
   };
 
-  // Upload logo image
-  const logoImageRef = ref(storage, `collectionImages/${collectionName}/logoImage.jpg`);
-  await uploadBytes(logoImageRef, logoImage);
-  const logoImageUrl = await getDownloadURL(logoImageRef);
-  collectionData.logoImageUrl = logoImageUrl;
-
-  // Upload featured image
-  const featuredImageRef = ref(storage, `collectionImages/${collectionName}/featuredImage.jpg`);
-  await uploadBytes(featuredImageRef, featuredImage);
-  const featuredImageUrl = await getDownloadURL(featuredImageRef);
-  collectionData.featuredImageUrl = featuredImageUrl;
-
-  // Upload banner image
-  const bannerImageRef = ref(storage, `collectionImages/${collectionName}/bannerImage.jpg`);
-  await uploadBytes(bannerImageRef, bannerImage);
-  const bannerImageUrl = await getDownloadURL(bannerImageRef);
-  collectionData.bannerImageUrl = bannerImageUrl;
-
   try {
-    await createCollection(collectionData);
-    console.log("Collection created successfully");
+    const docRef = await addDoc(userRef, newCollection);
+    
+    if (logoPicture) {
+      const storage = getStorage();
+      const logoPictureRef = ref(storage, `userCollectionImages/${docRef.id}/collectionImages`);
+      await uploadBytes(logoPictureRef, logoPicture);
+      const logoPictureUrl = await getDownloadURL(logoPictureRef);
+      
+      await updateDoc(doc(firestore, "userCollections", docRef.id), {
+        logoPictureUrl: logoPictureUrl,
+      });
+    }
+
   } catch (error) {
-    console.error("Error creating collection: ", error);
+    console.error("Error adding Collection: ", error);
+    throw error;
   }
 };
+
+
+    
+
+export const updateCollection = async (walletAddress, updates) => {
+
+  try {
+    const usersCollection = collection(db, "userCollections");
+    const q = query(usersCollection, where("walletAddress", "==", walletAddress));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      const userDoc = querySnapshot.docs[0];
+      const userRef = doc(db, "userCollections", userDoc.id);
+      await updateDoc(userRef, updates);
+      console.log("User document updated successfully");
+    } else {
+      console.error("User does not exist");
+      throw new Error("User does not exist"); // Throw an error to handle the case where the user does not exist
+    }
+  } catch (error) {
+    console.error("Error updating user: ", error);
+    throw error; // Throw the error to handle it in the calling code
+  }
+};
+

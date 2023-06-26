@@ -2,11 +2,10 @@ import React, { useState, useEffect, useContext } from "react";
 import Image from "next/image";
 import { useDropzone } from "react-dropzone";
 import { useAddress } from "@thirdweb-dev/react";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage } from '../firebase/config';
-import { doc, updateDoc } from "firebase/firestore";
-import { auth, firestore } from "../firebase/config";
-import { addUser, getUser, updateUser } from "../firebase/services";
+import { getStorage, } from "firebase/storage";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { FaFacebookF, FaTwitter, FaInstagram, FaTiktok, FaDiscord } from "react-icons/fa";
 
 
@@ -32,20 +31,31 @@ const Account = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [showFullAddress, setShowFullAddress] = useState(false); // New state variable
   const address = useAddress();
-  const [isAddressCopied, setIsAddressCopied] = useState(false);
+  const [message, setMessage] = useState("");
 
 
+  const handleClick = async (event) => {
+    event.preventDefault();
 
-  const uploadNewProfilePicture = async () => {
-    if (!selectedFile) return;
+    try {
+      if (selectedFile) {
+        await updateUserProfilePicture(address, selectedFile);
+        toast.success('Profile picture updated successfully', {
 
-    const fileRef = ref(storage, `profileImages/${selectedFile.name}`);
-    await uploadBytes(fileRef, profileImage);
-    const imageUrl = await getDownloadURL(fileRef);
-    await updateUserProfilePicture(address, imageUrl);
+        });
+      } else {
+        toast.error('No image selected', {
 
-    setProfilePictureUrl(imageUrl);
+        });
+      }
+    } catch (error) {
+      console.error('Error updating profile picture:', error);
+      toast.error('Error updating profile picture', {
+        
+      });
+    }
   };
+
 
   const onDrop = (acceptedFiles) => {
     setSelectedFile(acceptedFiles[0]);
@@ -77,7 +87,7 @@ const Account = () => {
 
   const handleAddressClick = () => {
     navigator.clipboard.writeText(address);
-    setIsAddressCopied(true);
+
   };
 
 
@@ -131,8 +141,9 @@ const Account = () => {
               />
             )}
           </div>
+          {message && <div className={Style.message}>{message}</div>}
           <div className={Style.pfp_button}>
-            <button className={Style.pfp_button_button} onClick={uploadNewProfilePicture}>UPDATE IMAGE</button>
+            <button className={Style.pfp_button_button} onClick={handleClick}>UPDATE IMAGE</button>
           </div>
           <div className={Style.settings}>
             <h1>CURRENT SETTINGS</h1>
@@ -150,7 +161,7 @@ const Account = () => {
               <p>CREATOR</p>
               <small>{isCreator ? "Yes" : "No"}</small>
             </div>
-            <div className={Style.account_email}>
+            <div className={Style.account_website}>
               <p>WEBSITE</p>
               <small>{website}</small>
             </div>
@@ -189,7 +200,6 @@ const Account = () => {
             <div className={Style.account_wallet}>
               <p>CONNECTED WALLET</p>
               <small
-                className={isAddressCopied ? Style.address_copied : null}
                 onClick={handleAddressClick}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
@@ -224,6 +234,10 @@ const Account = () => {
           </div>
         </div>
       </div>
+      <ToastContainer
+        position={toast.POSITION.TOP_CENTER}
+        className={Style.toast_container_center}
+      />
     </div>
   );
 };
