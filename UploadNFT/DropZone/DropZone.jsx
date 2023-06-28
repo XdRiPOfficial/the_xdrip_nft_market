@@ -14,13 +14,13 @@ const DropZone = ({
   website,
   description,
   royalties,
-  editions,
   fileSize,
   setFileSize,
   properties,
   price,
   uploadToIPFS,
   category,
+  collection,
   setImage,
   setFileType,
   fileType,
@@ -163,14 +163,14 @@ const DropZone = ({
                   <td>{name || ""}</td>
                 </tr>
                 <tr>
+                  <td>Collection:</td>
+                  <td>{collection || ""}</td>
+                </tr>
+                <tr>
                   <td>Category:</td>
                   <td>{category || ""}</td>
                 </tr>
-                <tr>
-                  <td>Editions:</td>
-                  <td>{editions || ""}</td>
-                </tr>
-                <tr>
+                 <tr>
                   <td>Royalties:</td>
                   <td>{royalties ? handleInputValue(royalties) : ""}</td>
                 </tr>

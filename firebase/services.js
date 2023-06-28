@@ -40,7 +40,7 @@ export const addUser = async (username, email, website, walletAddress, profilePi
 
   try {
     const docRef = await addDoc(userRef, newUser);
-    
+
     if (profilePicture) {
       // Upload the profile image to Firebase Storage
       const storage = getStorage();
@@ -110,7 +110,7 @@ export const updateUserProfilePicture = async (walletAddress, profilePicture) =>
         console.log("User document updated successfully");
       } else {
         console.error("User does not exist");
-        throw new Error("User does not exist"); 
+        throw new Error("User does not exist");
       }
     } else {
       console.error("Profile picture is missing");
@@ -148,7 +148,7 @@ export const getUser = async (userId) => {
 //  GET USER PROFILE
 export const getUserProfile = async (walletAddress) => {
   const firestore = getFirestore();
-  const q = query(collection(firestore, "users"), 
+  const q = query(collection(firestore, "users"),
     where("walletAddress", "==", walletAddress));
 
   const querySnapshot = await getDocs(q);
@@ -157,7 +157,7 @@ export const getUserProfile = async (walletAddress) => {
     let userProfile = null;
     querySnapshot.forEach((doc) => {
       // doc.data() is never undefined for query doc snapshots
-      userProfile = {id: doc.id, ...doc.data()};
+      userProfile = { id: doc.id, ...doc.data() };
     });
     return userProfile;
   } else {
@@ -191,18 +191,19 @@ export const createCollection = async (collectionData, collectionImage, bannerIm
       facebook: "",
       instagram: "",
       tiktok: "",
-      discord: "",
+      discord: "",      
     },
+    tokenIds: [],
   };
   console.log("Created newCollection:", newCollection);
 
   try {
     const docRef = await addDoc(userCollectionsRef, newCollection);
-    console.log("docRef:", docRef);
+    const docId = docRef.id;
 
     if (collectionImage) {
       const storage = getStorage();
-      const collectionImageRef = ref(storage, `collectionImages/${docRef.id}/logoImages`);
+      const collectionImageRef = ref(storage, `collectionImages/${docId}/logoImages`);
       console.log("collectionImageRef:", collectionImageRef);
 
       await uploadBytes(collectionImageRef, collectionImage);
@@ -211,7 +212,7 @@ export const createCollection = async (collectionData, collectionImage, bannerIm
       const collectionImageUrl = await getDownloadURL(collectionImageRef);
       console.log("collectionImageUrl:", collectionImageUrl);
 
-      await updateDoc(doc(firestore, "userCollections", docRef.id), {
+      await updateDoc(doc(firestore, "userCollections", docId), {
         collectionImageUrl: collectionImageUrl,
       });
       console.log("Collection image updated successfully.");
@@ -219,7 +220,7 @@ export const createCollection = async (collectionData, collectionImage, bannerIm
 
     if (bannerImage) {
       const storage = getStorage();
-      const bannerImageRef = ref(storage, `collectionImages/${docRef.id}/bannerImages`);
+      const bannerImageRef = ref(storage, `collectionImages/${docId}/bannerImages`);
       console.log("bannerImageRef:", bannerImageRef);
 
       await uploadBytes(bannerImageRef, bannerImage);
@@ -228,7 +229,7 @@ export const createCollection = async (collectionData, collectionImage, bannerIm
       const bannerImageUrl = await getDownloadURL(bannerImageRef);
       console.log("bannerImageUrl:", bannerImageUrl);
 
-      await updateDoc(doc(firestore, "userCollections", docRef.id), {
+      await updateDoc(doc(firestore, "userCollections", docId), {
         bannerImageUrl: bannerImageUrl,
       });
       console.log("Banner image updated successfully.");
@@ -236,7 +237,7 @@ export const createCollection = async (collectionData, collectionImage, bannerIm
 
     if (featuredImage) {
       const storage = getStorage();
-      const featuredImageRef = ref(storage, `collectionImages/${docRef.id}/featuredImages`);
+      const featuredImageRef = ref(storage, `collectionImages/${docId}/featuredImages`);
       console.log("featuredImageRef:", featuredImageRef);
 
       await uploadBytes(featuredImageRef, featuredImage);
@@ -245,22 +246,41 @@ export const createCollection = async (collectionData, collectionImage, bannerIm
       const featuredImageUrl = await getDownloadURL(featuredImageRef);
       console.log("featuredImageUrl:", featuredImageUrl);
 
-      await updateDoc(doc(firestore, "userCollections", docRef.id), {
+      await updateDoc(doc(firestore, "userCollections", docId), {
         featuredImageUrl: featuredImageUrl,
       });
       console.log("Featured image updated successfully.");
     }
 
     console.log("Collection added successfully!");
+    const usersRef = collection(firestore, "users");
+    const userQuerySnapshot = await getDocs(query(usersRef, where("walletAddress", "==", collectionData.walletAddress)));
+
+    if (!userQuerySnapshot.empty) {
+      const userDoc = userQuerySnapshot.docs[0];
+      const userRef = doc(firestore, "users", userDoc.id);
+
+      await updateDoc(userRef, {
+        collectionsCreated: [...userDoc.data().collectionsCreated, docId],
+      });
+
+      console.log("Updated 'users' collection with the new docId");
+    } else {
+      console.error("User does not exist");
+      
+    }
+
+    return docId; // Return the docId
   } catch (error) {
     console.error("Error adding collection: ", error);
+    throw error;
   }
 };
 
 
-    
-//UPDATE COLLECTION
-export const updateCollection = async (walletAddress, updates, bannerImage, featuredImage) => {
+
+
+export const updateCollection = async (walletAddress, updates, bannerImage, featuredImage, docId) => {
   try {
     const userCollectionsRef = collection(db, "userCollections");
     const q = query(userCollectionsRef, where("walletAddress", "==", walletAddress));
@@ -300,13 +320,30 @@ export const updateCollection = async (walletAddress, updates, bannerImage, feat
 
       await updateDoc(collectionRef, updates);
       console.log("Collection document updated successfully");
+
+      // Check if the 'users' collection document exists
+      const usersRef = collection(db, "users");
+      const userQuerySnapshot = await getDocs(query(usersRef, where("walletAddress", "==", walletAddress)));
+
+      if (!userQuerySnapshot.empty) {
+        // If the 'users' collection document exists, update the 'collectionsCreated' field
+        const userDoc = userQuerySnapshot.docs[0];
+        const userRef = doc(db, "users", userDoc.id);
+
+        await updateDoc(userRef, {
+          collectionsCreated: [...userDoc.data().collectionsCreated, docId],
+        });
+
+        console.log("Updated 'users' collection with the new docId");
+      } 
+     
     } else {
       console.error("Collection does not exist");
-      throw new Error("Collection does not exist"); // Throw an error to handle the case where the collection does not exist
+      throw new Error("Collection does not exist");
     }
   } catch (error) {
     console.error("Error updating collection: ", error);
-    throw error; // Throw the error to handle it in the calling code
+    throw error;
   }
 };
 
@@ -314,20 +351,24 @@ export const updateCollection = async (walletAddress, updates, bannerImage, feat
 
 //GET USER COLLECTIONS
 export const getUserCollections = async (walletAddress) => {
-  try {
-    const userCollectionsRef = collection(db, "userCollections");
-    const q = query(userCollectionsRef, where("walletAddress", "==", walletAddress));
-    const querySnapshot = await getDocs(q);
+  const firestore = getFirestore();
+  const q = query(
+    collection(firestore, "userCollections"),
+    where("walletAddress", "==", walletAddress)
+  );
 
-    if (!querySnapshot.empty) {
-      const userCollections = querySnapshot.docs.map((doc) => doc.data());
-      return userCollections;
-    } else {
-      // Handle the case where no collections are found for the given wallet address
-      return [];
-    }
-  } catch (error) {
-    console.error("Error retrieving user collections: ", error);
-    throw error; // Throw the error to handle it in the calling code
+  const querySnapshot = await getDocs(q);
+
+  if (!querySnapshot.empty) {
+    const userCollections = [];
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      const collection = { id: doc.id, ...doc.data() };
+      userCollections.push(collection);
+    });
+    return userCollections;
+  } else {
+    console.error("No Collection found with the given wallet address");
+    return null;
   }
 };
