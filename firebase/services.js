@@ -193,7 +193,7 @@ export const createCollection = async (collectionData, collectionImage, bannerIm
       tiktok: "",
       discord: "",      
     },
-    tokenIds: [],
+    
   };
   console.log("Created newCollection:", newCollection);
 
@@ -278,6 +278,10 @@ export const createCollection = async (collectionData, collectionImage, bannerIm
 };
 
 
+
+
+
+//******************* ALL FIREBASE FUNCTIONS FOR UPDATING COLLECTIONS *******************
 
 
 export const updateCollection = async (walletAddress, updates, bannerImage, featuredImage, docId) => {

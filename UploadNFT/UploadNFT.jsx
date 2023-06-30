@@ -26,14 +26,14 @@ const UploadNFT = ({ createNFT, connectedWallet }) => {
   const [category, setCategory] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedCollection, setSelectedCollection] = useState("");
-  const [collection, setCollection] = useState(0);
+  const [collectionName, setCollectionName] = useState(0);
   const [properties, setProperties] = useState("");
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
   const [fileType, setFileType] = useState(null);
   const [userCollections, setUserCollections] = useState([]);
-  const address = useAddress();
+  const walletAddress = useAddress();
 
   const togglePreview = () => {
     setShowPreview(!showPreview);
@@ -41,14 +41,14 @@ const UploadNFT = ({ createNFT, connectedWallet }) => {
 
   useEffect(() => {
     const fetchUserCollections = async () => {
-      if (address) {
-        const userCollections = await getUserCollections(address);
+      if (walletAddress) {
+        const userCollections = await getUserCollections(walletAddress);
         setUserCollections(userCollections);
       }
     };
 
     fetchUserCollections();
-  }, [address]);
+  }, [walletAddress]);
 
   const categoryArry = [
     {
@@ -111,12 +111,6 @@ const UploadNFT = ({ createNFT, connectedWallet }) => {
   };
 
 
-  function handleOptionChange(selectedValue) {
-    setSelectedCollection(selectedValue);
-    if (selectedValue === "new") {
-      window.location.href = "/createCollectionPage";
-    }
-  }
 
 
   return (
@@ -152,8 +146,8 @@ const UploadNFT = ({ createNFT, connectedWallet }) => {
           <div className={formStyle.Form_box_input}>
             <label htmlFor="name">CHOOSE COLLECTION</label>
             <select
-              value={collection}
-              onChange={(e) => setCollection(e.target.value)}
+              value={collectionName}
+              onChange={(e) => setCollectionName(e.target.value)}
             >
               <option value="">SELECT AN EXISTING COLLECTION OR CREATE A NEW ONE</option>
               {userCollections.map((userCollection, i) => (
@@ -290,7 +284,7 @@ const UploadNFT = ({ createNFT, connectedWallet }) => {
           price={price}
           description={description}
           category={category}
-          collection={collection}
+          collectionName={collectionName}
           website={website}
           royalties={royalties}
           properties={properties}
@@ -309,7 +303,7 @@ const UploadNFT = ({ createNFT, connectedWallet }) => {
           onClose={togglePreview}
           imagePreview={imagePreview}
           name={name}
-          collection={collection}
+          collection={collectionName}
           category={category}       
           royalties={royalties}
           price={price}
@@ -324,9 +318,20 @@ const UploadNFT = ({ createNFT, connectedWallet }) => {
       <div className={Style.upload_box_btn}>
         <Button
           btnName="UPLOAD YOUR NFT"
-          
-          handleClick={async () =>
-            
+          handleClick={async () => {
+            console.log('Data being sent to createNFT:', {
+              name,
+              price,
+              description,
+              category,
+              website,
+              royalties,
+              properties,
+              image,              
+              collectionName,
+              walletAddress,
+            });
+
             createNFT(
               name,
               price,
@@ -335,12 +340,12 @@ const UploadNFT = ({ createNFT, connectedWallet }) => {
               website,
               royalties,
               properties,
-              image,
-              fileSize,
-              selectedCollection,
-              address
-            )
-          }
+              image,              
+              walletAddress,
+              collectionName,
+              
+            );
+          }}
           classStyle={Style.upload_box_btn_style}
         />
         <Button
@@ -352,5 +357,6 @@ const UploadNFT = ({ createNFT, connectedWallet }) => {
     </div>
   );
 };
+
 
 export default UploadNFT;
