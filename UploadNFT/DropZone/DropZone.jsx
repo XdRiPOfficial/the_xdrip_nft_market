@@ -5,6 +5,7 @@ import Img from "next/image";
 //INTERNAL IMPORT
 import Style from "./DropZone.module.css";
 import images from "../../img";
+import { useAddress } from "@thirdweb-dev/react";
 
 const DropZone = ({
   title,
@@ -20,8 +21,9 @@ const DropZone = ({
   price,
   uploadToIPFS,
   category,
-  collection,
+  
   setImage,
+  collectionName,
   setFileType,
   fileType,
   setPreviewMedia,
@@ -31,6 +33,8 @@ const DropZone = ({
   const [imagePreview, setImagePreview] = useState(null);
   const [localFileSize, setLocalFileSize] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const walletAddress = {useAddress}
 
   const onDrop = useCallback(
     async (acceptedFile) => {
@@ -164,7 +168,7 @@ const DropZone = ({
                 </tr>
                 <tr>
                   <td>Collection:</td>
-                  <td>{collection || ""}</td>
+                  <td>{collectionName || ""}</td>
                 </tr>
                 <tr>
                   <td>Category:</td>

@@ -8,6 +8,9 @@ import mohCA_ABI from "./mohCA_ABI.json";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
 import {uploadToIPFS } from "../UploadNFT/UploadNFT"
 import Web3 from 'web3';
+import { firebaseApp, db } from '../firebase/config';
+import { updateCollection } from '../firebase/services';
+import { getDocs, collection, query, where } from 'firebase/firestore';
 
 const web3 = new Web3(Web3.givenProvider);
 
@@ -114,11 +117,31 @@ export const NFTMarketplaceProvider = ({ children }) => {
 
 
 
-async function createNFT(name, price, description, category, website, royalties, properties, image ) {
+async function createNFT(name, price, description, category, website, royalties, properties, image,  walletAddress, collectionName ) {
   if (!name || !description || !price || !image)
     return setError("Data Is Missing"), setOpenError(true);
-    const data = JSON.stringify({ name, price, description, category, website, royalties, properties, image });
 
+
+    console.log('Incoming Data:', {
+      name,
+      price,
+      description,
+      category,
+      website,
+      royalties,
+      properties,
+      image,
+      collectionName,
+      walletAddress,
+    });
+
+
+    const data = JSON.stringify({ name, price, description, category, website, royalties, properties, image, });
+    console.log('Incoming Data:', {
+      walletAddress: address,
+      collectionName: collectionName,    
+      
+    })
   try {
     const cid = await client.storeBlob(new Blob([data]));
     const url = `https://${cid}.ipfs.nftstorage.link`; // Updated base URL
@@ -129,7 +152,7 @@ async function createNFT(name, price, description, category, website, royalties,
 
 
     await createSale(url, priceInGwei, currentAccount); 
-    router.push("/searchPage");
+    /*router.push("/searchPage");*/
   } catch (error) {
      if (error.code === 4001) {
        // denied transaction signature
@@ -141,28 +164,112 @@ async function createNFT(name, price, description, category, website, royalties,
   }
 }
 
-  //--- createSale FUNCTION
-  async function createSale(tokenURI, price) {
+
+
+
+
+async function createSale(tokenURI, price) {
   const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
   const account = accounts[0];
-
   const nftMarketplaceContract = new web3.eth.Contract(NFTMarketplaceABI, NFTMarketplaceAddress);
   const transactionParameters = {
     to: NFTMarketplaceAddress,
     from: account,
     data: nftMarketplaceContract.methods.createToken(tokenURI, price).encodeABI(),
-    
-    // made this updatable in contract - have to update funciton now to pass it
     value: web3.utils.toHex(web3.utils.toWei('0.025', 'ether')) // Assuming the listing price is 0.025 ETH
   };
 
-  const txHash = await window.ethereum.request({
-    method: 'eth_sendTransaction',
-    params: [transactionParameters],
-  });
+  try {
+    const txHash = await window.ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [transactionParameters],
+    });
 
-  return txHash;
+    let receipt = null;
+    let retryCount = 0;
+    const maxRetryCount = 10;
+    const delay = 5000; // Delay in milliseconds between retries
+
+    // Retry until the receipt is available or the maximum retry count is reached
+    while (receipt === null && retryCount < maxRetryCount) {
+      await new Promise(resolve => setTimeout(resolve, delay)); // Delay between retries
+
+      receipt = await web3.eth.getTransactionReceipt(txHash);
+      retryCount++;
+    }
+
+    if (receipt === null) {
+      throw new Error('Transaction receipt not available');
+    }
+    console.log('Transaction Logs:', receipt.logs); // Log the transaction logs
+
+        if (receipt.logs.length === 0) {
+      throw new Error('No logs in the transaction receipt');
+    }
+
+
+    const transferEventSignature = web3.eth.abi.encodeEventSignature('Transfer(address,address,uint256)');
+
+    let tokenId = null;
+
+    // Find the Transfer event logs and extract the tokenId
+    for (const log of receipt.logs) {
+      if (log.topics.length > 0 && log.topics[0] === transferEventSignature) {
+        const tokenIdTopic = log.topics[3];
+        tokenId = web3.utils.toDecimal(tokenIdTopic);
+        break;
+      }
+    }
+
+    console.log(' Token ID:', tokenId);
+    if (tokenId === null) {
+      throw new Error('Token ID not found in the transaction logs');
+    }
+
+    const collectionRef = collection(db, 'userCollections');
+    const q = query(collectionRef, where('walletAddress', '==', account));
+    const querySnapshot = await getDocs(q);
+
+    console.log('Query snapshot:', querySnapshot);
+
+    if (!querySnapshot.empty) {
+      const docRef = querySnapshot.docs[0].ref;
+
+      await updateDoc(docRef, {
+        tokenIds: firebase.firestore.FieldValue.arrayUnion(tokenId),
+      });
+
+      console.log('Updated userCollections document with token ID:', tokenId);
+      console.log(' Token ID 1:', tokenId);
+      try {
+        // Update the collection document using the updateCollection function
+        await updateCollection(account, { tokenIds: tokenId }, docRef.id);
+        console.log('Collection document updated successfully with data:', {
+          walletAddress: account,
+          tokenIds: tokenId,
+          docId: docRef.id,
+        });
+      } catch (error) {
+        console.error('Error updating collection document:', error);
+      }
+    }
+
+    console.log(' Token ID 2:', tokenId); // Log the tokenId at the end
+
+    return txHash;
+  } catch (error) {
+    console.error('Error creating NFT:', error);
+    throw error;
+  }
 }
+
+
+
+
+
+
+
+
 
  //--FETCHNFTS FUNCTION
 
