@@ -155,7 +155,7 @@ async function createNFT(name, price, description, category, website, royalties,
     /*router.push("/searchPage");*/
   } catch (error) {
      if (error.code === 4001) {
-       // denied transaction signature
+       
     setError("Transaction rejected by the user");
      } else {
     setError("Error while creating NFT");
@@ -168,7 +168,7 @@ async function createNFT(name, price, description, category, website, royalties,
 
 
 
-async function createSale(tokenURI, price) {
+async function createSale(tokenURI, price, walletAddress, collectionName, tokenId) {
   const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
   const account = accounts[0];
   const nftMarketplaceContract = new web3.eth.Contract(NFTMarketplaceABI, NFTMarketplaceAddress);
@@ -226,35 +226,15 @@ async function createSale(tokenURI, price) {
       throw new Error('Token ID not found in the transaction logs');
     }
 
-    const collectionRef = collection(db, 'userCollections');
-    const q = query(collectionRef, where('walletAddress', '==', account));
-    const querySnapshot = await getDocs(q);
+    await updateCollection(walletAddress, { tokenIds: tokenId }, collectionName);
 
-    console.log('Query snapshot:', querySnapshot);
+    console.log('Collection document updated successfully with data:', {
+      walletAddress: account,
+      tokenIds: tokenId,
+      collectionName: collectionName,
+    });
 
-    if (!querySnapshot.empty) {
-      const docRef = querySnapshot.docs[0].ref;
-
-      await updateDoc(docRef, {
-        tokenIds: firebase.firestore.FieldValue.arrayUnion(tokenId),
-      });
-
-      console.log('Updated userCollections document with token ID:', tokenId);
-      console.log(' Token ID 1:', tokenId);
-      try {
-        // Update the collection document using the updateCollection function
-        await updateCollection(account, { tokenIds: tokenId }, docRef.id);
-        console.log('Collection document updated successfully with data:', {
-          walletAddress: account,
-          tokenIds: tokenId,
-          docId: docRef.id,
-        });
-      } catch (error) {
-        console.error('Error updating collection document:', error);
-      }
-    }
-
-    console.log(' Token ID 2:', tokenId); // Log the tokenId at the end
+    console.log(' Final Token ID:', tokenId); 
 
     return txHash;
   } catch (error) {
