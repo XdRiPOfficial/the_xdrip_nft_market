@@ -284,7 +284,7 @@ export const createCollection = async (collectionData, collectionImage, bannerIm
 //******************* ALL FIREBASE FUNCTIONS FOR UPDATING COLLECTIONS *******************
 
 
-export const updateCollection = async (walletAddress, updates, bannerImage, featuredImage, docId, tokenId) => {
+export const updateCollection = async (walletAddress, updates, bannerImage, featuredImage, docId) => {
   try {
     const userCollectionsRef = collection(db, "userCollections");
     const q = query(userCollectionsRef, where("walletAddress", "==", walletAddress));
@@ -322,11 +322,6 @@ export const updateCollection = async (walletAddress, updates, bannerImage, feat
         updates.featuredImageUrl = featuredImageUrl;
       }
 
-      // Add the tokenId update logic here
-      if (tokenId) {
-        updates.tokenIds = firebase.firestore.FieldValue.arrayUnion(tokenId);
-      }
-
       await updateDoc(collectionRef, updates);
       console.log("Collection document updated successfully");
 
@@ -334,8 +329,8 @@ export const updateCollection = async (walletAddress, updates, bannerImage, feat
       const usersRef = collection(db, "users");
       const userQuerySnapshot = await getDocs(query(usersRef, where("walletAddress", "==", walletAddress)));
 
-      if (!userQuerySnapshot.empty && docId) {
-        // If the 'users' collection document exists and docId is provided, update the 'collectionsCreated' field
+      if (!userQuerySnapshot.empty) {
+        // If the 'users' collection document exists, update the 'collectionsCreated' field
         const userDoc = userQuerySnapshot.docs[0];
         const userRef = doc(db, "users", userDoc.id);
 
@@ -344,7 +339,8 @@ export const updateCollection = async (walletAddress, updates, bannerImage, feat
         });
 
         console.log("Updated 'users' collection with the new docId");
-      }
+      } 
+     
     } else {
       console.error("Collection does not exist");
       throw new Error("Collection does not exist");
@@ -354,6 +350,49 @@ export const updateCollection = async (walletAddress, updates, bannerImage, feat
     throw error;
   }
 };
+
+
+
+
+export async function updateTokenId(walletAddress, tokenId, collectionName) {
+  try {
+    console.log('Wallet Address:', walletAddress);
+    console.log('Collection Name:', collectionName);
+
+    const userCollectionsRef = collection(db, "userCollections");
+    const q = query(
+      userCollectionsRef,
+      where("walletAddress", "==", walletAddress),
+      where("collectionName", "==", collectionName)
+    );
+
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      throw new Error("Collection does not exist");
+    }
+
+    const collectionDoc = querySnapshot.docs[0];
+    const collectionRef = doc(db, "userCollections", collectionDoc.id);
+
+    await updateDoc(collectionRef, {
+      tokenIds: [tokenId, ...collectionDoc.data().tokenIds],
+    });
+
+    console.log("Token ID updated successfully in collection document");
+    console.log("Updated Collection Doc ID:", collectionDoc.id);
+    console.log("Updated Token IDs:", [tokenId, ...collectionDoc.data().tokenIds]);
+
+    return collectionDoc.id;
+  } catch (error) {
+    console.error("Error updating token ID:", error);
+    throw error;
+  }
+}
+
+
+
+
 
 
 

@@ -9,7 +9,7 @@ import { ThirdwebSDK } from "@thirdweb-dev/sdk";
 import {uploadToIPFS } from "../UploadNFT/UploadNFT"
 import Web3 from 'web3';
 import { firebaseApp, db } from '../firebase/config';
-import { updateCollection } from '../firebase/services';
+import { updateTokenId } from '../firebase/services';
 import { getDocs, collection, query, where } from 'firebase/firestore';
 
 const web3 = new Web3(Web3.givenProvider);
@@ -151,7 +151,7 @@ async function createNFT(name, price, description, category, website, royalties,
     //const priceInWei = ethers.utils.parseUnits(price.toString(), "wei");
 
 
-    await createSale(url, priceInGwei, currentAccount); 
+    await createSale(url, priceInGwei, currentAccount, collectionName); 
     /*router.push("/searchPage");*/
   } catch (error) {
      if (error.code === 4001) {
@@ -226,7 +226,13 @@ async function createSale(tokenURI, price, walletAddress, collectionName, tokenI
       throw new Error('Token ID not found in the transaction logs');
     }
 
-    await updateCollection(walletAddress, { tokenIds: tokenId }, collectionName);
+    console.log('Before Update TokenId:', {
+      walletAddress: account,
+      tokenIds: tokenId,
+      collectionName: collectionName, });
+
+    await updateTokenId(walletAddress, tokenId, collectionName);
+
 
     console.log('Collection document updated successfully with data:', {
       walletAddress: account,
