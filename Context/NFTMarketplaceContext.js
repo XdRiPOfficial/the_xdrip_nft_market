@@ -231,7 +231,10 @@ async function createSale(tokenURI, price, walletAddress, collectionName, tokenI
       tokenIds: tokenId,
       collectionName: collectionName, });
 
-    await updateTokenId(walletAddress, tokenId, collectionName);
+    
+      if (collectionName !== null) {
+        await updateTokenId(walletAddress, tokenId, collectionName);
+      }
 
 
     console.log('Collection document updated successfully with data:', {

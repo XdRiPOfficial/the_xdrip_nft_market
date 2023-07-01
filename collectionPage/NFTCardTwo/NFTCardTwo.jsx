@@ -270,8 +270,8 @@ const NFTCardTwo = ({ NFTData }) => {
                       <p>{(parseFloat(el.price) * 10 ** 9).toFixed(4)} BNB</p>
                     </div>
                     <p className={Style.NFTCardTwo_box_price_stock}>
-                      
-                      
+
+
                       {/* future auciton functionality 
                     <MdTimer /> <span>{i + 1} HOURS LEFT</span>
                     */}
@@ -327,18 +327,9 @@ const NFTCardTwo = ({ NFTData }) => {
             >
               Prev
             </button>
-            {Array.from(
-              { length: Math.ceil(NFTData.length / ITEMS_PER_PAGE) },
-              (_, i) => (
-                <button
-                  key={`page-${i}`}
-                  onClick={() => setCurrentPage(i + 1)}
-                  className={currentPage === i + 1 ? Style.active : ""}
-                >
-                  {i + 1}
-                </button>
-              )
-            )}
+            <span>
+              {currentPage} of {Math.ceil(NFTData.length / ITEMS_PER_PAGE)}
+            </span>
             <button
               disabled={
                 currentPage === Math.ceil(NFTData.length / ITEMS_PER_PAGE)
@@ -348,6 +339,7 @@ const NFTCardTwo = ({ NFTData }) => {
               Next
             </button>
           </div>
+
         </>
       )}
     </div>

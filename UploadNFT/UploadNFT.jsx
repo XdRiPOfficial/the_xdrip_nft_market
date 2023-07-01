@@ -14,6 +14,7 @@ import { Button } from "../components/componentsindex.js";
 import { DropZone } from "./uploadNFTIndex.js";
 import { getUserCollections } from "../firebase/services";
 import NFTPreview from "./NFTPreview";
+import { useRouter } from 'next/router';
 
 const UploadNFT = ({ createNFT, connectedWallet }) => {
   const [price, setPrice] = useState("");
@@ -34,6 +35,8 @@ const UploadNFT = ({ createNFT, connectedWallet }) => {
   const [fileType, setFileType] = useState(null);
   const [userCollections, setUserCollections] = useState([]);
   const walletAddress = useAddress();
+  const router = useRouter();
+
 
   const togglePreview = () => {
     setShowPreview(!showPreview);
@@ -64,16 +67,8 @@ const UploadNFT = ({ createNFT, connectedWallet }) => {
       category: "METAVERSE",
     },
     {
-      image: images.category_music,
-      category: "MUSIC",
-    },
-    {
       image: images.category_photography,
       category: "PHOTOGRAPHY",
-    },
-    {
-      image: images.category_videos,
-      category: "VIDEOS",
     },
     {
       image: images.category_sports,
@@ -147,19 +142,26 @@ const UploadNFT = ({ createNFT, connectedWallet }) => {
             <label htmlFor="name">CHOOSE COLLECTION</label>
             <select
               value={collectionName}
-              onChange={(e) => setCollectionName(e.target.value)}
+              onChange={(e) => {
+                const selectedValue = e.target.value;
+                if (selectedValue === 'new') {
+                  router.push('/createCollectionPage');
+                } else if (selectedValue === 'start' || selectedValue === 'none') {
+                  setCollectionName(null);
+                } else {
+                  setCollectionName(selectedValue);
+                }
+              }}
             >
-              <option value="">SELECT AN EXISTING COLLECTION OR CREATE A NEW ONE</option>
+              <option value="start">SELECT AN EXISTING COLLECTION OR CREATE A NEW ONE</option>
+              <option value="new">CREATE A NEW COLLECTION</option>
+              <option value="none">NO COLLECTION</option>
               {userCollections.map((userCollection, i) => (
                 <option key={i} value={userCollection.collectionName}>
-                  {userCollection.collectionName} 
+                  {userCollection.collectionName}
                 </option>
               ))}
-              <option value="new">CREATE A NEW COLLECTION</option>
-              
             </select>
-
-
           </div>
 
 
@@ -296,7 +298,7 @@ const UploadNFT = ({ createNFT, connectedWallet }) => {
           isLoading={isLoading}
           setIsLoading={setIsLoading}
           setFileType={setFileType}
-          fileType={fileType}    
+          fileType={fileType}
         />
         <NFTPreview
           show={showPreview}
@@ -304,7 +306,7 @@ const UploadNFT = ({ createNFT, connectedWallet }) => {
           imagePreview={imagePreview}
           name={name}
           collection={collectionName}
-          category={category}       
+          category={category}
           royalties={royalties}
           price={price}
           fileSize={fileSize}
@@ -327,7 +329,7 @@ const UploadNFT = ({ createNFT, connectedWallet }) => {
               website,
               royalties,
               properties,
-              image,              
+              image,
               collectionName,
               walletAddress,
             });
@@ -340,10 +342,10 @@ const UploadNFT = ({ createNFT, connectedWallet }) => {
               website,
               royalties,
               properties,
-              image,              
+              image,
               walletAddress,
               collectionName,
-              
+
             );
           }}
           classStyle={Style.upload_box_btn_style}
