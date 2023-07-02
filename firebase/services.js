@@ -9,11 +9,9 @@ import { firestore, db } from "./config";
 
 
 
-// *******************ALL FIREBASE FUNCTIONS FOR USERS *******************
+// **************************************************************************ADD USER FUNCTION *********************************************************************************************
 
 
-
-//GET ADD USER
 const storage = getStorage();
 export const addUser = async (username, email, website, walletAddress, profilePicture, isCreator, creatorPage, socials) => {
   const userRef = collection(firestore, "users");
@@ -61,7 +59,11 @@ export const addUser = async (username, email, website, walletAddress, profilePi
 
 
 
-//GET UPDATE USER
+
+
+//************************************************************************ GET UPDATE USER FUNCTION ****************************************************************************************
+
+
 export const updateUser = async (walletAddress, updates) => {
 
   try {
@@ -86,7 +88,11 @@ export const updateUser = async (walletAddress, updates) => {
 
 
 
-//GET UPDATE USERS PROFILE PICTURE
+
+
+//**************************************************************** GET UPDATE USERS PROFILE PICTURE FUNCTION *******************************************************************************
+
+
 export const updateUserProfilePicture = async (walletAddress, profilePicture) => {
   const db = getFirestore();
   const storage = getStorage();
@@ -124,7 +130,11 @@ export const updateUserProfilePicture = async (walletAddress, profilePicture) =>
 
 
 
-//GET USER 
+
+
+//******************************************************************************* GET USER FUNCTION ****************************************************************************************
+
+
 export const getUser = async (userId) => {
   const userRef = doc(firestore, "users", userId);
 
@@ -145,7 +155,11 @@ export const getUser = async (userId) => {
 
 
 
-//  GET USER PROFILE
+
+
+//****************************************************************** GET USER PROFILE FUNCTION CALLED FOR PROFILE DATA *********************************************************************
+
+
 export const getUserProfile = async (walletAddress) => {
   const firestore = getFirestore();
   const q = query(collection(firestore, "users"),
@@ -171,11 +185,9 @@ export const getUserProfile = async (walletAddress) => {
 
 
 
-//******************* ALL FIREBASE FUNCTIONS FOR COLLECTIONS *******************
+//****************************************************** CREATE COLLECTION FUNCTION CALLED FROM CREATE COLLECTION PAGE ********************************************************************
 
 
-
-//CREATE COLLECTION
 export const createCollection = async (collectionData, collectionImage, bannerImage, featuredImage) => {
   const firestore = getFirestore();
   const userCollectionsRef = collection(firestore, "userCollections");
@@ -281,7 +293,7 @@ export const createCollection = async (collectionData, collectionImage, bannerIm
 
 
 
-//******************* ALL FIREBASE FUNCTIONS FOR UPDATING COLLECTIONS *******************
+//************************************************************** UPDATE COLLECTION FUNTION CALLED WHEN COLLECTION CREATED *****************************************************************
 
 
 export const updateCollection = async (walletAddress, updates, bannerImage, featuredImage, docId) => {
@@ -352,6 +364,10 @@ export const updateCollection = async (walletAddress, updates, bannerImage, feat
 };
 
 
+
+
+
+//****************************************************** UPDATE TOKEN ID FUNCTION CALLED NFT MINTED INTO COLLECTION COLLECTION CREATED *****************************************************
 
 
 export async function updateTokenId(walletAddress, tokenId, collectionName) {
