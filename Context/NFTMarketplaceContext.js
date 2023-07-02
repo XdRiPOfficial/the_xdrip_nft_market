@@ -9,7 +9,7 @@ import { ThirdwebSDK } from "@thirdweb-dev/sdk";
 import {uploadToIPFS } from "../UploadNFT/UploadNFT"
 import Web3 from 'web3';
 import { firebaseApp, db } from '../firebase/config';
-import { updateTokenId } from '../firebase/services';
+import { addNFT } from '../firebase/services';
 import { getDocs, collection, query, where } from 'firebase/firestore';
 
 const web3 = new Web3(Web3.givenProvider);
@@ -165,9 +165,6 @@ async function createNFT(name, price, description, category, website, royalties,
 }
 
 
-
-
-
 async function createSale(tokenURI, price, walletAddress, collectionName, tokenId) {
   const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
   const account = accounts[0];
@@ -178,7 +175,32 @@ async function createSale(tokenURI, price, walletAddress, collectionName, tokenI
     data: nftMarketplaceContract.methods.createToken(tokenURI, price).encodeABI(),
     value: web3.utils.toHex(web3.utils.toWei('0.025', 'ether')) // Assuming the listing price is 0.025 ETH
   };
+  
+  console.log('Incoming Data 2:', {
+    tokenURI, 
+    collectionName  
+  });
+  console.log('Transaction Parameters:', transactionParameters);
 
+  async function createNFTDataFromTokenURI(tokenURI) {
+    const response = await fetch(tokenURI);
+    const data = await response.json();
+    const createNFTData = {
+      name: data.name,
+      price: data.price,
+      description: data.description,
+      category: data.category,
+      website: data.website,
+      royalties: data.royalties,
+      properties: data.properties,
+      image: data.image,
+    };
+    return createNFTData;
+  }
+  
+  const createNFTData = await createNFTDataFromTokenURI(tokenURI);
+  console.log('Extracted Data:', createNFTData);
+  
   try {
     const txHash = await window.ethereum.request({
       method: 'eth_sendTransaction',
@@ -203,10 +225,9 @@ async function createSale(tokenURI, price, walletAddress, collectionName, tokenI
     }
     console.log('Transaction Logs:', receipt.logs); // Log the transaction logs
 
-        if (receipt.logs.length === 0) {
+    if (receipt.logs.length === 0) {
       throw new Error('No logs in the transaction receipt');
     }
-
 
     const transferEventSignature = web3.eth.abi.encodeEventSignature('Transfer(address,address,uint256)');
 
@@ -221,7 +242,7 @@ async function createSale(tokenURI, price, walletAddress, collectionName, tokenI
       }
     }
 
-    console.log(' Token ID:', tokenId);
+    console.log('Token ID:', tokenId);
     if (tokenId === null) {
       throw new Error('Token ID not found in the transaction logs');
     }
@@ -229,21 +250,13 @@ async function createSale(tokenURI, price, walletAddress, collectionName, tokenI
     console.log('Before Update TokenId:', {
       walletAddress: account,
       tokenIds: tokenId,
-      collectionName: collectionName, });
-
-    
-      if (collectionName !== null) {
-        await updateTokenId(walletAddress, tokenId, collectionName);
-      }
-
-
-    console.log('Collection document updated successfully with data:', {
-      walletAddress: account,
-      tokenIds: tokenId,
       collectionName: collectionName,
     });
 
-    console.log(' Final Token ID:', tokenId); 
+        
+    await addNFT( collectionName, walletAddress, createNFTData, tokenId);
+    
+    console.log('Final Token ID:', tokenId);
 
     return txHash;
   } catch (error) {
@@ -251,6 +264,7 @@ async function createSale(tokenURI, price, walletAddress, collectionName, tokenI
     throw error;
   }
 }
+
 
 
 

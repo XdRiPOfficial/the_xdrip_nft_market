@@ -203,9 +203,9 @@ export const createCollection = async (collectionData, collectionImage, bannerIm
       facebook: "",
       instagram: "",
       tiktok: "",
-      discord: "",      
+      discord: "",
     },
-    
+
   };
   console.log("Created newCollection:", newCollection);
 
@@ -279,7 +279,7 @@ export const createCollection = async (collectionData, collectionImage, bannerIm
       console.log("Updated 'users' collection with the new docId");
     } else {
       console.error("User does not exist");
-      
+
     }
 
     return docId; // Return the docId
@@ -351,8 +351,8 @@ export const updateCollection = async (walletAddress, updates, bannerImage, feat
         });
 
         console.log("Updated 'users' collection with the new docId");
-      } 
-     
+      }
+
     } else {
       console.error("Collection does not exist");
       throw new Error("Collection does not exist");
@@ -367,53 +367,9 @@ export const updateCollection = async (walletAddress, updates, bannerImage, feat
 
 
 
-//****************************************************** UPDATE TOKEN ID FUNCTION CALLED NFT MINTED INTO COLLECTION COLLECTION CREATED *****************************************************
 
+//**************************************************************************** GET USER COLLECTIONS FUNCTION *******************************************************************************
 
-export async function updateTokenId(walletAddress, tokenId, collectionName) {
-  try {
-    console.log('Wallet Address:', walletAddress);
-    console.log('Collection Name:', collectionName);
-
-    const userCollectionsRef = collection(db, "userCollections");
-    const q = query(
-      userCollectionsRef,
-      where("walletAddress", "==", walletAddress),
-      where("collectionName", "==", collectionName)
-    );
-
-    const querySnapshot = await getDocs(q);
-
-    if (querySnapshot.empty) {
-      throw new Error("Collection does not exist");
-    }
-
-    const collectionDoc = querySnapshot.docs[0];
-    const collectionRef = doc(db, "userCollections", collectionDoc.id);
-
-    await updateDoc(collectionRef, {
-      tokenIds: [tokenId, ...collectionDoc.data().tokenIds],
-    });
-
-    console.log("Token ID updated successfully in collection document");
-    console.log("Updated Collection Doc ID:", collectionDoc.id);
-    console.log("Updated Token IDs:", [tokenId, ...collectionDoc.data().tokenIds]);
-
-    return collectionDoc.id;
-  } catch (error) {
-    console.error("Error updating token ID:", error);
-    throw error;
-  }
-}
-
-
-
-
-
-
-
-
-//GET USER COLLECTIONS
 export const getUserCollections = async (walletAddress) => {
   const firestore = getFirestore();
   const q = query(
@@ -436,3 +392,194 @@ export const getUserCollections = async (walletAddress) => {
     return null;
   }
 };
+
+
+
+
+
+//********************************************** UPDATE TOKEN ID FUNCTION, CALLED WHEN NFT MINTED INTO USERS DOCID AND COLLECTION CREATED **************************************************
+
+
+export async function updateTokenId(walletAddress, tokenId, collectionName) {
+  try {
+    console.log('Wallet Address:', walletAddress);
+    console.log('Collection Name:', collectionName);
+
+    const usersRef = collection(db, "users");
+    const usersQuerySnapshot = await getDocs(
+      query(usersRef, where("walletAddress", "==", walletAddress))
+    );
+
+    if (!usersQuerySnapshot.empty && collectionName) {
+      const usersDoc = usersQuerySnapshot.docs[0];
+      const usersRef = doc(db, "users", usersDoc.id);
+
+      await updateDoc(usersRef, {
+        nftsCreated: [tokenId, ...usersDoc.data().nftsCreated],
+        nftsListed: [tokenId, ...usersDoc.data().nftsListed],
+      });
+
+      console.log("Token ID updated successfully in users document");
+      console.log("Updated Users Doc ID:", usersDoc.id);
+      console.log("Updated Token IDs in users:", [tokenId, ...usersDoc.data().nftsCreated]);
+    }
+
+    if (collectionName) {
+
+      const userCollectionsRef = collection(db, "userCollections");
+      const q = query(
+        userCollectionsRef,
+        where("walletAddress", "==", walletAddress),
+        where("collectionName", "==", collectionName)
+      );
+
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        throw new Error("Collection does not exist");
+      }
+
+      const collectionDoc = querySnapshot.docs[0];
+      const collectionRef = doc(db, "userCollections", collectionDoc.id);
+
+      await updateDoc(collectionRef, {
+        tokenIds: [tokenId, ...collectionDoc.data().tokenIds],
+      });
+
+      console.log("Token ID updated successfully in collection document");
+      console.log("Updated Collection Doc ID:", collectionDoc.id);
+      console.log("Updated Token IDs:", [tokenId, ...collectionDoc.data().tokenIds]);
+
+      return collectionDoc.id;
+    }
+
+  } catch (error) {
+    console.error("Error updating token ID:", error);
+    throw error;
+  }
+}
+
+
+
+
+
+//***************************************************** GET TOKENID FUNCTION TO PULL OTHER DATA FROM DOCUMENTS THE TOKENID RESIDES IN ******************************************************
+
+/*
+export async function getTokenId(tokenId) {
+  try {
+    console.log("Searching for tokenId:", tokenId);
+    const firestore = getFirestore();
+
+    console.log("Firestore instance:", firestore);
+
+    const userCollectionsRef = collection(firestore, "userCollections");
+    console.log("Collection reference:", userCollectionsRef);
+
+    const querySnapshot = await getDocs(userCollectionsRef);
+    console.log("Query Snapshot:", querySnapshot);
+
+    let foundDocument = null;
+
+    querySnapshot.forEach((doc) => {
+      console.log("Current Document:", doc.data());
+      const collectionData = doc.data();
+      if (collectionData.tokenIds && collectionData.tokenIds.includes(tokenId)) {
+        foundDocument = doc;
+      }
+    });
+
+    if (foundDocument) {
+      const collectionData = foundDocument.data();
+      const collectionName = collectionData.collectionName;
+      const walletAddress = collectionData.walletAddress;
+
+      console.log("Collection Document:", collectionData);
+      console.log("Collection Name:", collectionName);
+      console.log("Wallet Address:", walletAddress);
+
+      return {
+        collectionName,
+        walletAddress,
+      };
+    } else {
+      console.log("No collection found with the given token ID");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error getting token information:", error);
+    throw error;
+  }
+} */
+
+
+
+
+//********************************************************* ADD NFT TO FIREBASE FUNCTION DONE AT INITIAL NFT CREATION IN MO CONTEXT *******************************************************
+
+export async function addNFT(collectionName, walletAddress, createNFTData, tokenId) {
+  try {
+    const firestore = getFirestore();
+    const nftDataRef = collection(firestore, "nfts");
+    const newNFT = {
+      ...createNFTData, // Assigning all properties from createNFTData prop to newNFT
+      collectionName,
+      tokenId
+    };
+
+    console.log("Created newNFT:", newNFT);
+
+    const docRef = await addDoc(nftDataRef, newNFT);
+    const docId = docRef.id;
+
+    const usersRef = collection(firestore, "users");
+    const userQuerySnapshot = await getDocs(query(usersRef, where("walletAddress", "==", walletAddress)));
+
+    if (!userQuerySnapshot.empty) {
+      const userDoc = userQuerySnapshot.docs[0];
+      const userRef = doc(firestore, "users", userDoc.id);
+
+      await updateDoc(userRef, {
+        nftsCreated: [...userDoc.data().nftsCreated, docId],
+        nftsListed: [...userDoc.data().nftsListed, docId],
+      });
+    }
+
+    if (collectionName) {
+
+      const userCollectionsRef = collection(db, "userCollections");
+      const q = query(
+        userCollectionsRef,
+        where("walletAddress", "==", walletAddress),
+        where("collectionName", "==", collectionName)
+      );
+
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        throw new Error("Collection does not exist");
+      }
+
+      const collectionDoc = querySnapshot.docs[0];
+      const collectionRef = doc(db, "userCollections", collectionDoc.id);
+
+      await updateDoc(collectionRef, {
+        tokenIds: [docId, ...collectionDoc.data().tokenIds],
+      });
+
+      console.log("Token ID updated successfully in collection document");
+      console.log("Updated Collection Doc ID:", collectionDoc.id);
+      console.log("Updated Token IDs:", [tokenId, ...collectionDoc.data().tokenIds]);
+
+      return collectionDoc.id;
+    }
+
+    console.log("NFT data added successfully");
+  } catch (error) {
+    console.error("Error adding NFT data to Firebase:", error);
+    throw error;
+  }
+}
+
+
+

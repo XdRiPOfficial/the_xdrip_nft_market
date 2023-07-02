@@ -11,7 +11,7 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import Link from "next/link";
 import { NFTMarketplaceContext } from "../../Context/NFTMarketplaceContext";
-import { getUserProfile } from "../../firebase/services";
+import { getUserProfile, getCollectionName } from "../../firebase/services";
 
 const BigNFTSlider = () => {
   const [fileTypes, setFileTypes] = useState({});
@@ -23,6 +23,27 @@ const BigNFTSlider = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [muted, setMuted] = useState(true);
   const [profilePic, setProfilePic] = useState(null);
+  const [collectionName, setCollectionName] = useState(null);
+
+
+
+
+  useEffect(() => {
+    const fetchCollectionName = async () => {
+      try {
+        const tokenData = await getCollectionName(nfts[currentIndex].tokenId);
+        setCollectionName(tokenData);
+      } catch (error) {
+        setError("Please reload the browser", error);
+      }
+    };
+
+    fetchCollectionName();
+  }, [nfts, currentIndex]);
+
+
+
+
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -36,6 +57,10 @@ const BigNFTSlider = () => {
     return () => clearInterval(interval);
   }, [currentIndex, nfts.length]);
 
+
+
+
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -47,6 +72,11 @@ const BigNFTSlider = () => {
     };
     fetchData();
   }, []);
+
+
+
+
+
 
   useEffect(() => {
     const fetchFileTypes = async () => {
@@ -78,6 +108,10 @@ const BigNFTSlider = () => {
     fetchFileTypes();
   }, [nfts]);
 
+
+
+
+
   useEffect(() => {
     const fetchProfilePic = async () => {
       try {
@@ -92,6 +126,10 @@ const BigNFTSlider = () => {
 
     fetchProfilePic();
   }, [nfts, currentIndex]);
+
+
+
+
 
   const RenderDefault = () => (
     <Image
@@ -109,6 +147,10 @@ const BigNFTSlider = () => {
     const isImage = fileType && fileType.startsWith("image");
     const isAudio = fileType && fileType.startsWith("audio");
     const isVideo = fileType && fileType.startsWith("video");
+
+
+
+
 
     return (
       <LazyLoadComponent>
@@ -170,27 +212,27 @@ const BigNFTSlider = () => {
               className={Style.bigNFTSlider_box_img_rp}
             />
             <div className={Style.bigNFTSlider_box_video_controls_wrapper}>
-            <button onClick={handleToggleMute} className={Style.videoControlButton}>
-              {muted ? (
-                    <Image
-                      src={images.unmute}
-                      width={25}
-                      height={25}
-                      alt="Pause"
-                    />
-                  ) : (
-                    <Image
-                      src={images.mute}
-                      width={25}
-                      height={25}
-                      alt="Play"
-                    />
-                  )}
-            </button>
+              <button onClick={handleToggleMute} className={Style.videoControlButton}>
+                {muted ? (
+                  <Image
+                    src={images.unmute}
+                    width={25}
+                    height={25}
+                    alt="Pause"
+                  />
+                ) : (
+                  <Image
+                    src={images.mute}
+                    width={25}
+                    height={25}
+                    alt="Play"
+                  />
+                )}
+              </button>
             </div>
           </div>
         ) : (
-          <div>{}</div>
+          <div>{ }</div>
         )}
       </LazyLoadComponent>
     );
@@ -239,25 +281,25 @@ const BigNFTSlider = () => {
           key={`${nfts[currentIndex].tokenId}-${currentIndex}`}
           className={Style.bigNFTSlider_box}
         >
-          <div className={Style.bigNFTSlider_box_left}>	
-            <div className={Style.bigNFTSlider_box_left_id}>	
-              <p>TOKEN ID #{nfts[currentIndex].tokenId}</p>	
-            </div>	
-            <div className={Style.bigNFTSlider_box_left_name}>	
-              <h2>{nfts[currentIndex].name}</h2>	
-            </div>	
-            <div className={Style.bigNFTSlider_box_left_creator}>	
-              <div className={Style.bigNFTSlider_box_left_creator_profile}>	
-                <div className={Style.bigNFTSlider_box_left_creator_profile_info}>	
+          <div className={Style.bigNFTSlider_box_left}>
+            <div className={Style.bigNFTSlider_box_left_id}>
+              <p>TOKEN ID #{nfts[currentIndex].tokenId}</p>
+            </div>
+            <div className={Style.bigNFTSlider_box_left_name}>
+              <h2>{nfts[currentIndex].name}</h2>
+            </div>
+            <div className={Style.bigNFTSlider_box_left_creator}>
+              <div className={Style.bigNFTSlider_box_left_creator_profile}>
+                <div className={Style.bigNFTSlider_box_left_creator_profile_info}>
                   <p>SELLER ID</p>
-                  <div className={Style.bigNFTSlider_box_left_creator_profile_info_img_wrapper}>	
-                    <img	
-                      src={profilePic}	
-                      alt="Profile Pic"	
-                      width={50}	
-                      height={50}	
-                      className={Style.bigNFTSlider_box_left_creator_profile_img}	
-                    />	
+                  <div className={Style.bigNFTSlider_box_left_creator_profile_info_img_wrapper}>
+                    <img
+                      src={profilePic}
+                      alt="Profile Pic"
+                      width={50}
+                      height={50}
+                      className={Style.bigNFTSlider_box_left_creator_profile_img}
+                    />
                   </div>
                 </div>
                 <div className={Style.bigNFTSlider_box_left_creator_profile_info_middle}>
@@ -266,8 +308,9 @@ const BigNFTSlider = () => {
                 </div>
                 <div className={Style.bigNFTSlider_box_left_creator_profile_info_right}>
                   <p>COLLECTION</p>
-                  <h4>{nfts[currentIndex].collection || "N/A"}</h4>
+                  <h4>{collectionName || "N/A"}</h4>
                 </div>
+
               </div>
             </div>
 
