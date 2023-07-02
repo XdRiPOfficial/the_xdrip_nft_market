@@ -23,8 +23,22 @@ const fetchMohContract = (signerOrProvider) =>
     new ethers.Contract(MohAddress, MohABI, signerOrProvider);
 
 const TheForge = () => {
+    
     const [idNumber, setIdNumber] = useState(0);
     const address = useAddress();
+    const [errorMessage, setErrorMessage] = useState("");
+    const [openError, setOpenError] = useState(false);
+    const [error, setError] = useState("");
+    const [mintedCounts, setMintedCounts] = useState({
+    COMMON: 0,
+    UNCOMMON: 0,
+    RARE: 0,
+    EPIC: 0,
+    LEGENDARY: 0,
+  });
+  
+  
+
 
     const mohData = [
         {
@@ -62,7 +76,7 @@ const TheForge = () => {
             },
         },
         {
-            title: "RARE ",
+            title: "RARE",
             id: 3,
             name: "XDRIP OFFICIAL",
             collection: "MEDALS OF HONOR",
@@ -79,7 +93,7 @@ const TheForge = () => {
             },
         },
         {
-            title: "EPIC ",
+            title: "EPIC",
             id: 4,
             name: "XDRIP OFFICIAL",
             collection: "MEDALS OF HONOR",
@@ -96,7 +110,7 @@ const TheForge = () => {
             },
         },
         {
-            title: "LEGENDARY ",
+            title: "LEGENDARY",
             id: 5,
             name: "XDRIP OFFICIAL",
             collection: "MEDALS OF HONOR",
@@ -113,16 +127,44 @@ const TheForge = () => {
             },
         },
     ];
+    
+    
+    
+    const fetchMohContract = useCallback(async (signerOrProvider) => {
+    const contract = new ethers.Contract(MohAddress, MohABI, signerOrProvider);
 
-    const mint = async (medalType, ipfsHash) => {
+    const mintedCountsPromises = mohData.map(async (item) => {
+      const mintedCount = await contract[`minted${item.title}`]();
+      return { [item.title]: mintedCount.toNumber() };
+    });
+
+    const mintedCountsData = await Promise.all(mintedCountsPromises);
+    const mergedCounts = Object.assign({}, ...mintedCountsData);
+    setMintedCounts(mergedCounts);
+
+    return contract;
+  }, []);
+
+  useEffect(() => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    fetchMohContract(provider.getSigner());
+  }, [fetchMohContract]);
+    
+    
+
+        const mint = async (medalType, ipfsHash) => {
         try {
+            console.log('Minting medal of type:', medalType);
+            
             if (!address) {
+                console.log('No address found, enabling Ethereum.');
                 window.ethereum.enable();
                 return;
             }
             const provider = new ethers.providers.Web3Provider(window.ethereum);
             const signer = provider.getSigner();
             const contract = fetchMohContract(signer);
+            console.log('Connected to contract at:', MohAddress);
 
             let mintFunction;
             switch (medalType) {
@@ -145,87 +187,119 @@ const TheForge = () => {
                     throw new Error("Invalid medal type");
             }
 
+            console.log('Selected mint function:', mintFunction);
+
+            const itemPrice = mohData.find((item) => item.title === medalType).price.split(" ")[0];
+            console.log('Item price:', itemPrice);
+            
             const price = ethers.utils.parseUnits(
-                mohData[idNumber].price.split(" ")[0],
+                itemPrice,
                 "ether"
             );
+            
+            console.log('Converted price:', price.toString());
+
             const transaction = await mintFunction(ipfsHash, {
-                value: price,
-                gasLimit: 500000,
-            });
-            await transaction.wait();
-            alert("Your Medal Of Honor was minted successfully!");
-        } catch (error) {
-            console.error("Minting failed", error);
-            alert("Minting failed. Please try again.");
-        }
-    };
+            value: price,
+            gasLimit: 650000,
+        });
+        
+        console.log('Transaction sent:', transaction);
+        
+         const receipt = await transaction.wait();
+    console.log('Transaction confirmed:', receipt);
 
-    return (
-        <div className={Style.theForge_container}>
-            <div className={Style.theForge}>
-                {mohData.map((item, index) => (
-                    <div key={index} className={Style.card}>
-                        <div className={Style.card_left}>
-                            <h2>{item.title}</h2>
-                        </div>
-                        
+    alert("Your Medal Of Honor was forged successfully!");
 
-                        <div className={Style.card_right}>
-                            <div className={Style.card_right_top}>
-                                <ReactPlayer
-                                    url={item.nftVideo}
-                                    alt="NFT Video"
-                                    muted
-                                    width='100%'
-                                    loop
-                                    controls
-                                    className={Style.card_right_top_video}
-                                    
-                                />
-                            </div>
+  } catch (error) {
+    console.error("Forge failed", error);
+    console.log("Error object:", error);
 
-                            <div className={Style.card_right_bottom}>
-                                <div className={Style.card_right_bottom_bidding}>
+    if (error.code === 4001) {
+      // denied transaction signature
+      setError("You rejected the transaction, signature denied.");
+      
+    } else {
+      setError("Error while forging Medal");
+    }
+    setOpenError(true);
+  }
+};
+ 
 
-                                    <div className={Style.card_right_bottom_bidding_box_timer}>
-                                        <div className={Style.card_right_bottom_bidding_box_timer_item}>
-                                            <span>FORGED</span>
-                                            <p>{item.inventory.forged}</p>
-                                        </div>
 
-                                        <div className={Style.card_right_bottom_bidding_box_timer_item}>
-                                            <span>AVAILABLE</span>
-                                            <p>{item.inventory.available}</p>
-                                        </div>
-                                    </div>
-                                    <div className={Style.car_right_box_price}>
-                                        <div className={Style.card_right_box_price_box}>
-                                            <small>FORGE PRICE</small>
-                                            <p>{item.price}</p>
-                                        </div>
-                                    </div>
+ return (
+  <div className={Style.theForge_container}>
+    {openError && (
+      <div className={Style.errorMessage}>
+        {errorMessage}
+        <button onClick={() => setOpenError(false)}>Close</button>
+      </div>
+    )}
 
-                                    <div className={Style.card_right_bottom_button}>
-                                        <Button
-                                            btnName="FORGE"
-                                            handleClick={() => mint(item.title, item.ipfsHash)}
-                                        />
+    <div className={Style.theForge}>
+      {mohData.map((item, index) => (
+        <div key={index} className={Style.card}>
+          <div className={Style.card_left}>
+            <h2>{item.title}</h2>
+          </div>
 
-                                        <div className={Style.sliderCard_box_price_box_btn_btn}>
-                                            <Link href={{ pathname: "/NFTDetails", query: idNumber }} key={`${idNumber}`}>
-                                                <button className={Style.detailsButton}>DETAILS</button>
-                                            </Link>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                ))}
+          <div className={Style.card_right}>
+            <div className={Style.card_right_top}>
+              <ReactPlayer
+                url={item.nftVideo}
+                alt="NFT Video"
+                muted
+                width="100%"
+                loop
+                controls
+                className={Style.card_right_top_video}
+              />
             </div>
+
+            <div className={Style.card_right_bottom}>
+              <div className={Style.card_right_bottom_bidding}>
+                <div className={Style.card_right_bottom_bidding_box_timer}>
+                  <div className={Style.card_right_bottom_bidding_box_timer_item}>
+                    <span>FORGED</span>
+                    <p>{mintedCounts[item.title]}</p>
+                  </div>
+
+                  <div className={Style.card_right_bottom_bidding_box_timer_item}>
+                    <span>AVAILABLE</span>
+                    <p>{item.inventory.available}</p>
+                  </div>
+                </div>
+                <div className={Style.car_right_box_price}>
+                  <div className={Style.card_right_box_price_box}>
+                    <small>FORGE PRICE</small>
+                    <p>{item.price}</p>
+                  </div>
+                </div>
+
+                <div className={Style.card_right_bottom_button}>
+                  <Button
+                    btnName="FORGE"
+                    handleClick={() => mint(item.title, item.ipfsHash)}
+                  />
+
+                  <div className={Style.sliderCard_box_price_box_btn_btn}>
+                    <Link href={{ pathname: "/NFTDetails", query: idNumber }} key={`${idNumber}`}>
+                      <button className={Style.detailsButton}>DETAILS</button>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-    );
+      ))}
+    </div>
+  </div>
+);
+
+
+
 };
 
 export default TheForge;
