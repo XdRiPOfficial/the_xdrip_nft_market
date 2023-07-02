@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from "react";
 import Style from "./NFTCardTwo.module.css";
 import Rating from "react-rating";
@@ -309,11 +310,7 @@ const NFTCardTwo = ({ NFTData }) => {
                         </span>
                       </div>
 
-                      <div className={Style.likesNumber}>
-                        <span>
-                          {likes[el.tokenId] ? likes[el.tokenId].count : 0}
-                        </span>
-                      </div>
+                      
                     </p>
                   </div>
                 </div>
