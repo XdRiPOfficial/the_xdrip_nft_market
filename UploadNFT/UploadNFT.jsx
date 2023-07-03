@@ -156,7 +156,8 @@ const UploadNFT = ({ createNFT, connectedWallet }) => {
               <option value="start">SELECT AN EXISTING COLLECTION OR CREATE A NEW ONE</option>
               <option value="new">CREATE A NEW COLLECTION</option>
               <option value="none">NO COLLECTION</option>
-              {userCollections.map((userCollection, i) => (
+              {userCollections &&
+              userCollections.map((userCollection, i) => (
                 <option key={i} value={userCollection.collectionName}>
                   {userCollection.collectionName}
                 </option>
