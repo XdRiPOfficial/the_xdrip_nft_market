@@ -11,7 +11,7 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import Link from "next/link";
 import { NFTMarketplaceContext } from "../../Context/NFTMarketplaceContext";
-import { getUserProfile, getCollectionName } from "../../firebase/services";
+import { getUserProfile, getNFTData  } from "../../firebase/services";
 
 const BigNFTSlider = () => {
   const [fileTypes, setFileTypes] = useState({});
@@ -24,23 +24,38 @@ const BigNFTSlider = () => {
   const [muted, setMuted] = useState(true);
   const [profilePic, setProfilePic] = useState(null);
   const [collectionName, setCollectionName] = useState(null);
+  const [nftData, setNftData] = useState([]);
+
+
 
 
 
 
   useEffect(() => {
-    const fetchCollectionName = async () => {
+    async function fetchNFTData() {
       try {
-        const tokenData = await getCollectionName(nfts[currentIndex].tokenId);
-        setCollectionName(tokenData);
+        // Call the `getNFTData` function and pass the `tokenId` as a parameter
+        const data = await getNFTData(nfts[currentIndex].tokenId, nfts[currentIndex].name);
+
+  
+        console.log("Fetched NFT Data 1:", data); // Log the fetched data
+  
+        // Update the state variable with the fetched data
+        setNftData(data);
+  
+        // Set the collectionName state variable
+      
       } catch (error) {
-        setError("Please reload the browser", error);
+        console.error("Error fetching NFT data 1:", error);
       }
-    };
-
-    fetchCollectionName();
-  }, [nfts, currentIndex]);
-
+    }
+  
+    // Call fetchNFTData when the component mounts
+    fetchNFTData();
+  }, [currentIndex]);
+  
+  
+  
 
 
 
@@ -308,7 +323,7 @@ const BigNFTSlider = () => {
                 </div>
                 <div className={Style.bigNFTSlider_box_left_creator_profile_info_right}>
                   <p>COLLECTION</p>
-                  <h4>{collectionName || "N/A"}</h4>
+                  <h4>{nftData.collectionName || "N/A"}</h4>
                 </div>
 
               </div>

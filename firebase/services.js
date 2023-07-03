@@ -204,6 +204,7 @@ export const createCollection = async (collectionData, collectionImage, bannerIm
       instagram: "",
       tiktok: "",
       discord: "",
+      tokenIds: [],
     },
 
   };
@@ -577,6 +578,40 @@ export async function addNFT(collectionName, walletAddress, createNFTData, token
     console.log("NFT data added successfully");
   } catch (error) {
     console.error("Error adding NFT data to Firebase:", error);
+    throw error;
+  }
+}
+
+
+
+
+
+//************************************************************************* GET NFT DATA FUNCTION *****************************************************************************************
+
+export async function getNFTData(tokenId,name) {
+  try {
+    const firestore = getFirestore();
+    const q = query(collection(firestore, "nfts"), where("tokenId", "==", Number(tokenId)));
+
+    console.log("tokenId FB:", tokenId); // Log the tokenId
+    console.log("name FB:", name);
+
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      let nftData = null;
+      querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        nftData = { id: doc.id, ...doc.data() };
+      });
+      console.log("Fetched NFT data FB:", nftData); // Log the fetched NFT data
+      return nftData;
+    } else {
+      console.log("No matching NFT found for tokenId:", tokenId);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error retrieving NFTs from Firebase:", error);
     throw error;
   }
 }
