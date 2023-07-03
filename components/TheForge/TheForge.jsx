@@ -23,22 +23,8 @@ const fetchMohContract = (signerOrProvider) =>
     new ethers.Contract(MohAddress, MohABI, signerOrProvider);
 
 const TheForge = () => {
-    
     const [idNumber, setIdNumber] = useState(0);
     const address = useAddress();
-    const [errorMessage, setErrorMessage] = useState("");
-    const [openError, setOpenError] = useState(false);
-    const [error, setError] = useState("");
-    const [mintedCounts, setMintedCounts] = useState({
-    COMMON: 0,
-    UNCOMMON: 0,
-    RARE: 0,
-    EPIC: 0,
-    LEGENDARY: 0,
-  });
-  
-  
-
 
     const mohData = [
         {
@@ -46,7 +32,7 @@ const TheForge = () => {
             id: 1,
             name: "XDRIP OFFICIAL",
             collection: "MEDALS OF HONOR",
-            price: "0.25 BNB",
+            price: "0.01 BNB",
             like: 1,
             image: images.user1,
             nftVideo: videos.common,
@@ -63,7 +49,7 @@ const TheForge = () => {
             id: 2,
             name: "XDRIP OFFICIAL",
             collection: "MEDALS OF HONOR",
-            price: "0.50 BNB",
+            price: "0.02 BNB",
             like: 369,
             image: images.user1,
             nftVideo: videos.uncommon,
@@ -80,7 +66,7 @@ const TheForge = () => {
             id: 3,
             name: "XDRIP OFFICIAL",
             collection: "MEDALS OF HONOR",
-            price: "0.75 BNB",
+            price: "0.03 BNB",
             like: 1,
             image: images.user1,
             nftVideo: videos.rare,
@@ -97,7 +83,7 @@ const TheForge = () => {
             id: 4,
             name: "XDRIP OFFICIAL",
             collection: "MEDALS OF HONOR",
-            price: "1.0 BNB",
+            price: "0.04 BNB",
             like: 1,
             image: images.user1,
             nftVideo: videos.epic,
@@ -114,7 +100,7 @@ const TheForge = () => {
             id: 5,
             name: "XDRIP OFFICIAL",
             collection: "MEDALS OF HONOR",
-            price: "1.5 BNB",
+            price: "0.05 BNB",
             like: 1,
             image: images.user1,
             nftVideo: videos.legendary,
@@ -127,30 +113,6 @@ const TheForge = () => {
             },
         },
     ];
-    
-    
-    
-    const fetchMohContract = useCallback(async (signerOrProvider) => {
-    const contract = new ethers.Contract(MohAddress, MohABI, signerOrProvider);
-
-    const mintedCountsPromises = mohData.map(async (item) => {
-      const mintedCount = await contract[`minted${item.title}`]();
-      return { [item.title]: mintedCount.toNumber() };
-    });
-
-    const mintedCountsData = await Promise.all(mintedCountsPromises);
-    const mergedCounts = Object.assign({}, ...mintedCountsData);
-    setMintedCounts(mergedCounts);
-
-    return contract;
-  }, []);
-
-  useEffect(() => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    fetchMohContract(provider.getSigner());
-  }, [fetchMohContract]);
-    
-    
 
         const mint = async (medalType, ipfsHash) => {
         try {
@@ -200,9 +162,12 @@ const TheForge = () => {
             console.log('Converted price:', price.toString());
 
             const transaction = await mintFunction(ipfsHash, {
-            value: price,
-            gasLimit: 650000,
-        });
+                value: price,
+                gasLimit: 650000,
+            });
+            
+           
+
         
         console.log('Transaction sent:', transaction);
         
@@ -229,77 +194,70 @@ const TheForge = () => {
 
 
  return (
-  <div className={Style.theForge_container}>
-    {openError && (
-      <div className={Style.errorMessage}>
-        {errorMessage}
-        <button onClick={() => setOpenError(false)}>Close</button>
-      </div>
-    )}
+        <div className={Style.theForge_container}>
+            <div className={Style.theForge}>
+                {mohData.map((item, index) => (
+                    <div key={index} className={Style.card}>
+                        <div className={Style.card_left}>
+                            <h2>{item.title}</h2>
+                        </div>
+                        
 
-    <div className={Style.theForge}>
-      {mohData.map((item, index) => (
-        <div key={index} className={Style.card}>
-          <div className={Style.card_left}>
-            <h2>{item.title}</h2>
-          </div>
+                        <div className={Style.card_right}>
+                            <div className={Style.card_right_top}>
+                                <ReactPlayer
+                                    url={item.nftVideo}
+                                    alt="NFT Video"
+                                    muted
+                                    width='100%'
+                                    loop
+                                    controls
+                                    className={Style.card_right_top_video}
+                                    
+                                />
+                            </div>
 
-          <div className={Style.card_right}>
-            <div className={Style.card_right_top}>
-              <ReactPlayer
-                url={item.nftVideo}
-                alt="NFT Video"
-                muted
-                width="100%"
-                loop
-                controls
-                className={Style.card_right_top_video}
-              />
+                            <div className={Style.card_right_bottom}>
+                                <div className={Style.card_right_bottom_bidding}>
+
+                                    <div className={Style.card_right_bottom_bidding_box_timer}>
+                                        <div className={Style.card_right_bottom_bidding_box_timer_item}>
+                                            <span>FORGED</span>
+                                            <p>{item.inventory.forged}</p>
+                                        </div>
+
+                                        <div className={Style.card_right_bottom_bidding_box_timer_item}>
+                                            <span>AVAILABLE</span>
+                                            <p>{item.inventory.available}</p>
+                                        </div>
+                                    </div>
+                                    <div className={Style.car_right_box_price}>
+                                        <div className={Style.card_right_box_price_box}>
+                                            <small>FORGE PRICE</small>
+                                            <p>{item.price}</p>
+                                        </div>
+                                    </div>
+
+                                    <div className={Style.card_right_bottom_button}>
+                                        <Button
+                                            btnName="FORGE"
+                                            handleClick={() => mint(item.title, item.ipfsHash)}
+                                        />
+
+                                        <div className={Style.sliderCard_box_price_box_btn_btn}>
+                                            <Link href={{ pathname: "/NFTDetails", query: idNumber }} key={`${idNumber}`}>
+                                                <button className={Style.detailsButton}>DETAILS</button>
+                                            </Link>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ))}
             </div>
-
-            <div className={Style.card_right_bottom}>
-              <div className={Style.card_right_bottom_bidding}>
-                <div className={Style.card_right_bottom_bidding_box_timer}>
-                  <div className={Style.card_right_bottom_bidding_box_timer_item}>
-                    <span>FORGED</span>
-                    <p>{mintedCounts[item.title]}</p>
-                  </div>
-
-                  <div className={Style.card_right_bottom_bidding_box_timer_item}>
-                    <span>AVAILABLE</span>
-                    <p>{item.inventory.available}</p>
-                  </div>
-                </div>
-                <div className={Style.car_right_box_price}>
-                  <div className={Style.card_right_box_price_box}>
-                    <small>FORGE PRICE</small>
-                    <p>{item.price}</p>
-                  </div>
-                </div>
-
-                <div className={Style.card_right_bottom_button}>
-                  <Button
-                    btnName="FORGE"
-                    handleClick={() => mint(item.title, item.ipfsHash)}
-                  />
-
-                  <div className={Style.sliderCard_box_price_box_btn_btn}>
-                    <Link href={{ pathname: "/NFTDetails", query: idNumber }} key={`${idNumber}`}>
-                      <button className={Style.detailsButton}>DETAILS</button>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
-      ))}
-    </div>
-  </div>
-);
-
-
-
+    );
 };
 
 export default TheForge;
