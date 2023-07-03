@@ -9,7 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { FaFacebookF, FaTwitter, FaInstagram, FaTiktok, FaDiscord } from "react-icons/fa";
 
 
-import Style from "../styles/account.module.css";
+import Style from "../styles/editProfile.module.css";
 import images from "../img";
 import Form from "../AccountPage/Form/Form";
 

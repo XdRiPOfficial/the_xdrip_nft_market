@@ -73,7 +73,7 @@ const Profile = ({
           <div className={styles.profileBox}>
             <div className={styles.profileItems}>
               <div className={styles.linkContainer}>
-                <Link href={isWalletConnected ? "/author" : "/loginandsignup"}>
+                <Link href={isWalletConnected ? "/myProfile" : "/loginandsignup"}>
                   <a onClick={() => setIsProfileMenuOpen(false)} className={styles.linkA}>
                     <span className={styles.linkText}>{isWalletConnected ? 'My Profile' : 'Login'}</span>
                     <FaUserAlt className={styles.icon}/>
@@ -82,7 +82,7 @@ const Profile = ({
               </div>
               {isWalletConnected && (
                 <div className={styles.linkContainer}>
-                  <Link href="/account">
+                  <Link href="/editProfile">
                     <a onClick={() => setIsProfileMenuOpen(false)} className={styles.linkA}>
                       <span className={styles.linkText}>Edit Profile</span>
                       <FaUserEdit className={styles.icon} />

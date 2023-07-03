@@ -152,7 +152,7 @@ async function createNFT(name, price, description, category, website, royalties,
 
 
     await createSale(url, priceInGwei, currentAccount, collectionName); 
-    /*router.push("/searchPage");*/
+    router.push("/myProfile");
   } catch (error) {
      if (error.code === 4001) {
        
