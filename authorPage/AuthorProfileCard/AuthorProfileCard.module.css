@@ -109,9 +109,9 @@
 
 .account_wallet small:hover{
     margin-top: 0rem;    
-    font-size: .9rem;
+    font-size: .8rem;
     cursor: pointer;
-    cursor: pointer;
+   
     color: rgba(1,122,254,255);
 }
   

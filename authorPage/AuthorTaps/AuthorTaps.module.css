@@ -17,7 +17,7 @@
 
 .AuthorTaps_box_left_btn{
     display: flex;
-    gap: 2rem;
+    gap: 1.5rem;
     align-items: center;
     margin-bottom: 1rem;
     
@@ -51,13 +51,13 @@
 
 .AuthorTaps_box_right{
     position: relative;
-    margin-left: 2rem;
+    margin-left: 1.5rem;
 }
 
 .AuthorTaps_box_right_para{
     border: 4px double rgba(1,122,254,255);
     border-radius: .75rem;
-    width: 15rem;
+    width: 14rem;
     padding: 0 2rem;
     display: grid;
     align-items: center;
@@ -67,14 +67,14 @@
 }
 
 .AuthorTaps_box_right_para p{
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     line-height: .5;
 }
 
 .AuthorTaps_box_right_list{
     background-color: var(--main-bg-color);
-    padding: 1rem;
-    width: 15rem;
+    padding: .5rem;
+    width: 14rem;
     left: 0rem;
     position: absolute;
     border-radius: 1rem;

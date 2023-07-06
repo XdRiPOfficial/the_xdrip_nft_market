@@ -37,35 +37,47 @@ const AuthorNFTCard = ({ NFTData }) => {
 
   useEffect(() => {
     const fetchLikesAndRatings = async () => {
-      let likesObj = {};
-
-      // make the list so not getting them over and over
-      const promises = NFTData.map((nft) => {
-        const nftRef = doc(firestore, "likes", nft.tokenId);
-        return getDoc(nftRef);
-      });
-
-      // promise.all() to wait itl they all resolve
-      const snapshots = await Promise.all(promises);
-
-      snapshots.forEach((snapshot, index) => {
-        const nft = NFTData[index];
-        if (snapshot.exists()) {
-          const data = snapshot.data();
-          likesObj[nft.tokenId] = {
-            count: data.count || 0,
-            rating: data.rating || 0,
-            liked: data.wallets && data.wallets[walletAddress] ? true : false,
-            wallets: data.wallets || {},
-          };
-        }
-      });
-
-      setLikes(likesObj);
-    };
+      try {
+        let likesObj = {};
+        const promises = NFTData.map((el) => {
+          console.log("tokenId:", el.tokenId); // Log the tokenId
+          const tokenId = el.tokenId.toString(); // Convert tokenId to string
+          const nftRef = doc(firestore, "likes", tokenId);
+          return getDoc(nftRef);
+        });
+        const snapshots = await Promise.all(promises);
+        console.log("snapshots:", snapshots); // Log the snapshots array
+    
+        snapshots.forEach((snapshot, index) => {
+          console.log("snapshot:", snapshot);
+          console.log("index:", index);
+          const nft = NFTData[index];
+          console.log("nft:", nft);
+    
+          if (snapshot.exists()) {
+            const data = snapshot.data();
+            likesObj[nft.tokenId] = {
+              count: data.count || 0,
+              rating: data.rating || 0,
+              liked: data.wallets && data.wallets[walletAddress] ? true : false,
+              wallets: data.wallets || {},
+              
+            };
+            console.log("data2:", data);
+          }
+        });
+    
+        setLikes(likesObj);
+      } catch (error) {
+        console.error("Error fetching likes and ratings:", error);
+      }
+    };    
 
     fetchLikesAndRatings();
   }, [NFTData, walletAddress]);
+
+
+  
 
   const likeNFT = useCallback(
     async (tokenId, ratingValue, walletAddress) => {
@@ -79,7 +91,7 @@ const AuthorNFTCard = ({ NFTData }) => {
             wallets: {},
           };
         }
-
+  
         // check if wallets property exists and is an object
         if (
           !newLikes[tokenId].wallets ||
@@ -87,7 +99,7 @@ const AuthorNFTCard = ({ NFTData }) => {
         ) {
           newLikes[tokenId].wallets = {};
         }
-
+  
         // check if this wallet has already liked/rated
         if (newLikes[tokenId].wallets[walletAddress]) {
           newLikes[tokenId].liked = false;
@@ -99,14 +111,14 @@ const AuthorNFTCard = ({ NFTData }) => {
           newLikes[tokenId].rating = ratingValue;
           newLikes[tokenId].wallets[walletAddress] = true;
         }
-
+  
         if (typeof window !== "undefined") {
           localStorage.setItem("nftLikes", JSON.stringify(newLikes));
         }
-
+  
         // Store likes and rating in Firebase Firestore by tokenId
         const updateLikesAndRating = async () => {
-          const likesRef = doc(firestore, "likes", tokenId);
+          const likesRef = doc(firestore, "likes", tokenId.toString()); // Convert tokenId to string
           const likesSnapshot = await getDoc(likesRef);
           if (likesSnapshot.exists()) {
             await updateDoc(likesRef, {
@@ -122,15 +134,15 @@ const AuthorNFTCard = ({ NFTData }) => {
             });
           }
         };
-
+  
         updateLikesAndRating();
-
+  
         return newLikes;
       });
     },
     [firestore, walletAddress]
   );
-
+  
   useEffect(() => {
     const fetchFileTypes = async () => {
       let fileTypesObj = {};

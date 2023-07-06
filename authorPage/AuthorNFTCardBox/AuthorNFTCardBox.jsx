@@ -6,18 +6,20 @@ import images from "../../img";
 import { AuthorNFTCard } from "../componentIndex";
 import FollowerTabCard from "../../components/FollowerTab/FollowerTabCard/FollowerTabCard";
 import { Loader } from "../../components/componentsindex";
-import { getUserProfile, getMyNFTs } from "../../firebase/services";
+
 
 const AuthorNFTCardBox = ({
   owned,
-  created,
+  collections,
+  created,  
   listed,
   sold,
   like,
   follower,
   following,
   nftsOwned,
-  nftsCreated,
+  collectionsCreated,
+  nftsCreated, 
   nftsListed,
   nftsSold,
   nftsLiked,
@@ -26,7 +28,6 @@ const AuthorNFTCardBox = ({
   const [share, setShare] = useState(false);
   const [report, setReport] = useState(false);
   const address = useAddress();
-  const { fetchMyNFTsOrListedNFTs } = useContext(NFTMarketplaceContext);
   const [fileTypes, setFileTypes] = useState({});
   const [loading, setLoading] = useState(true);
 
@@ -105,7 +106,7 @@ const AuthorNFTCardBox = ({
           {nftsOwned.length > 0 ? (
             <AuthorNFTCard NFTData={nftsCreated} />
           ) : (
-            <p className={Style.NoDataMessage}>NO OWNED NFTS FROM THE XMARKET</p>
+            <p className={Style.NoDataMessage}>NO PURCHASED NFTS FROM XMARKET</p>
           )}
         </div>
       )}
@@ -114,7 +115,16 @@ const AuthorNFTCardBox = ({
           {nftsCreated.length > 0 ? (
             <AuthorNFTCard NFTData={nftsCreated} />
           ) : (
-            <p className={Style.NoDataMessage}>NO CREATED NFTS ON THE XMARKET</p>
+            <p className={Style.NoDataMessage}>NO CREATED NFTS ON XMARKET</p>
+          )}
+        </div>
+      )}
+      {collections && (
+        <div>
+          {collectionsCreated.length > 0 ? (
+            <AuthorNFTCard NFTData={collectionsCreated} />
+          ) : (
+            <p className={Style.NoDataMessage}>NO CREATED COLLECTIONS ON XMARKET</p>
           )}
         </div>
       )}
@@ -123,7 +133,7 @@ const AuthorNFTCardBox = ({
           {nftsListed.length > 0 ? (
             <AuthorNFTCard NFTData={nftsListed} />
           ) : (
-            <p className={Style.NoDataMessage}>NO LISTED NFTS ON THE XMARKET</p>
+            <p className={Style.NoDataMessage}>NO LISTED NFTS ON XMARKET</p>
           )}
         </div>
       )}
@@ -132,7 +142,7 @@ const AuthorNFTCardBox = ({
           {nftsSold.length > 0 ? (
             <AuthorNFTCard NFTData={nftsSold} />
           ) : (
-            <p className={Style.NoDataMessage}>NO SOLD NFTS ON THE XMARKET</p>
+            <p className={Style.NoDataMessage}>NO SOLD NFTS ON XMARKET</p>
           )}
         </div>
       )}
@@ -141,7 +151,7 @@ const AuthorNFTCardBox = ({
           {nftsLiked.length > 0 ? (
             <AuthorNFTCard NFTData={nftsLiked} />
           ) : (
-            <p className={Style.NoDataMessage}>NO LIKED NFTS ON THE XMARKET</p>
+            <p className={Style.NoDataMessage}>NO LIKED NFTS ON XMARKET</p>
           )}
         </div>
       )}

@@ -15,6 +15,7 @@ const Author = () => {
   const { currentAccount } = useContext(NFTMarketplaceContext);
   const [owned, setOwned] = useState(true);
   const [created, setCreated] = useState(false);
+  const [collectionsCreated, setCollectionsCreated] = useState(false);
   const [listed, setListed] = useState(false);
   const [sold, setSold] = useState(false);
   const [like, setLike] = useState(false);
@@ -33,6 +34,7 @@ const Author = () => {
         const myNFTsData = await getMyNFTs(currentAccount);
         console.log("Fetched user NFTs:", myNFTsData);
         setNftsCreated(myNFTsData.nftsCreated);
+        setCollectionsCreated(myNFTsData.collectionsCreated)
         setNftsListed(myNFTsData.nftsListed);
         setNftsSold(myNFTsData.nftsSold);
       } catch (error) {
@@ -58,6 +60,7 @@ const Author = () => {
         <div className={Style.author_box_taps}>
           <AuthorTaps
             setOwned={setOwned}
+            setCollectionsCreated={setCollectionsCreated}
             setCreated={setCreated}
             setListed={setListed}
             setSold={setSold}
@@ -74,6 +77,7 @@ const Author = () => {
           <div className={Style.author_box_cards}>
           <AuthorNFTCardBox
             owned={owned}
+            collectionsCreated={collectionsCreated}
             created={created}
             listed={listed}
             sold={sold}
