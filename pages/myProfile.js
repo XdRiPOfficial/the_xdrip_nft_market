@@ -1,92 +1,98 @@
 import React, { useState, useEffect, useContext } from "react";
-
-//INTERNAL IMPORT
 import Style from "../styles/myProfile.module.css";
-import { Banner, NFTCard} from "../collectionPage/collectionIndex";
-import { Brand, Title } from "../components/componentsindex";
-import FollowerTabCard from "../components/FollowerTab/FollowerTabCard/FollowerTabCard";
-import images from "../img";
+import { Banner } from "../collectionPage/collectionIndex";
 import {
   AuthorProfileCard,
   AuthorTaps,
   AuthorNFTCardBox,
 } from "../authorPage/componentIndex";
-
-//IMPORT SMART CONTRACT DATA
+import { getMyNFTs } from "../firebase/services";
+import { useAddress } from "@thirdweb-dev/react";
 import { NFTMarketplaceContext } from "../Context/NFTMarketplaceContext";
 
-const author = () => {
-  const followerArray = [
-   
-  ];
-
-  const [collectiables, setCollectiables] = useState(true);
+const Author = () => {
+  const address = useAddress();
+  const { currentAccount } = useContext(NFTMarketplaceContext);
+  const [owned, setOwned] = useState(true);
   const [created, setCreated] = useState(false);
+  const [listed, setListed] = useState(false);
+  const [sold, setSold] = useState(false);
   const [like, setLike] = useState(false);
   const [follower, setFollower] = useState(false);
   const [following, setFollowing] = useState(false);
-
-  //IMPORT SMART CONTRACT DATA
-  const { fetchMyNFTsOrListedNFTs, currentAccount } = useContext(
-    NFTMarketplaceContext
-  );
-
-  const [nfts, setNfts] = useState([]);
-  const [myNFTs, setMyNFTs] = useState([]);
+  const [nftsOwned, setNftsOwned] = useState(false);
+  const [nftsCreated, setNftsCreated] = useState([]);
+  const [nftsListed, setNftsListed] = useState([]);
+  const [nftsSold, setNftsSold] = useState([]);
+  const [nftsLiked, setNftsLiked] = useState([]);
 
   useEffect(() => {
-    fetchMyNFTsOrListedNFTs("fetchItemsListed").then((items) => {
-      setNfts(items);
-
-      console.log(nfts);
-    });
-  }, []);
-
-  useEffect(() => {
-    fetchMyNFTsOrListedNFTs("fetchMyNFTs").then((items) => {
-      setMyNFTs(items);
-      console.log(myNFTs);
-    });
-  }, []);
+    const fetchMyNFTsData = async () => {
+      try {
+        console.log("Fetching user NFTs for account:", currentAccount);
+        const myNFTsData = await getMyNFTs(currentAccount);
+        console.log("Fetched user NFTs:", myNFTsData);
+        setNftsCreated(myNFTsData.nftsCreated);
+        setNftsListed(myNFTsData.nftsListed);
+        setNftsSold(myNFTsData.nftsSold);
+      } catch (error) {
+        console.error("Error fetching user NFTs:", error);
+      }
+    };
+  
+    if (currentAccount) {
+      fetchMyNFTsData();
+    }
+  }, [currentAccount]);
+  
+  
 
   return (
     <div className={Style.author}>
       <Banner />
-      <AuthorProfileCard currentAccount={currentAccount} />
-      <AuthorTaps
-        setCollectiables={setCollectiables}
-        setCreated={setCreated}
-        setLike={setLike}
-        setFollower={setFollower}
-        setFollowing={setFollowing}
-        currentAccount={currentAccount}
-      />
-
-     <AuthorNFTCardBox
-      collectiables={collectiables}
-      created={created}
-      like={like}
-      follower={follower}
-      following={following}
-      nfts={nfts && nfts.length > 0 ? nfts : []}
-      myNFTS={myNFTs && myNFTs.length > 0 ? myNFTs : []}
-     />
-      
-      
-      <Title
-        heading="POPULAR CREATORS"
-        paragraph="CLICK ON THE PROFILE IMAGE TO VIEW THE CREATORS PORTFOLIO 
-"
-      />
-      <div className={Style.author_box}>
-        {followerArray.map((el, i) => (
-          <FollowerTabCard i={i} el={el} />
-        ))}
+      <div className={Style.author_box_author}>
+        <div className={Style.author_box_profile}>
+          <AuthorProfileCard currentAccount={currentAccount} />
+        </div>
+        <div className={Style.author_box_taps_cards}>
+        <div className={Style.author_box_taps}>
+          <AuthorTaps
+            setOwned={setOwned}
+            setCreated={setCreated}
+            setListed={setListed}
+            setSold={setSold}
+            setLike={setLike}
+            setFollower={setFollower}
+            setFollowing={setFollowing}
+            currentAccount={currentAccount}
+            nftsOwned={nftsOwned}
+            nftsCreated={nftsCreated}
+            nftsListed={nftsListed}
+            nftsSold={nftsSold}
+            nftsLiked={nftsLiked}
+          />
+          <div className={Style.author_box_cards}>
+          <AuthorNFTCardBox
+            owned={owned}
+            created={created}
+            listed={listed}
+            sold={sold}
+            like={like}
+            follower={follower}
+            following={following}
+            nftsOwned={nftsOwned}
+            nftsCreated={nftsCreated}
+            nftsListed={nftsListed}
+            nftsSold={nftsSold}
+            nftsLiked={nftsLiked}
+            currentAccount={currentAccount}         
+          />
+           </div>
+        </div>
+        </div>
       </div>
-
-      <Brand />
     </div>
   );
 };
 
-export default author;
+export default Author;

@@ -1,4 +1,4 @@
-import { getFirestore, collection, query, where, addDoc, getDocs, deleteDoc, updateDoc, doc } from "firebase/firestore";
+import { getFirestore, collection, query, where, addDoc, getDocs, getDoc, deleteDoc, updateDoc, doc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 import { firestore, db } from "./config";
@@ -34,6 +34,7 @@ export const addUser = async (username, email, website, walletAddress, profilePi
       discord: "",
     },
     collectionsCreated: [],
+    nftsOwned: [],
   };
 
   try {
@@ -581,6 +582,79 @@ export async function addNFT(collectionName, walletAddress, createNFTData, token
     throw error;
   }
 }
+
+
+
+
+
+//************************************************************************* GET MY NFTS + DATA FUNCTION *****************************************************************************************
+
+export async function getMyNFTs(currentAddress) {
+  console.log("currentAddress:", currentAddress);
+  try {
+    const userProfile = await getUserProfile(currentAddress);
+
+    if (userProfile) {
+      const { nftsCreated, nftsListed, nftsSold } = userProfile;
+
+      console.log("nftsCreated:", nftsCreated);
+      console.log("nftsListed:", nftsListed);
+      console.log("nftsSold:", nftsSold);
+
+      const firestore = getFirestore();
+      const userCollections = collection(firestore, "nfts");
+
+      const nftsCreatedData = await Promise.all(
+        nftsCreated.map(async (docId) => {
+          const docRef = doc(userCollections, docId);
+          const docSnapshot = await getDoc(docRef);
+      
+          if (docSnapshot.exists()) {
+            const nftData = { id: docSnapshot.id, ...docSnapshot.data() };
+            console.log("Fetched NFT data for docId:", docId, nftData);
+            return nftData;
+          } else {
+            console.log("No matching NFT found for docId:", docId);
+            return null;
+          }
+        })
+      );     
+
+      const nftsListedData = await Promise.all(
+        nftsListed.map(async (docId) => {
+          const docRef = doc(userCollections, docId);
+          const docSnapshot = await getDoc(docRef);
+          return docSnapshot.exists() ? { id: docSnapshot.id, ...docSnapshot.data() } : null;
+        })
+      );
+
+      const nftsSoldData = await Promise.all(
+        nftsSold.map(async (docId) => {
+          const docRef = doc(userCollections, docId);
+          const docSnapshot = await getDoc(docRef);
+          return docSnapshot.exists() ? { id: docSnapshot.id, ...docSnapshot.data() } : null;
+        })
+      );
+
+      console.log("nftsCreatedData:", nftsCreatedData);
+      console.log("nftsListedData:", nftsListedData);
+      console.log("nftsSoldData:", nftsSoldData);
+
+      return {
+        nftsCreated: nftsCreatedData.filter((nft) => nft !== null),
+        nftsListed: nftsListedData.filter((nft) => nft !== null),
+        nftsSold: nftsSoldData.filter((nft) => nft !== null),
+      };
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching user NFTs:", error);
+    throw error;
+  }
+}
+
+
 
 
 

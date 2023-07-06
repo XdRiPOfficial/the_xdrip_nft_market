@@ -6,17 +6,20 @@
 }
 
 .AuthorTaps_box{
-    width: 80%;
+    width: 95%;
     margin:  0 auto;
     display: flex;
     justify-content: space-between;
     
+    border-bottom: .5rem double var(--shadow-dark-color);
+
 }
 
 .AuthorTaps_box_left_btn{
     display: flex;
     gap: 2rem;
     align-items: center;
+    margin-bottom: 1rem;
     
 }
 
@@ -25,12 +28,13 @@
     outline: 0;
     background-color: var(--main-bg-color);
     font-family: "Good Times";
-    font-size: 1rem;
+    font-size: .8rem;
     border-radius: .5rem;
-    padding: .5rem 1rem;
+    padding: .5rem .55rem;
     cursor: pointer;
     transition: all .3s ease-in;
-    color: white;
+    color: white; 
+    
 }
 
 .AuthorTaps_box_left_btn .active{
@@ -47,12 +51,13 @@
 
 .AuthorTaps_box_right{
     position: relative;
+    margin-left: 2rem;
 }
 
 .AuthorTaps_box_right_para{
     border: 4px double rgba(1,122,254,255);
     border-radius: .75rem;
-    width: 17.5rem;
+    width: 15rem;
     padding: 0 2rem;
     display: grid;
     align-items: center;
@@ -69,11 +74,11 @@
 .AuthorTaps_box_right_list{
     background-color: var(--main-bg-color);
     padding: 1rem;
-    width: 16rem;
-    left: -3rem;
+    width: 15rem;
+    left: 0rem;
     position: absolute;
     border-radius: 1rem;
-    margin-top: 1.5rem;
+    margin-top: 1.2rem;
     box-shadow: var(--box-shadow);
     z-index: 11111111111;
 }

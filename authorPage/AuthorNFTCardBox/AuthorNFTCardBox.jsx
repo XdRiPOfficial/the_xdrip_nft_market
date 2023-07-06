@@ -3,37 +3,34 @@ import { useAddress } from "@thirdweb-dev/react";
 import { NFTMarketplaceContext } from "../../Context/NFTMarketplaceContext";
 import Style from "./AuthorNFTCardBox.module.css";
 import images from "../../img";
-import { NFTCardTwo } from "../../collectionPage/collectionIndex";
+import { AuthorNFTCard } from "../componentIndex";
 import FollowerTabCard from "../../components/FollowerTab/FollowerTabCard/FollowerTabCard";
 import { Loader } from "../../components/componentsindex";
-import { getUserProfile } from "../../firebase/services";
+import { getUserProfile, getMyNFTs } from "../../firebase/services";
 
 const AuthorNFTCardBox = ({
-  collectiables,
+  owned,
   created,
+  listed,
+  sold,
   like,
   follower,
   following,
-  nfts,
-  myNFTS,
-  NFTData,
+  nftsOwned,
+  nftsCreated,
+  nftsListed,
+  nftsSold,
+  nftsLiked,
 }) => {
   const [user, setUser] = useState(null);
   const [share, setShare] = useState(false);
   const [report, setReport] = useState(false);
   const address = useAddress();
-  const [myNFTs, setMyNFTs] = useState([]);
   const { fetchMyNFTsOrListedNFTs } = useContext(NFTMarketplaceContext);
   const [fileTypes, setFileTypes] = useState({});
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (address) {
-        const nfts = await fetchMyNFTsOrListedNFTs(address);
-        setMyNFTs(nfts);
-      }
-    };
+
 
     const RenderDefault = () => (
       <img
@@ -95,8 +92,7 @@ const AuthorNFTCardBox = ({
       return fileType ? <RenderMedia src={el.image} /> : <RenderDefault />;
     };
 
-    fetchData();
-  }, [address]);
+ 
 
   const followerArray = [];
 
@@ -104,21 +100,67 @@ const AuthorNFTCardBox = ({
 
   return (
     <div className={Style.AuthorNFTCardBox}>
-      {collectiables && <NFTCardTwo NFTData={nfts} />}
-      {created && <NFTCardTwo NFTData={myNFTS} />}
-      {like && <NFTCardTwo NFTData={nfts} />}
+      {owned && (
+        <div>
+          {nftsOwned.length > 0 ? (
+            <AuthorNFTCard NFTData={nftsCreated} />
+          ) : (
+            <p className={Style.NoDataMessage}>NO OWNED NFTS FROM THE XMARKET</p>
+          )}
+        </div>
+      )}
+      {created && (
+        <div>
+          {nftsCreated.length > 0 ? (
+            <AuthorNFTCard NFTData={nftsCreated} />
+          ) : (
+            <p className={Style.NoDataMessage}>NO CREATED NFTS ON THE XMARKET</p>
+          )}
+        </div>
+      )}
+      {listed && (
+        <div>
+          {nftsListed.length > 0 ? (
+            <AuthorNFTCard NFTData={nftsListed} />
+          ) : (
+            <p className={Style.NoDataMessage}>NO LISTED NFTS ON THE XMARKET</p>
+          )}
+        </div>
+      )}
+      {sold && (
+        <div>
+          {nftsSold.length > 0 ? (
+            <AuthorNFTCard NFTData={nftsSold} />
+          ) : (
+            <p className={Style.NoDataMessage}>NO SOLD NFTS ON THE XMARKET</p>
+          )}
+        </div>
+      )}
+      {like && (
+        <div>
+          {nftsLiked.length > 0 ? (
+            <AuthorNFTCard NFTData={nftsLiked} />
+          ) : (
+            <p className={Style.NoDataMessage}>NO LIKED NFTS ON THE XMARKET</p>
+          )}
+        </div>
+      )}
       {follower && (
         <div className={Style.AuthorNFTCardBox_box}>
-          {followerArray.map((el, i) => (
-            <FollowerTabCard key={i} el={el} />
-          ))}
+          {followerArray.length > 0 ? (
+            followerArray.map((el, i) => <FollowerTabCard key={i} el={el} />)
+          ) : (
+            <p className={Style.NoDataMessage}>YOU ARE NOT BEING FOLLOWED BY ANY USERS</p>
+          )}
         </div>
       )}
       {following && (
         <div className={Style.AuthorNFTCardBox_box}>
-          {followingArray.map((el, i) => (
-            <FollowerTabCard key={i} el={el} />
-          ))}
+          {followingArray.length > 0 ? (
+            followingArray.map((el, i) => <FollowerTabCard key={i} el={el} />)
+          ) : (
+            <p className={Style.NoDataMessage}>YOU ARE NOT FOLLOWING ANY CREATORS </p>
+          )}
         </div>
       )}
     </div>

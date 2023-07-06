@@ -1,171 +1,196 @@
 import React, { useState, useEffect } from "react";
 import { useAddress } from "@thirdweb-dev/react";
-
-
 import { getUserProfile } from "../../firebase/services";
-
-import Img from "next/image";
-
+import { MdVerified } from "react-icons/md";
 import {
-  MdVerified,
-  MdCloudUpload,
-  MdOutlineReportProblem,
-} from "react-icons/md";
-import { FiCopy } from "react-icons/fi";
-import {
-  TiSocialFacebook,
-  TiSocialYoutube,
-  TiSocialInstagram,
-} from "react-icons/ti";
-import { BsThreeDots } from "react-icons/bs";
-
+  FaFacebookF,
+  FaTwitter,
+  FaInstagram,
+  FaTiktok,
+  FaDiscord,
+} from "react-icons/fa";
 import Style from "./AuthorProfileCard.module.css";
 
-import { Button } from "../../components/componentsindex.js";
-
-const AuthorProfileCard = ({ currentAccount }) => {
+const AuthorProfileCard = ({currentAccount}) => {
   const [user, setUser] = useState(null);
   const [share, setShare] = useState(false);
   const [report, setReport] = useState(false);
-  const address = useAddress(); 
+  const address = useAddress();
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [facebook, setFacebook] = useState(null);
+  const [tiktok, setTikTok] = useState(null);
+  const [instagram, setInstagram] = useState(null);
+  const [twitter, setTwitter] = useState(null);
+  const [discord, setDiscord] = useState(null);
+  const [website, setWebsite] = useState("");
+  const [isCreator, setIsCreator] = useState("");
+  const [showFullAddress, setShowFullAddress] = useState(false); // New state variable
 
-   useEffect(() => {
+  useEffect(() => {
     const fetchUserData = async () => {
-      if (address) { 
-        const userData = await getUserProfile(address); 
+      if (address) {
+        const userData = await getUserProfile(address);
+        console.log("Fetched user data:", userData); // Log the fetched user data
         setUser(userData);
+        
+        if (userData && userData.socials) {
+          const { facebook, twitter, instagram, tiktok, discord } = userData.socials;
+          setFacebook(facebook);
+          setTwitter(twitter);
+          setInstagram(instagram);
+          setTikTok(tiktok);
+          setDiscord(discord);
+        }
       }
-    }
-    
+    };
+
     fetchUserData();
-  }, [address]); 
-  
+  }, [address]);
 
-  //copyAddress function
-  const copyAddress = () => {
-    const copyText = document.getElementById("myInput");
-
-    copyText.select();
-    navigator.clipboard.writeText(copyText.value);
+  const handleMouseEnter = () => {
+    setShowFullAddress(true);
   };
 
-  const openShare = () => {
-    if (!share) {
-      setShare(true);
-      setReport(false);
-    } else {
-      setShare(false);
-    }
+  const handleMouseLeave = () => {
+    setShowFullAddress(false);
   };
 
-  const openReport = () => {
-    if (!report) {
-      setReport(true);
-      setShare(false);
-    } else {
-      setReport(false);
-    }
+  const truncateAddress = (address) => {
+    if (!address) return ""; // Add a check to handle undefined address
+    if (showFullAddress) return address;
+
+    const firstSix = address.substring(0, 6);
+    const lastFour = address.substring(address.length - 4);
+    return `${firstSix}...${lastFour}`;
   };
 
- 
+  const handleAddressClick = () => {
+    navigator.clipboard.writeText(address);
+  };
+
   return (
     <div className={Style.AuthorProfileCard}>
       <div className={Style.AuthorProfileCard_box}>
         <div className={Style.AuthorProfileCard_box_img}>
           {user && (
-            <Img
+            <img
               src={user.profilePictureUrl}
               className={Style.AuthorProfileCard_box_img_img}
               alt="User Profile"
-              width={220}
-              height={220}
             />
           )}
+          
+        </div>
+        {user && (
+            <>
+        <div className={Style.AuthorProfileCard_username}>
+    
+                <h2>
+                  {user.username}{" "}
+                  <span>
+                    <MdVerified />
+                  </span>{" "}
+                </h2>
+              </div>
+                      </>
+          )}
+        <div className={Style.settings}>
+          <h1>MY PROFILE</h1>
         </div>
 
         <div className={Style.AuthorProfileCard_box_info}>
           {user && (
             <>
-              <h2>
-                {user.username}{" "}
-                <span>
-                  <MdVerified />
-                </span>{" "}
-              </h2>
-
-              <div className={Style.AuthorProfileCard_box_info_address}>
-                <input type="text" value={user.walletAddress} id="myInput" />
-                <FiCopy
-                  onClick={() => copyAddress()}
-                  className={Style.AuthorProfileCard_box_info_address_icon}
-                />
+              
+              <div className={Style.account_wallet}>
+                <p>CONNECTED WALLET</p>
+                <small
+                  onClick={handleAddressClick}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  {showFullAddress ? address : truncateAddress(address)}
+                </small>
               </div>
 
-              <p>
-                Email: {user.email} <br/>
-                Is Creator: {user.isCreator ? 'Yes' : 'No'} <br/>
-                Creator Page: {user.creatorPage} <br/>
-                NFTs Listed: {user.nftsListed.length} <br/>
-                NFTs Sold: {user.nftsSold.length} <br/>
-              </p>
-
-              <div className={Style.AuthorProfileCard_box_info_social}>
-                <a href="#">
-                  <TiSocialFacebook />
-                </a>
-                <a href="#">
-                  <TiSocialInstagram />
-                </a>
-                <a href="#">
-                  <TiSocialYoutube />
-                </a>
+              <div className={Style.account_email}>
+                <p>EMAIL</p>
+                <small>{user.email} </small>
               </div>
+
+              <div className={Style.account_email}>
+                <p>CREATOR</p>
+                <small>{user.isCreator ? "Yes" : "No"}</small>
+              </div>
+
+              <div className={Style.account_email}>
+                <p>COLLECTIONS CREATED</p>
+                <small>{user.collectionsCreated.length}</small>
+              </div>
+
+              <div className={Style.account_email}>
+                <p>NFTS LISTED</p>
+                <small>{user.nftsListed.length}</small>
+              </div>
+
+              <div className={Style.account_email}>
+                <p>NFTS SOLD</p>
+                <small>{user.nftsSold.length || 0}</small>
+              </div>
+
+              <div className={Style.account_email}>
+                <p>WEBSITE</p>
+                <small>{user.website}</small>
+              </div>
+
+              <div className={Style.account_socials}>
+                <p>SOCIALS</p>
+                <div className={Style.social_icons}>
+                  {facebook && (
+                    <a
+                      href={facebook}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <FaFacebookF />
+                    </a>
+                  )}
+                  {twitter && (
+                    <a
+                      href={twitter}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <FaTwitter />
+                    </a>
+                  )}
+                  {instagram && (
+                    <a
+                      href={instagram}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <FaInstagram />
+                    </a>
+                  )}
+                  {tiktok && (
+                    <a href={tiktok} target="_blank" rel="noopener noreferrer">
+                      <FaTiktok />
+                    </a>
+                  )}
+                  {discord && (
+                    <a href={discord} target="_blank" rel="noopener noreferrer">
+                      <FaDiscord />
+                    </a>
+                  )}
+                </div>
+              </div>
+              <div className={Style.account_blank}>
+        
+              </div>
+
             </>
-          )}
-        </div>
-
-        <div className={Style.AuthorProfileCard_box_share}>
-          <Button btnName="Follow" handleClick={() => {}} />
-          <MdCloudUpload
-            onClick={() => openShare()}
-            className={Style.AuthorProfileCard_box_share_icon}
-          />
-
-          {share && (
-            <div className={Style.AuthorProfileCard_box_share_upload}>
-              <p>
-                <span>
-                  <TiSocialFacebook />
-                </span>{" "}
-                FACEBOOK
-              </p>
-              <p>
-                <span>
-                  <TiSocialInstagram />
-                </span>{" "}
-                INSTAGRAM
-              </p>
-              <p>
-                <span>
-                  <TiSocialYoutube />
-                </span>{" "}
-                YOUTUBE
-              </p>
-            </div>
-          )}
-
-          <BsThreeDots
-            onClick={() => openReport()}
-            className={Style.AuthorProfileCard_box_share_icon}
-          />
-
-          {report && (
-            <p className={Style.AuthorProfileCard_box_share_report}>
-              <span>
-                <MdOutlineReportProblem />
-              </span>{" "}
-                REPORT ABUSE
-            </p>
           )}
         </div>
       </div>

@@ -1,22 +1,92 @@
 
 .AuthorProfileCard{
-    width: 100%;
-    z-index: 22222;
-    margin-top: 5rem;
+    width: 100%;    
+    margin-top: 0rem;
 }
 
 .AuthorProfileCard_box{
-    width: 80%;
-    margin:  0 auto;
+    width: 100%;
+    background: rgb(0, 0, 0);
+    border-right: .2rem solid var(--shadow-dark-color);
+    padding-top: 4rem;
+}
 
-    display: grid;
-    grid-template-columns: 1fr 4fr 1.3fr;
-    align-items: center;
+.AuthorProfileCard_box_img{
+    display: flex;
+    justify-content: center;
+}
+
+.AuthorProfileCard_box_img_img{
+    border-radius: 50%;
+    width: 16rem;
+    padding: 0rem;
+    margin: 0rem;
+}
+
+.AuthorProfileCard_username{
+    display: flex;
+    width: 100%;
+    margin-top: 0rem;
+    margin-bottom: 0rem;
+    justify-content: center;
+}
+
+.AuthorProfileCard_username h2{
+    font-size: 2.5rem;
+    padding: 0rem;
+    margin-top: 0rem;
+}
+
+.account_blank{
+    width: 100%;
+    height: 4rem;
+    background-color: black;
+}
+
+
+.settings {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    border-top: .2rem solid var(--shadow-dark-color);
+    border-bottom: .2rem solid var(--shadow-dark-color);
     
-    padding: 2.5rem 2rem;
-    border-radius: .5rem;
-    border: .1rem solid white;
-    box-shadow:  0 0 2px rgb(1, 122, 254, 255),
+}
+
+.settings h1 {
+    font-size: 1.8rem;
+    font-weight: 400;
+    line-height: 1;
+
+}
+
+.account_socials,
+.account_website,
+.account_email,
+.account_wallet,
+.account_username{
+    display: grid;
+    justify-items: center;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    background-color: rgba(15, 15, 15, 0.863);
+    
+    
+}
+
+.account_website p,
+.account_socials p,
+.account_email p,
+.account_wallet p,
+.account_username p {
+    display: grid;
+    justify-items: center;
+    margin-top: 0rem;
+    margin-bottom: 0.4rem;
+    font-size: 1.1rem;
+    text-shadow: 
+    0 0 2px rgb(1, 122, 254, 255),
     0 0 2px rgb(1, 122, 254, 255),
     0 0 2px rgb(1, 122, 254, 255), 
     0 0 2px rgb(1, 122, 254, 255),
@@ -24,23 +94,60 @@
     0 0 3px rgb(1, 122, 254, 255),
     0 0 3px rgb(1, 122, 254, 255), 
     0 0 5px rgb(1, 122, 254, 255), 
-    0 0 5px rgb(1, 122, 254, 255);;
-    gap: 3rem;
+    0 0 5px rgb(1, 122, 254, 255);
 }
 
-.AuthorProfileCard_box_img_img{
-    border-radius: 1rem;
+.account_website small,
+.account_socials small,
+.account_email small,
+.account_wallet small,
+.account_username small {
+    margin-top: 0rem;    
+    font-size: 1rem;
+
 }
+
+.account_wallet small:hover{
+    margin-top: 0rem;    
+    font-size: .9rem;
+    cursor: pointer;
+    cursor: pointer;
+    color: rgba(1,122,254,255);
+}
+  
+  .social_icons {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .social_icons a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;   
+    border-radius: 50%;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  
+.address_copied {    
+    cursor: pointer;
+  }
+
+  .address_copied:hover {    
+    cursor: pointer;
+    color: rgba(1,122,254,255);
+  }
+
 
 .AuthorProfileCard_box_info h2{
     font-size: 2.5rem;
     line-height: 0;
-    margin-top: -.5rem;
+    
 }
 
-.AuthorProfileCard_box_info_address{
-    margin-top: -1rem;
-}
 
 .AuthorProfileCard_box_info_address input{
     outline: none;

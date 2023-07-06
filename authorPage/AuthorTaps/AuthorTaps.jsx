@@ -9,8 +9,10 @@ import { getUserProfile } from "../../firebase/services";
 import Style from "./AuthorTaps.module.css";
 
 const AuthorTaps = ({
-  setCollectiables,
+  setOwned,
   setCreated,
+  setListed,
+  setSold,
   setLike,
   setFollower,
   setFollowing,
@@ -23,7 +25,6 @@ const AuthorTaps = ({
   const [share, setShare] = useState(false);
   const [report, setReport] = useState(false);
 
-  
 
   const listArray = [
     "Created By Admin",
@@ -31,7 +32,7 @@ const AuthorTaps = ({
     "Most Discussed",
     "Most Viewed",
   ];
-  
+
 
   const openDropDownList = () => {
     if (!openList) {
@@ -44,42 +45,71 @@ const AuthorTaps = ({
   const openTab = (e) => {
     const btnText = e.target.innerText;
     console.log(btnText);
-    if (btnText == "Listed NFTs") {
-      setCollectiables(true);
+    if (btnText == "Owned NFTs") {
+      setOwned(true);
       setCreated(false);
+      setListed(false);
+      setSold(false);
       setFollower(false);
       setFollowing(false);
       setLike(false);
       setActiveBtn(1);
-    } else if (btnText == "Own NFT") {
-      setCollectiables(false);
+    } else if (btnText == "Created NFTs") {
+      setOwned(false);
       setCreated(true);
+      setListed(false);
+      setSold(false);
       setFollower(false);
       setFollowing(false);
       setLike(false);
       setActiveBtn(2);
-    } else if (btnText == "Liked") {
-      setCollectiables(false);
+    } else if (btnText == "Listed NFTs") {
+      setOwned(false);
       setCreated(false);
+      setListed(true);
+      setSold(false);
+      setFollower(false);
+      setFollowing(false);
+      setLike(false);
+      setActiveBtn(3);
+    } else if (btnText == "Sold NFTs") {
+      setOwned(false);
+      setCreated(false);
+      setListed(false);
+      setSold(true);
+      setFollower(false);
+      setFollowing(false);
+      setLike(false);
+      setActiveBtn(4);
+    } else if (btnText == "Liked NFTs") {
+      setOwned(false);
+      setCreated(false);
+      setListed(false);
+      setSold(false);
       setFollower(false);
       setFollowing(false);
       setLike(true);
-      setActiveBtn(3);
-    } else if (btnText == "Following") {
-      setCollectiables(false);
+      setActiveBtn(5);
+    }else if (btnText == "You're Following") {
+      setOwned(false);
       setCreated(false);
+      setListed(false);
+      setSold(false);
       setFollower(false);
       setFollowing(true);
       setLike(false);
-      setActiveBtn(4);
-    } else if (btnText == "Followers") {
-      setCollectiables(false);
+      setActiveBtn(6);
+    }else if (btnText == "Your Followers") {
+      setOwned(false);
       setCreated(false);
+      setListed(false);
+      setSold(false);
       setFollower(true);
       setFollowing(false);
       setLike(false);
-      setActiveBtn(5);
+      setActiveBtn(7);
     }
+    
   };
 
   return (
@@ -91,31 +121,43 @@ const AuthorTaps = ({
               className={`${activeBtn == 1 ? Style.active : ""}`}
               onClick={(e) => openTab(e)}
             >
-              Listed NFTs
+              Owned NFTs
             </button>
             <button
               className={`${activeBtn == 2 ? Style.active : ""}`}
               onClick={(e) => openTab(e)}
             >
-              Own NFT
+              Created NFTs
             </button>
             <button
               className={`${activeBtn == 3 ? Style.active : ""}`}
               onClick={(e) => openTab(e)}
             >
-              Liked
+              Listed NFTs
             </button>
             <button
               className={`${activeBtn == 4 ? Style.active : ""}`}
               onClick={(e) => openTab(e)}
             >
-              Following
+              Sold NFTs
             </button>
             <button
               className={`${activeBtn == 5 ? Style.active : ""}`}
               onClick={(e) => openTab(e)}
             >
-              Followers
+              Liked NFTs
+            </button>
+            <button
+              className={`${activeBtn == 5 ? Style.active : ""}`}
+              onClick={(e) => openTab(e)}
+            >
+              You're Following
+            </button>
+            <button
+              className={`${activeBtn == 6 ? Style.active : ""}`}
+              onClick={(e) => openTab(e)}
+            >
+              Your Followers
             </button>
           </div>
         </div>

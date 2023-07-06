@@ -1,15 +1,32 @@
 .author{
-    padding-top: 7rem;
-    background-image: url(../img/card-background-2.png);
+    padding-top: 5.6rem;
+   
+    padding-bottom: 2rem;
 }
-.author_box{
-    width: 80%;
-    margin: 0 auto;
 
+.author_box_author{
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 2rem;
-    margin-top: 6rem;
+    grid-template-columns: 20% 80%;
+}
+
+.author_box_profile{
+    display: flex;
+    width: 100%;
+}
+
+.author_box_taps{
+  width: 100%;
+  margin-top: 12rem;
+
+}
+
+.author_box{
+    width: 100%;
+   margin-bottom: -8rem;
+}
+.author_box_cards{
+    display: flex;
+    width: 100%;
 }
 
 @media screen and (max-width: 35em) {
