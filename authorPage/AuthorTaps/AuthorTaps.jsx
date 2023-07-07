@@ -10,6 +10,7 @@ import Style from "./AuthorTaps.module.css";
 
 const AuthorTaps = ({
   setCollectionsCreated,
+  setCollections,
   setCreated,
   setListed,
   setOwned,
@@ -18,6 +19,7 @@ const AuthorTaps = ({
   setFollower,
   setFollowing,
   currentAccount,
+  collectionsData,
 }) => {
   const [openList, setOpenList] = useState(false);
   const [activeBtn, setActiveBtn] = useState(1);
@@ -26,7 +28,6 @@ const AuthorTaps = ({
   const [share, setShare] = useState(false);
   const [report, setReport] = useState(false);
 
-
   const listArray = [
     "Created By Admin",
     "Most Appreciated",
@@ -34,19 +35,14 @@ const AuthorTaps = ({
     "Most Viewed",
   ];
 
-
   const openDropDownList = () => {
-    if (!openList) {
-      setOpenList(true);
-    } else {
-      setOpenList(false);
-    }
+    setOpenList(!openList);
   };
 
   const openTab = (e) => {
     const btnText = e.target.innerText;
     console.log(btnText);
-    if(btnText == "Created Collections") {
+    if (btnText === "Created Collections") {
       setCollectionsCreated(true);
       setCreated(false);
       setListed(false);
@@ -56,17 +52,17 @@ const AuthorTaps = ({
       setFollowing(false);
       setLike(false);
       setActiveBtn(1);
-    }  else if (btnText == "Created NFTs") {
+    } else if (btnText === "Created NFTs") {
       setCollectionsCreated(false);
-      setCreated(false);
-      setListed(true);
+      setCreated(true);
+      setListed(false);
       setOwned(false);
       setSold(false);
       setFollower(false);
       setFollowing(false);
       setLike(false);
       setActiveBtn(2);
-    } else if (btnText == "Listed NFTs") {
+    } else if (btnText === "Listed NFTs") {
       setCollectionsCreated(false);
       setCreated(false);
       setListed(true);
@@ -76,7 +72,7 @@ const AuthorTaps = ({
       setFollowing(false);
       setLike(false);
       setActiveBtn(3);
-    } else if (btnText == "Owned NFTs") {
+    } else if (btnText === "Owned NFTs") {
       setCollectionsCreated(false);
       setCreated(false);
       setListed(false);
@@ -85,9 +81,8 @@ const AuthorTaps = ({
       setFollower(false);
       setFollowing(false);
       setLike(false);
-        setActiveBtn(4);
-      
-    } else if (btnText == "Sold NFTs") {
+      setActiveBtn(4);
+    } else if (btnText === "Sold NFTs") {
       setCollectionsCreated(false);
       setCreated(false);
       setListed(false);
@@ -97,7 +92,7 @@ const AuthorTaps = ({
       setFollowing(false);
       setLike(false);
       setActiveBtn(5);
-    } else if (btnText == "Liked NFTs") {
+    } else if (btnText === "Liked NFTs") {
       setCollectionsCreated(false);
       setCreated(false);
       setListed(false);
@@ -107,17 +102,17 @@ const AuthorTaps = ({
       setFollowing(false);
       setLike(true);
       setActiveBtn(6);
-    }else if (btnText == "You're Following") {
+    } else if (btnText === "Your Followers") {
       setCollectionsCreated(false);
       setCreated(false);
       setListed(false);
       setOwned(false);
       setSold(false);
-      setFollower(false);
-      setFollowing(true);
+      setFollower(true);
+      setFollowing(false);
       setLike(false);
       setActiveBtn(7);
-    }else if (btnText == "Your Followers") {
+    } else if (btnText === "You're Following") {
       setCollectionsCreated(false);
       setCreated(false);
       setListed(false);
@@ -128,7 +123,6 @@ const AuthorTaps = ({
       setLike(false);
       setActiveBtn(8);
     }
-    
   };
 
   return (
@@ -137,49 +131,49 @@ const AuthorTaps = ({
         <div className={Style.AuthorTaps_box_left}>
           <div className={Style.AuthorTaps_box_left_btn}>
             <button
-              className={`${activeBtn == 1 ? Style.active : ""}`}
+              className={`${activeBtn === 1 ? Style.active : ""}`}
               onClick={(e) => openTab(e)}
             >
               Created Collections
             </button>
             <button
-              className={`${activeBtn == 2 ? Style.active : ""}`}
+              className={`${activeBtn === 2 ? Style.active : ""}`}
               onClick={(e) => openTab(e)}
             >
               Created NFTs
             </button>
             <button
-              className={`${activeBtn == 3 ? Style.active : ""}`}
-              onClick={(e) => openTab(e)}
-            >
-              Liked NFTs
-            </button>
-            <button
-              className={`${activeBtn == 4 ? Style.active : ""}`}
+              className={`${activeBtn === 3 ? Style.active : ""}`}
               onClick={(e) => openTab(e)}
             >
               Listed NFTs
             </button>
             <button
-              className={`${activeBtn == 5? Style.active : ""}`}
+              className={`${activeBtn === 4 ? Style.active : ""}`}
               onClick={(e) => openTab(e)}
             >
               Owned NFTs
             </button>
             <button
-              className={`${activeBtn == 6 ? Style.active : ""}`}
+              className={`${activeBtn === 5 ? Style.active : ""}`}
               onClick={(e) => openTab(e)}
             >
               Sold NFTs
             </button>
             <button
-              className={`${activeBtn == 7 ? Style.active : ""}`}
+              className={`${activeBtn === 6 ? Style.active : ""}`}
+              onClick={(e) => openTab(e)}
+            >
+              Liked NFTs
+            </button>
+            <button
+              className={`${activeBtn === 7 ? Style.active : ""}`}
               onClick={(e) => openTab(e)}
             >
               Your Followers
             </button>
             <button
-              className={`${activeBtn == 8 ? Style.active : ""}`}
+              className={`${activeBtn === 8 ? Style.active : ""}`}
               onClick={(e) => openTab(e)}
             >
               You're Following
@@ -205,7 +199,7 @@ const AuthorTaps = ({
                   className={Style.AuthorTaps_box_right_list_item}
                 >
                   <p>{el}</p>
-                  <span>{selectedMenu == el && <TiTick />}</span>
+                  <span>{selectedMenu === el && <TiTick />}</span>
                 </div>
               ))}
             </div>

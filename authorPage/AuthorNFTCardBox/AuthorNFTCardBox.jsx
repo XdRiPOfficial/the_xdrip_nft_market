@@ -3,15 +3,16 @@ import { useAddress } from "@thirdweb-dev/react";
 import { NFTMarketplaceContext } from "../../Context/NFTMarketplaceContext";
 import Style from "./AuthorNFTCardBox.module.css";
 import images from "../../img";
-import { AuthorNFTCard } from "../componentIndex";
+import { AuthorNFTCard, AuthorCollections } from "../componentIndex";
 import FollowerTabCard from "../../components/FollowerTab/FollowerTabCard/FollowerTabCard";
 import { Loader } from "../../components/componentsindex";
+import { getUserCollections } from "../../firebase/services";
 
 
 const AuthorNFTCardBox = ({
   owned,
   collections,
-  created,  
+  created,
   listed,
   sold,
   like,
@@ -19,7 +20,8 @@ const AuthorNFTCardBox = ({
   following,
   nftsOwned,
   collectionsCreated,
-  nftsCreated, 
+  collectionsData,
+  nftsCreated,
   nftsListed,
   nftsSold,
   nftsLiked,
@@ -32,68 +34,101 @@ const AuthorNFTCardBox = ({
   const [loading, setLoading] = useState(true);
 
 
+  useEffect(() => {
+    console.log("owned:", owned);
+    console.log("collections:", collections);
+    console.log("created:", created);
+    console.log("listed:", listed);
+    console.log("sold:", sold);
+    console.log("like:", like);
+    console.log("follower:", follower);
+    console.log("following:", following);
+    console.log("nftsOwned:", nftsOwned);
+    console.log("collectionsCreated:", collectionsCreated);
+    console.log("collectionsData:", collectionsData);
+    console.log("nftsCreated:", nftsCreated);
+    console.log("nftsListed:", nftsListed);
+    console.log("nftsSold:", nftsSold);
+    console.log("nftsLiked:", nftsLiked);
+  }, [
+    owned,
+    collections,
+    created,
+    listed,
+    sold,
+    like,
+    follower,
+    following,
+    nftsOwned,
+    collectionsData,
+    nftsCreated,
+    nftsListed,
+    nftsSold,
+    nftsLiked,
+  ]);
 
-    const RenderDefault = () => (
-      <img
-        src={images.invalidImage}
-        alt="NFT"
-        width={350}
-        height={300}
-        className={Style.NFTCard_box_img_img}
-      />
-    );
 
-    const RenderMedia = ({ src }) => {
-      const fileType = fileTypes[src];
+  const RenderDefault = () => (
+    <img
+      src={images.invalidImage}
+      alt="NFT"
+      width={350}
+      height={300}
+      className={Style.NFTCard_box_img_img}
+    />
+  );
 
-      const isImage = fileType && fileType.startsWith("image");
-      const isAudio = fileType && fileType.startsWith("audio");
+  const RenderMedia = ({ src }) => {
+    const fileType = fileTypes[src];
 
-      return (
-        <div>
-          {isImage ? (
+    const isImage = fileType && fileType.startsWith("image");
+    const isAudio = fileType && fileType.startsWith("audio");
+
+    return (
+      <div>
+        {isImage ? (
+          <img
+            src={src}
+            alt="NFT"
+            width={350}
+            height={300}
+            className={Style.NFTCardTwo_box_img_img}
+          />
+        ) : isAudio ? (
+          <div className={Style.NFTCardTwo_box_audio}>
             <img
-              src={src}
-              alt="NFT"
+              src={images.audio_image}
+              alt="Default"
               width={350}
-              height={300}
-              className={Style.NFTCardTwo_box_img_img}
+              height={255}
+              className={Style.NFTCardTwo_box_img_audio}
             />
-          ) : isAudio ? (
-            <div className={Style.NFTCardTwo_box_audio}>
-              <img
-                src={images.audio_image}
-                alt="Default"
-                width={350}
-                height={255}
-                className={Style.NFTCardTwo_box_img_audio}
-              />
-              <audio
-                src={src}
-                controls
-                className={Style.NFTCardTwo_box_audio_controls}
-              />
-            </div>
-          ) : (
-            <video
+            <audio
               src={src}
               controls
-              width="350px"
-              height="300px"
-              className={Style.NFTCardTwo_box_img_img}
+              className={Style.NFTCardTwo_box_audio_controls}
             />
-          )}
-        </div>
-      );
-    };
+          </div>
+        ) : (
+          <video
+            src={src}
+            controls
+            width="350px"
+            height="300px"
+            className={Style.NFTCardTwo_box_img_img}
+          />
+        )}
+      </div>
+    );
+  };
 
-    const renderFilePreview = (el) => {
-      const fileType = fileTypes[el.image];
+  const renderFilePreview = (el) => {
+    const fileType = fileTypes[el.image];
 
-      return fileType ? <RenderMedia src={el.image} /> : <RenderDefault />;
-    };
+    return fileType ? <RenderMedia src={el.image} /> : <RenderDefault />;
+  };
 
- 
+
 
   const followerArray = [];
 
@@ -104,7 +139,7 @@ const AuthorNFTCardBox = ({
       {owned && (
         <div>
           {nftsOwned.length > 0 ? (
-            <AuthorNFTCard NFTData={nftsCreated} />
+            <AuthorNFTCard NFTData={nftsOwned} />
           ) : (
             <p className={Style.NoDataMessage}>NO PURCHASED NFTS FROM XMARKET</p>
           )}
@@ -119,14 +154,15 @@ const AuthorNFTCardBox = ({
           )}
         </div>
       )}
-      {collections && (
+      {collectionsCreated && (
         <div>
-          {collectionsCreated.length > 0 ? (
-            <AuthorNFTCard NFTData={collectionsCreated} />
+          {collectionsData.length > 0 ? (
+            <AuthorCollections CollectionData={collectionsData} />
           ) : (
             <p className={Style.NoDataMessage}>NO CREATED COLLECTIONS ON XMARKET</p>
           )}
         </div>
+
       )}
       {listed && (
         <div>

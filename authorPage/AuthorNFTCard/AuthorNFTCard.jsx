@@ -18,6 +18,8 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { useAddress } from "@thirdweb-dev/react";
 import Link from "next/link";
+import { Carousel } from 'react-round-carousel';
+
 
 const AuthorNFTCard = ({ NFTData }) => {
   const [currentPage, setCurrentPage] = useState(1);

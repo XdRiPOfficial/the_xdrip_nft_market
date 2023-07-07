@@ -46,12 +46,16 @@ const UploadNFT = ({ createNFT, connectedWallet }) => {
     const fetchUserCollections = async () => {
       if (walletAddress) {
         const userCollections = await getUserCollections(walletAddress);
+        console.log('User Collections:', userCollections); // Log userCollections data
         setUserCollections(userCollections);
       }
     };
-
+  
     fetchUserCollections();
   }, [walletAddress]);
+  
+
+  
 
   const categoryArry = [
     {
@@ -141,29 +145,33 @@ const UploadNFT = ({ createNFT, connectedWallet }) => {
           <div className={formStyle.Form_box_input}>
             <label htmlFor="name">CHOOSE COLLECTION</label>
             <select
-              value={collectionName}
-              onChange={(e) => {
-                const selectedValue = e.target.value;
-                if (selectedValue === 'new') {
-                  router.push('/createCollectionPage');
-                } else if (selectedValue === 'start' || selectedValue === 'none') {
-                  setCollectionName(null);
-                } else {
-                  setCollectionName(selectedValue);
-                }
-              }}
-            >
-              <option value="start">SELECT AN EXISTING COLLECTION OR CREATE A NEW ONE</option>
-              <option value="new">CREATE A NEW COLLECTION</option>
-              <option value="none">NO COLLECTION</option>
-              {userCollections &&
-              userCollections.map((userCollection, i) => (
-                <option key={i} value={userCollection.collectionName}>
-                  {userCollection.collectionName}
-                </option>
-              ))}
-            </select>
+  value={collectionName}
+  onChange={(e) => {
+    const selectedValue = e.target.value;
+    if (selectedValue === 'new') {
+      router.push('/myProfile');
+    } else if (selectedValue === 'start' || selectedValue === 'none') {
+      setCollectionName(null);
+    } else {
+      setCollectionName(selectedValue);
+    }
+  }}
+>
+  <option value="start">SELECT AN EXISTING COLLECTION OR CREATE A NEW ONE</option>
+  <option value="new">CREATE A NEW COLLECTION</option>
+  <option value="none">NO COLLECTION</option>
+  {userCollections &&
+    userCollections.collectionsCreated &&
+    userCollections.collectionsCreated.map((collection, i) => (
+      <option key={collection.collectionName} value={collection.collectionName}>
+        {collection.collectionName}
+      </option>
+    ))}
+</select>
+
+
           </div>
+
 
 
 

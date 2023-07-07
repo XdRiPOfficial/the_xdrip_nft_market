@@ -30,7 +30,7 @@
     font-family: "Good Times";
     font-size: .8rem;
     border-radius: .5rem;
-    padding: .5rem .55rem;
+    padding: .5rem 0rem;
     cursor: pointer;
     transition: all .3s ease-in;
     color: white; 

@@ -33,24 +33,14 @@ const BigNFTSlider = () => {
 
   useEffect(() => {
     async function fetchNFTData() {
-      try {
-        // Call the `getNFTData` function and pass the `tokenId` as a parameter
-        const data = await getNFTData(nfts[currentIndex].tokenId, nfts[currentIndex].name);
-
-  
-        console.log("Fetched NFT Data 1:", data); // Log the fetched data
-  
-        // Update the state variable with the fetched data
-        setNftData(data);
-  
-        // Set the collectionName state variable
-      
+      try {        
+        const data = await getNFTData(nfts[currentIndex].tokenId, nfts[currentIndex].name);  
+        console.log("Fetched NFT Data 1:", data);        
+        setNftData(data);      
       } catch (error) {
-        console.error("Error fetching NFT data 1:", error);
-      }
+        console.error("Error fetching NFT data 1:", error);     }
     }
   
-    // Call fetchNFTData when the component mounts
     fetchNFTData();
   }, [currentIndex]);
   

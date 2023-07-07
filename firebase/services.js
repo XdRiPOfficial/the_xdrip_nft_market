@@ -205,9 +205,8 @@ export const createCollection = async (collectionData, collectionImage, bannerIm
       instagram: "",
       tiktok: "",
       discord: "",
-      tokenIds: [],
     },
-
+    tokenIds: [],
   };
   console.log("Created newCollection:", newCollection);
 
@@ -372,28 +371,101 @@ export const updateCollection = async (walletAddress, updates, bannerImage, feat
 
 //**************************************************************************** GET USER COLLECTIONS FUNCTION *******************************************************************************
 
-export const getUserCollections = async (walletAddress) => {
-  const firestore = getFirestore();
-  const q = query(
-    collection(firestore, "userCollections"),
-    where("walletAddress", "==", walletAddress)
-  );
+export const getUserCollections = async (currentAddress) => {
+  console.log("currentAddress:", currentAddress);
+  try {
+    const userProfile = await getUserProfile(currentAddress);
 
-  const querySnapshot = await getDocs(q);
+    if (userProfile) {
+      const { collectionsCreated } = userProfile;
 
-  if (!querySnapshot.empty) {
-    const userCollections = [];
-    querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      const collection = { id: doc.id, ...doc.data() };
-      userCollections.push(collection);
-    });
-    return userCollections;
-  } else {
-    console.error("No Collection found with the given wallet address");
-    return null;
+      console.log("collectionsCreated:", collectionsCreated);
+
+      const firestore = getFirestore();
+      const usersCollections = collection(firestore, "userCollections");
+
+      const collectionsCreatedData = await Promise.all(
+        collectionsCreated.map(async (docId) => {
+          const docRef = doc(usersCollections, docId);
+          const docSnapshot = await getDoc(docRef);
+
+          if (docSnapshot.exists()) {
+            const nftData = { id: docSnapshot.id, ...docSnapshot.data() };
+            console.log("Fetched collection data for docId:", docId, nftData);
+            return nftData;
+          } else {
+            console.log("No matching collection found for docId:", docId);
+            return null;
+          }
+        })
+      );
+
+      console.log("collectionsCreatedData:", collectionsCreatedData);
+
+      return {
+        collectionsCreated: collectionsCreatedData.filter((collection) => collection !== null),
+      };
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching user NFTs:", error);
+    throw error;
+  }
+}
+
+
+
+
+//**************************************************************************** GET USER COLLECTION DATA FUNCTION *******************************************************************************
+
+export const getCollectionsData = async (currentAddress) => {
+  try {
+    const collectionsData = await getUserCollections(currentAddress);
+
+    if (collectionsData) {
+      const { collectionsCreated } = collectionsData;
+      const collectionsCreatedData = [];
+
+      for (const collection of collectionsCreated) {
+        const {
+          bannerImageUrl,
+          collectionImageUrl,
+          collectionName,
+          featuredImageUrl,
+          socials,
+          tokenIds,
+          walletAddress,
+          website,
+        } = collection;
+
+        // Additional processing or data manipulation can be done here
+
+        const collectionData = {
+          bannerImageUrl,
+          collectionImageUrl,
+          collectionName,
+          featuredImageUrl,
+          socials,
+          tokenIds,
+          walletAddress,
+          website,
+        };
+
+        collectionsCreatedData.push(collectionData);
+      }
+
+      console.log("collectionsCreatedData:", collectionsCreatedData);
+      return collectionsCreatedData;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching collections data:", error);
+    throw error;
   }
 };
+
 
 
 
@@ -608,7 +680,7 @@ export async function getMyNFTs(currentAddress) {
         nftsCreated.map(async (docId) => {
           const docRef = doc(userCollections, docId);
           const docSnapshot = await getDoc(docRef);
-      
+
           if (docSnapshot.exists()) {
             const nftData = { id: docSnapshot.id, ...docSnapshot.data() };
             console.log("Fetched NFT data for docId:", docId, nftData);
@@ -618,7 +690,7 @@ export async function getMyNFTs(currentAddress) {
             return null;
           }
         })
-      );     
+      );
 
       const nftsListedData = await Promise.all(
         nftsListed.map(async (docId) => {
@@ -662,7 +734,7 @@ export async function getMyNFTs(currentAddress) {
 
 //************************************************************************* GET NFT DATA FUNCTION *****************************************************************************************
 
-export async function getNFTData(tokenId,name) {
+export async function getNFTData(tokenId, name) {
   try {
     const firestore = getFirestore();
     const q = query(collection(firestore, "nfts"), where("tokenId", "==", Number(tokenId)));
