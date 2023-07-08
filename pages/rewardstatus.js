@@ -168,6 +168,7 @@ function RewardStatus() {
 export default RewardStatus;
 */
 
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAddress } from "@thirdweb-dev/react";
@@ -210,7 +211,8 @@ function RewardStatus() {
       return acc;
     }, []);
 
-    setRewards(rewardsData);
+    const lastThreeDistributions = rewardsData.slice(Math.max(rewardsData.length - 3, 0));
+    setRewards(lastThreeDistributions);
   } catch (error) {
     console.error('Error retrieving reward information:', error);
     setRewards([]);
