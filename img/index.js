@@ -87,7 +87,7 @@ import playB from "./playB.png";
 import playW from "./playW.png";
 import mute from "./mute.png";
 import unmute from "./unmute.png";
-
+import xmarket_ped from "./xmarket-ped.jpg";
 
 
 
@@ -180,5 +180,6 @@ export default {
   transferEther,
   xm,
   xm2,
+  xmarket_ped,
   invalidImage,
 };

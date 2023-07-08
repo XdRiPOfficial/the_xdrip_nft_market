@@ -3,10 +3,11 @@ import Image from "next/image";
 import { MdVerified } from "react-icons/md";
 import { TiTick } from "react-icons/ti";
 
-//INTERNAL IMPORT
+// INTERNAL IMPORT
 import Style from "./FollowerTabCard.module.css";
 import images from "../../../img";
-const FollowerTabCard = ({ i, el }) => {
+
+const FollowerTabCard = ({ i, user }) => {
   const [following, setFollowing] = useState(false);
 
   const followMe = () => {
@@ -16,6 +17,9 @@ const FollowerTabCard = ({ i, el }) => {
       setFollowing(false);
     }
   };
+
+  console.log("FollowerTabCard Data:", user);
+
   return (
     <div className={Style.FollowerTabCard}>
       <div className={Style.FollowerTabCard_rank}>
@@ -28,7 +32,7 @@ const FollowerTabCard = ({ i, el }) => {
         <div className={Style.FollowerTabCard_box_img}>
           <Image
             className={Style.FollowerTabCard_box_img_img}
-            src={el.background || images[`creatorbackground${i + 1}`]}
+            src={images.xmarket_ped}
             alt="profile background"
             width={500}
             height={300}
@@ -42,20 +46,19 @@ const FollowerTabCard = ({ i, el }) => {
             alt="profile picture"
             width={80}
             height={80}
-            src={el.user || images[`user${i + 1}`]}
+            src={user.profilePictureUrl || images[`user${i + 1}`]}
           />
         </div>
 
         <div className={Style.FollowerTabCard_box_info}>
           <div className={Style.FollowerTabCard_box_info_name}>
             <h4>
-              {el.seller.slice(0, 9)}
+              {user.username }
               {""}{" "}
               <span>
                 <MdVerified />
               </span>
             </h4>
-            
           </div>
 
           <div className={Style.FollowerTabCard_box_info_following}>
