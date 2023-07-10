@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { RiUserFollowFill, RiAwardLine } from "react-icons/ri";
+import { RoundCarousel, RoundCarouselSlide } from "react-round-carousel";
 
 // INTERNAL IMPORT
 import Style from "./FollowerTab.module.css";

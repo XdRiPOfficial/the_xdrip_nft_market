@@ -88,7 +88,7 @@ import playW from "./playW.png";
 import mute from "./mute.png";
 import unmute from "./unmute.png";
 import xmarket_ped from "./xmarket-ped.jpg";
-
+import comingsoon from "./comingsoon.png";
 
 
 export default {
@@ -98,6 +98,7 @@ export default {
   audio_image,
   audio_image2,
   audio_image3,
+  comingsoon,
   mute,
   unmute,
   banner_1,

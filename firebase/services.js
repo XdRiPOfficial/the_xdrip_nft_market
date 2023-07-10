@@ -36,6 +36,8 @@ export const addUser = async (username, email, website, walletAddress, profilePi
     },
     collectionsCreated: [],
     nftsOwned: [],
+    followers: [],
+    following: [],
   };
 
   try {
@@ -194,6 +196,75 @@ export const getUserProfile = async (walletAddress) => {
     return null;
   }
 };
+
+
+
+
+
+/*****************************************************************************************************************************************************************************************
+                                                                                
+                                                                   ADD A FOLLOWER TO THE USER FOLLOWERS AND FOLLOWERS FOLLOWING FIELDS
+
+******************************************************************************************************************************************************************************************/
+
+const addFollower = async (userId, followerId) => {
+  try {
+    const userRef = db.collection('users').doc(userId);
+    const followerRef = db.collection('users').doc(followerId);
+
+    // Add follower to the user's followers field
+    await userRef.update({
+      followers: firebase.firestore.FieldValue.arrayUnion(followerId)
+    });
+
+    // Add the user to the follower's following field
+    await followerRef.update({
+      following: firebase.firestore.FieldValue.arrayUnion(userId)
+    });
+
+    console.log('Follower added successfully!');
+  } catch (error) {
+    console.error('Error adding follower:', error);
+  }
+};
+
+// Usage
+addFollower('userId1', 'followerId1');
+
+
+
+
+
+/*****************************************************************************************************************************************************************************************
+                                                                                
+                                                                   REMOVE A FOLLOWER FROM THE USER FOLLOWERS AND FOLLOWERS FOLLOWING FIELDS
+
+******************************************************************************************************************************************************************************************/
+
+const removeFollower = async (userId, followerId) => {
+  try {
+    const userRef = db.collection('users').doc(userId);
+    const followerRef = db.collection('users').doc(followerId);
+
+    // Remove follower from the user's followers field
+    await userRef.update({
+      followers: firebase.firestore.FieldValue.arrayRemove(followerId)
+    });
+
+    // Remove the user from the follower's following field
+    await followerRef.update({
+      following: firebase.firestore.FieldValue.arrayRemove(userId)
+    });
+
+    console.log('Follower removed successfully!');
+  } catch (error) {
+    console.error('Error removing follower:', error);
+  }
+};
+
+// Usage
+removeFollower('userId1', 'followerId1');
+
 
 
 
@@ -780,19 +851,45 @@ export const getAllUsers = async () => {
 
 ******************************************************************************************************************************************************************************************/
 
-export const getAllUserCollections = async () => {
+export const getAllCollections = async () => {
   const firestore = getFirestore();
-  const q = collection(firestore, "userCollections");
+  const userCollectionsRef = collection(firestore, "userCollections");
+  const usersRef = collection(firestore, "users");
+  const nftsRef = collection(firestore, "nfts");
 
-  const querySnapshot = await getDocs(q);
-  const userCollections = [];
+  const querySnapshot = await getDocs(userCollectionsRef);
+  const collections = [];
 
-  querySnapshot.forEach((doc) => {
-    userCollections.push({ id: doc.id, ...doc.data() });
-  });
+  for (const doc of querySnapshot.docs) {
+    const collectionData = doc.data();
+    const walletAddress = collectionData.walletAddress;
 
-  return userCollections;
+    // Fetch corresponding user data
+    const userQuerySnapshot = await getDocs(query(usersRef, where("walletAddress", "==", walletAddress)));
+    const userDoc = userQuerySnapshot.docs[0];
+    const userData = userDoc.exists ? userDoc.data() : null;
+
+    // Fetch corresponding NFT data
+    const collectionName = collectionData.collectionName;
+    const nftQuerySnapshot = await getDocs(query(nftsRef, where("collectionName", "==", collectionName)));
+    const nftData = nftQuerySnapshot.docs.map(nftDoc => nftDoc.data());
+    
+    
+    console.log("NFT Data:", nftData);
+    
+
+    collections.push({
+      id: doc.id,
+      collection: collectionData,
+      user: userData,
+      nfts: nftData,
+    });
+  }
+  
+  return collections;
 };
+
+
 
 
 
