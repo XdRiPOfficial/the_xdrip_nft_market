@@ -22,43 +22,40 @@ const FollowerTabCard = ({ i, user }) => {
 
   return (
     <div className={Style.FollowerTabCard}>
-      <div className={Style.FollowerTabCard_rank}>
-        <p>
-          #{i + 1} <span>🥇</span>
-        </p>
-      </div>
-
-      <div className={Style.FollowerTabCard_box}>
+       <div className={Style.FollowerTabCard_box}>
         <div className={Style.FollowerTabCard_box_img}>
           <Image
             className={Style.FollowerTabCard_box_img_img}
-            src={images.xmarket_ped}
+            src={user.profilePictureUrl}
             alt="profile background"
-            width={500}
-            height={300}
+            width={150}
+            height={150}
             objectFit="cover"
           />
         </div>
 
-        <div className={Style.FollowerTabCard_box_profile}>
-          <Image
-            className={Style.FollowerTabCard_box_profile_img}
-            alt="profile picture"
-            width={80}
-            height={80}
-            src={user.profilePictureUrl || images[`user${i + 1}`]}
-          />
+        <div className={Style.FollowerTabCard_box_username}>
+          <h4>
+            {user.username}
+            {""}{" "}
+            <span>
+              <MdVerified />
+            </span>
+          </h4>
         </div>
 
         <div className={Style.FollowerTabCard_box_info}>
-          <div className={Style.FollowerTabCard_box_info_name}>
-            <h4>
-              {user.username }
-              {""}{" "}
-              <span>
-                <MdVerified />
-              </span>
-            </h4>
+          <div className={Style.FollowerTabCard_box_info_following}>
+            {following ? (
+              <a onClick={() => followMe()}>
+                FOLLOWING{""}{" "}
+                <span>
+                  <TiTick />
+                </span>
+              </a>
+            ) : (
+              <a onClick={() => followMe()}>MY PROFILE</a>
+            )}
           </div>
 
           <div className={Style.FollowerTabCard_box_info_following}>
@@ -75,8 +72,25 @@ const FollowerTabCard = ({ i, user }) => {
           </div>
         </div>
       </div>
+
+      {/* New grid of three boxes */}
+      <div className={Style.FollowerTabCard_stats}>
+        <div className={Style.FollowerTabCard_stats_box}>
+          <p>Collections </p>
+          <span>{user.collectionsCreated.length}</span>
+        </div>
+        <div className={Style.FollowerTabCard_stats_box}>
+          <p>NFTs </p>
+          <span>{user.nftsCreated.length}</span>
+        </div>
+        <div className={Style.FollowerTabCard_stats_box}>
+          <p>Followers</p>
+          <a>100</a>
+        </div>
+      </div>
     </div>
   );
 };
 
 export default FollowerTabCard;
+

@@ -1,6 +1,4 @@
-
-
-.FollowerTabCard_box{
+.FollowerTabCard_box {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     background-image: url(../../../img/card-background-5.png);
@@ -9,130 +7,170 @@
     cursor: pointer;
     position: relative;
     box-shadow: var(--white-glow);
-}
+    margin-left: .5rem;
+    margin-right: .5rem;
+    z-index: 1;
+  }
 
-.FollowerTabCard_box:hover{
+
+  
+  .FollowerTabCard_box:hover {
     box-shadow: 0 0 5px #017afe99, 0 0 10px #017afe99, 0 0 20px;
-}
-
-.FollowerTabCard_rank{
-    position: absolute;
-    z-index: 11111;
-    background-color: var(--main-bg-color);
-    color: white;
-    line-height: 0;
-    margin:  1rem;
-    font-size: .8rem;
-    padding: .1rem .5rem;
-    border-radius: .5rem;
-    border: 1px solid var(--icons-color);
-    transition: all .3s ease-in;
-}
-
-.FollowerTabCard_rank:hover{
-    background-color: var(--main-bg-color);
-    
-}
-
-.FollowerTabCard_box_img{
-    grid-column: 1 /-1;
-}
-
-.FollowerTabCard_box_img_img{
-    border-radius: .5rem;
-}
-
-.FollowerTabCard_box_profile{
-    grid-column: 1/-1;
+  }
+  
+  .FollowerTabCard_box_img {
+    display: flex;
+    grid-column: 1 / -1;
+    justify-content: center;
+    padding-top: 1.25rem;
+    padding-bottom: 1.9rem;
+    background-color: rgb(0, 0, 0);
+    border-top-left-radius: .5rem;
+    border-top-right-radius: .5rem;
+    border-bottom: 4px double rgba(1, 122, 254, 255);
+  }
+  
+  .FollowerTabCard_box_img_img {
+    border-radius: 50%;
+    border: 4px solid #fff;
+  }
+  
+  .FollowerTabCard_box_username {
+    grid-column: 1 / -1;
     text-align: center;
-    margin-top: -2rem;
+    margin-top: -1rem;
     position: relative;
-    padding-right: .25rem;
-    
-}
-
-.FollowerTabCard_box_profile_img{
+  }
+  
+  .FollowerTabCard_box_username h4 {
+    font-size: 1.2rem;
+    background-color: rgb(0, 0, 0);
+    display: inline;
+    padding-right: 1rem;
+    padding-left: 1rem;
+    padding-bottom: .15rem;
+    border: 4px double rgba(1, 122, 254, 255);
+    color: #fff;
+  }
+  
+  .FollowerTabCard_box_profile_img {
     border-radius: 50%;
     padding: 0rem;
     z-index: 222;
-    
-}
-
-.FollowerTabCard_box_profile::before{
+  }
+  
+  .FollowerTabCard_box_profile::before {
     position: absolute;
     content: "";
     width: 5rem;
     height: 5rem;
     border-radius: 50%;
-    
-    
-}
-
-.FollowerTabCard_box_info{
-    grid-column: 1/-1;
+  }
+  
+  .FollowerTabCard_box_info {
+    grid-column: 1 / -1;
     display: flex;
     align-items: center;
-    line-height: 0;
+    line-height: 4;
     justify-content: space-between;
     margin-top: 0rem;
     padding: 0rem;
     width: 100%;
-    
-}
-
-.FollowerTabCard_box_info h4{
+    background-image: url(../../../img/card-background-5.png);
+    border-bottom-left-radius: .5rem;
+    border-bottom-right-radius: .5rem;
+  }
+  
+  .FollowerTabCard_box_info h4 {
     font-size: 1.2rem;
     line-height: 1;
-}
-
-.FollowerTabCard_box_info_following a{
+    color: #fff;
+  }
+  
+  .FollowerTabCard_box_info_following a {
     font-size: .8rem;
     padding: .3rem .5rem;
     border-radius: .5rem;
-    border: 4px double rgba(1,122,254,255);
-    transition:  all .3s ease-in;
+    border: 4px double rgba(1, 122, 254, 255);
+    transition: all .3s ease-in;
     color: white;
-}
-
-.FollowerTabCard_box_info_following a:hover{
+  }
+  
+  .FollowerTabCard_box_info_following a:hover {
     font-weight: 800;
     color: black;
+  }
+
+  .FollowerTabCard_stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);    
+    background-color: #2b2a2a3a;
+    border-radius: 0 0 1rem 1rem;
+    justify-items: center;
+    transform: translateY(-100%);
+    transition: transform 0.4s ease-in-out;
+    box-shadow: 0 5px 5px rgba(255, 255, 255, 0.7);
+    width: 95%;
+    margin-left: .5rem;
+    margin-top: -.5rem;
+    padding: 0rem 0.5rem 0.5rem 0.5rem;
+  }
+  
+  .FollowerTabCard:hover .FollowerTabCard_stats {
+    transform: translateY(0);
     
-}
+  }
+  
+  .FollowerTabCard_stats_box {
+    text-align: center;
+    transition: all 0.4s ease-in-out;
+    
+  }
+  
 
-@media screen and (min-device-width:320px)  {
-    .FollowerTabCard_box_profile::before{
-        left: 38%;
+  .FollowerTabCard_stats_box p{
+    padding-top: 1rem;
+    margin-bottom: .5rem;
+    
+  }  
+ 
+  
+  
+  @media screen and (min-device-width: 320px) {
+    .FollowerTabCard_box_profile::before {
+      left: 38%;
     }
-
-    .FollowerTabCard_box_info{
-        padding-inline: 2rem ;
+  
+    .FollowerTabCard_box_info {
+      padding-inline: 2rem;
     }
-
-    .FollowerTabCard_box_img_img{
-        height: 200;
+  
+    .FollowerTabCard_box_img_img {
+      height: 200px;
     }
-}
-
-@media screen and (min-device-width: 322px) and (max-device-width: 375px) {
-    .FollowerTabCard_box_profile::before{
-        left: 39.5%;
+  }
+  
+  @media screen and (min-device-width: 322px) and (max-device-width: 375px) {
+    .FollowerTabCard_box_profile::before {
+      left: 39.5%;
     }
-}
-
-@media screen and (min-device-width: 377px) and (max-device-width: 425px) {
-    .FollowerTabCard_box_profile::before{
-        left: 41%;
+  }
+  
+  @media screen and (min-device-width: 377px) and (max-device-width: 425px) {
+    .FollowerTabCard_box_profile::before {
+      left: 41%;
     }
-}
-
-@media screen and (min-device-width: 427px) and (max-device-width: 768px) {
-    .FollowerTabCard_box_profile::before{
-        left: 39.5%;
+  }
+  
+  @media screen and (min-device-width: 427px) and (max-device-width: 768px) {
+    .FollowerTabCard_box_profile::before {
+      left: 39.5%;
     }
-}
-@media screen and (min-device-width: 770px) and (max-device-width: 1024px) {
-    .FollowerTabCard_box_profile::before{
-        left: 42%;
+  }
+  
+  @media screen and (min-device-width: 770px) and (max-device-width: 1024px) {
+    .FollowerTabCard_box_profile::before {
+      left: 42%;
     }
-}
+  }
+  

@@ -1,17 +1,36 @@
 
 .daysComponent{
+    display: flex;
     width: 100%;
     border-radius: .5rem;
     transition: all .3s ease-in;
     cursor: pointer;
-    box-shadow: var(--white-glow);
+    justify-content: space-evenly;
     
 }
 
 
-.daysComponent:hover{
-    box-shadow: 0 0 5px #017afe99, 0 0 10px #017afe99, 0 0 20px;
+.daysComponent_box{
+    border-radius: .5rem;
+    box-shadow: var(--white-glow);
 }
+
+.daysComponent_box:hover{
+    box-shadow: 0 0 5px #017afe99, 0 0 10px #017afe99, 0 0 20px;
+    border-radius: .5rem;
+}
+
+
+.daysComponent_box_box{
+    display: flex;
+    width: 90%;
+    justify-content: center;      
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+
+
 
 
 .daysComponent_box_img_img{
@@ -23,9 +42,8 @@
 .daysComponent_box_profile{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: .5rem;
     border-bottom: .2rem solid rgb(131, 127, 127);
-    
+
 }
 
 
