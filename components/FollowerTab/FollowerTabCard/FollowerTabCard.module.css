@@ -32,7 +32,7 @@
   
   .FollowerTabCard_box_img_img {
     border-radius: 50%;
-    border: 4px solid #fff;
+    
   }
   
   .FollowerTabCard_box_username {
@@ -115,6 +115,7 @@
     margin-top: -.5rem;
     padding: 0rem 0.5rem 0.5rem 0.5rem;
   }
+  
   
   .FollowerTabCard:hover .FollowerTabCard_stats {
     transform: translateY(0);
