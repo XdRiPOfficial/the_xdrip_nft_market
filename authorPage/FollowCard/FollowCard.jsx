@@ -104,7 +104,7 @@ const FollowCard = ({ i, user }) => {
         </div>
         <div className={Style.FollowerTabCard_stats_box}>
           <p>Followers</p>
-          <a>{user.followers.length} || 0</a>
+          <a>{user.followers.length} </a>
         </div>
       </div>
       <ToastContainer

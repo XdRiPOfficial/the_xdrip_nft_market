@@ -233,7 +233,7 @@ export const addFollower = async (userAddress, followerAddress) => {
     console.log('Follower ID:', followerId);
 
     // Check if the user is already following the follower
-    if (userDoc.data().following.includes(followerId)) {
+    if (userDoc.data().following.includes(userId)) {
       console.log('User is already following the follower.');
       toast.error('You are already following this user.');
       return;
