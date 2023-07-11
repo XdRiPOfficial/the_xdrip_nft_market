@@ -99,7 +99,7 @@ export const updateUser = async (walletAddress, updates) => {
 
 /*****************************************************************************************************************************************************************************************
                                                                                 
-                                                                    UPDATE USERS PROFILE PICTURE FUNCTION
+                                                                        UPDATE USERS PROFILE PICTURE FUNCTION
 
 ******************************************************************************************************************************************************************************************/
 
@@ -207,29 +207,182 @@ export const getUserProfile = async (walletAddress) => {
 
 ******************************************************************************************************************************************************************************************/
 
-const addFollower = async (userId, followerId) => {
+export const addFollower = async (userAddress, followerAddress) => {
   try {
-    const userRef = db.collection('users').doc(userId);
-    const followerRef = db.collection('users').doc(followerId);
+    console.log('Adding follower...');
+    console.log('User Address:', userAddress);
+    console.log('Follower Address:', followerAddress);
+
+    const firestore = getFirestore();
+    const usersCollection = collection(firestore, "users");
+
+    // Get the user document based on user address
+    const userQuery = query(usersCollection, where('walletAddress', '==', userAddress));
+    const userQuerySnapshot = await getDocs(userQuery);
+    const userDocs = userQuerySnapshot.docs;
+    const userDoc = userDocs[0];
+    const userId = userDoc.id;
+    console.log('User ID:', userId);
+
+    // Get the follower document based on follower address
+    const followerQuery = query(usersCollection, where('walletAddress', '==', followerAddress));
+    const followerQuerySnapshot = await getDocs(followerQuery);
+    const followerDocs = followerQuerySnapshot.docs;
+    const followerDoc = followerDocs[0];
+    const followerId = followerDoc.id;
+    console.log('Follower ID:', followerId);
+
+    // Check if the user is already following the follower
+    if (userDoc.data().following.includes(followerId)) {
+      console.log('User is already following the follower.');
+      toast.error('You are already following this user.');
+      return;
+    }
+
+    // Get the current following and followers arrays
+    const userFollowing = userDoc.data().following || [];
+    const userFollowers = userDoc.data().followers || [];
+    const followerFollowing = followerDoc.data().following || [];
+    const followerFollowers = followerDoc.data().followers || [];
+
+    // Update the arrays with the new IDs
+    const updatedUserFollowers = [...userFollowers, followerId];
+    const updatedFollowerFollowing = [...followerFollowing, userId];
 
     // Add follower to the user's followers field
-    await userRef.update({
-      followers: firebase.firestore.FieldValue.arrayUnion(followerId)
+    await updateDoc(doc(firestore, "users", userId), {
+      followers: updatedUserFollowers,
     });
+    console.log('Follower added to user followers field.');
 
     // Add the user to the follower's following field
-    await followerRef.update({
-      following: firebase.firestore.FieldValue.arrayUnion(userId)
+    await updateDoc(doc(firestore, "users", followerId), {
+      following: updatedFollowerFollowing,
     });
+    console.log('User added to follower following field.');
 
     console.log('Follower added successfully!');
   } catch (error) {
     console.error('Error adding follower:', error);
+    toast.error('Error adding follower. Please try again.');
   }
 };
 
-// Usage
-addFollower('userId1', 'followerId1');
+
+
+
+
+
+
+/*****************************************************************************************************************************************************************************************
+                                                                                
+                                                                                 IS FOLLOWING USER FUNCTION
+
+******************************************************************************************************************************************************************************************/
+
+export const isFollowingUser = async (userAddress, followerAddress) => {
+  try {
+    console.log('Checking following status...');
+    console.log('User Address:', userAddress);
+    console.log('Follower Address:', followerAddress);
+
+    const firestore = getFirestore();
+    const usersCollection = collection(firestore, "users");
+
+    // Get the user document based on user address
+    const userQuery = query(usersCollection, where('walletAddress', '==', userAddress));
+    const userQuerySnapshot = await getDocs(userQuery);
+    const userDocs = userQuerySnapshot.docs;
+    const userDoc = userDocs[0];
+    const userId = userDoc.id;
+    console.log('User ID:', userId);
+
+    // Get the follower document based on follower address
+    const followerQuery = query(usersCollection, where('walletAddress', '==', followerAddress));
+    const followerQuerySnapshot = await getDocs(followerQuery);
+    const followerDocs = followerQuerySnapshot.docs;
+    const followerDoc = followerDocs[0];
+    const followerId = followerDoc.id;
+    console.log('Follower ID:', followerId);
+
+    // Check if the user's followers array includes the followerId
+    const isFollowing = userDoc.data().followers.includes(followerId);
+
+    console.log('Following status:', isFollowing);
+    return isFollowing;
+  } catch (error) {
+    console.error('Error checking following status:', error);
+    throw error;
+  }
+};
+
+
+
+
+
+/*****************************************************************************************************************************************************************************************
+                                                                                
+                                                                   GET THE CONNECTED WALLETS FOLLOWING AND FOLLOWERS DATA
+
+******************************************************************************************************************************************************************************************/
+
+export const getFollowingAndFollowers = async (currentAccount) => {
+  try {
+    const firestore = getFirestore();
+    const usersCollection = collection(firestore, "users");
+    console.log('Wallet Address Coming In From MyProfile:', currentAccount);
+
+    // Get the user document based on wallet address
+    const userQuery = query(usersCollection, where('walletAddress', '==', currentAccount));
+    const userQuerySnapshot = await getDocs(userQuery);
+    const userDocs = userQuerySnapshot.docs;
+    const userDoc = userDocs[0];
+    const userId = userDoc.id;
+
+    // Retrieve the user's following and followers arrays
+    const userData = userDoc.data();
+    const followingIds = userData.following;
+    const followerIds = userData.followers;
+
+    console.log('Following IDs FB FUNCTION:', followingIds);
+    console.log('Follower IDs FB FUNCTION:', followerIds);
+
+    // Get the following users' documents
+    const followingDocsPromises = followingIds.map(async (followingId) => {
+      const followingDocRef = doc(usersCollection, followingId);
+      const followingDocSnapshot = await getDoc(followingDocRef);
+      const followingUser = followingDocSnapshot.data();
+      return followingUser;
+    });
+
+    const followingUsers = await Promise.all(followingDocsPromises);
+
+    console.log('Following Users FB FUNCTION:', followingUsers);
+
+    // Get the follower users' documents
+    const followerDocsPromises = followerIds.map(async (followerId) => {
+      const followerDocRef = doc(usersCollection, followerId);
+      const followerDocSnapshot = await getDoc(followerDocRef);
+      const followerUser = followerDocSnapshot.data();
+      return followerUser;
+    });
+
+    const followerUsers = await Promise.all(followerDocsPromises);
+
+    console.log('Follower Users FB FUNCTION:', followerUsers);
+
+    return {
+      myFollowing: followingUsers.filter((user) => user !== null),
+      myFollowers: followerUsers.filter((user) => user !== null),
+      
+    };
+  } catch (error) {
+    console.error('Error retrieving following and followers:', error);
+    throw error;
+  }
+};
+
+
 
 
 
@@ -241,29 +394,48 @@ addFollower('userId1', 'followerId1');
 
 ******************************************************************************************************************************************************************************************/
 
-const removeFollower = async (userId, followerId) => {
+export const removeFollower = async (userAddress, followerAddress) => {
   try {
-    const userRef = db.collection('users').doc(userId);
-    const followerRef = db.collection('users').doc(followerId);
+    console.log('Removing follower...');
+    console.log('User Address:', userAddress);
+    console.log('Follower Address:', followerAddress);
+
+    const firestore = getFirestore();
+    const usersCollection = collection(firestore, "users");
+
+    // Get the user document based on user address
+    const userQuery = query(usersCollection, where('walletAddress', '==', userAddress));
+    const userQuerySnapshot = await getDocs(userQuery);
+    const userDocs = userQuerySnapshot.docs;
+    const userDoc = userDocs[0];
+    const userId = userDoc.id;
+    console.log('User ID:', userId);
+
+    // Get the follower document based on follower address
+    const followerQuery = query(usersCollection, where('walletAddress', '==', followerAddress));
+    const followerQuerySnapshot = await getDocs(followerQuery);
+    const followerDocs = followerQuerySnapshot.docs;
+    const followerDoc = followerDocs[0];
+    const followerId = followerDoc.id;
+    console.log('Follower ID:', followerId);
 
     // Remove follower from the user's followers field
-    await userRef.update({
-      followers: firebase.firestore.FieldValue.arrayRemove(followerId)
+    await updateDoc(doc(firestore, "users", userId), {
+      followers: userDoc.data().followers.filter(id => id !== followerId),
     });
+    console.log('Follower removed from user followers field.');
 
     // Remove the user from the follower's following field
-    await followerRef.update({
-      following: firebase.firestore.FieldValue.arrayRemove(userId)
+    await updateDoc(doc(firestore, "users", followerId), {
+      following: followerDoc.data().following.filter(id => id !== userId),
     });
+    console.log('User removed from follower following field.');
 
     console.log('Follower removed successfully!');
   } catch (error) {
     console.error('Error removing follower:', error);
   }
 };
-
-// Usage
-removeFollower('userId1', 'followerId1');
 
 
 
@@ -821,6 +993,7 @@ export async function getNFTData(tokenId, name) {
 
 
 
+
 /*****************************************************************************************************************************************************************************************
                                                                                 
                                                                           GET ALL USERS DATA IN XMARKET FUNCTION
@@ -873,10 +1046,10 @@ export const getAllCollections = async () => {
     const collectionName = collectionData.collectionName;
     const nftQuerySnapshot = await getDocs(query(nftsRef, where("collectionName", "==", collectionName)));
     const nftData = nftQuerySnapshot.docs.map(nftDoc => nftDoc.data());
-    
-    
+
+
     console.log("NFT Data:", nftData);
-    
+
 
     collections.push({
       id: doc.id,
@@ -885,11 +1058,9 @@ export const getAllCollections = async () => {
       nfts: nftData,
     });
   }
-  
+
   return collections;
 };
-
-
 
 
 

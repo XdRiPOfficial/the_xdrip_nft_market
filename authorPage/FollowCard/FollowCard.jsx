@@ -2,23 +2,20 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { MdVerified } from "react-icons/md";
 import { TiTick } from "react-icons/ti";
-import { addFollower, removeFollower, isFollowingUser } from "../../../firebase/services";
+import { addFollower, removeFollower, isFollowingUser } from "../../firebase/services";
 import { useAddress } from "@thirdweb-dev/react";
 import Link from 'next/link';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
 // INTERNAL IMPORT
-import Style from "./FollowerTabCard.module.css";
-import images from "../../../img";
+import Style from "./FollowCard.module.css";
+import images from "../../img";
 
-const FollowerTabCard = ({ i, user }) => {
+const FollowCard = ({ i, user }) => {
   const [following, setFollowing] = useState(user.isFollowing);
   const followerAddress = useAddress();
   const userAddress = user.walletAddress;
-
-
 
   useEffect(() => {
     const checkFollowingStatus = async () => {
@@ -32,8 +29,6 @@ const FollowerTabCard = ({ i, user }) => {
 
     checkFollowingStatus();
   }, [userAddress, followerAddress]);
-
-
 
   const followMe = async () => {
     try {
@@ -52,10 +47,7 @@ const FollowerTabCard = ({ i, user }) => {
     }
   };
 
-
-
-
-  console.log("FollowerTabCard Data:", user);
+  console.log("FollowCard Data:", user);
 
   return (
     <div className={Style.FollowerTabCard}>
@@ -101,7 +93,7 @@ const FollowerTabCard = ({ i, user }) => {
           </div>
         </div>
       </div>
-    <div className={Style.FollowerTabCard_stats}>
+      <div className={Style.FollowerTabCard_stats}>
         <div className={Style.FollowerTabCard_stats_box}>
           <p>Collections </p>
           <span>{user.collectionsCreated.length}</span>
@@ -112,7 +104,7 @@ const FollowerTabCard = ({ i, user }) => {
         </div>
         <div className={Style.FollowerTabCard_stats_box}>
           <p>Followers</p>
-          <a>{user.followers?.length || 0}</a>
+          <a>{user.followers.length} || 0</a>
         </div>
       </div>
       <ToastContainer
@@ -123,4 +115,4 @@ const FollowerTabCard = ({ i, user }) => {
   );
 };
 
-export default FollowerTabCard;
+export default FollowCard;

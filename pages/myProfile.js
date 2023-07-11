@@ -6,7 +6,7 @@ import {
   AuthorTaps,
   AuthorNFTCardBox,
 } from "../authorPage/componentIndex";
-import { getMyNFTs, getCollectionsData } from "../firebase/services";
+import { getMyNFTs, getCollectionsData, getFollowingAndFollowers } from "../firebase/services";
 import { useAddress } from "@thirdweb-dev/react";
 import { NFTMarketplaceContext } from "../Context/NFTMarketplaceContext";
 
@@ -28,12 +28,15 @@ const Author = () => {
   const [nftsSold, setNftsSold] = useState([]);
   const [nftsLiked, setNftsLiked] = useState([]);
   const [collectionsData, setCollectionsData] = useState([]);
+  const [myFollowers, setMyFollowers] = useState([]);
+  const [myFollowing, setMyFollowing] = useState([]);
+  const [followingUsers, setFollowingUsers] = useState([]);
 
   useEffect(() => {
     const fetchUserCollections = async () => {
       try {
         console.log("Fetching user collections for account My Profile:", currentAccount);
-        const collections = await getCollectionsData(currentAccount);        
+        const collections = await getCollectionsData(currentAccount);
         setCollectionsData(collections);
         console.log("Fetched user collections My Profile:", collections);
       } catch (error) {
@@ -60,8 +63,21 @@ const Author = () => {
       }
     };
 
+    const fetchFollowingAndFollowersData = async () => {
+      try {
+        console.log("Fetching following and followers for account MY PROFILE:", currentAccount);
+        const myFollowData = await getFollowingAndFollowers(currentAccount);
+        console.log("Fetched following and followers MY PROFILE:", myFollowData);
+        setMyFollowing(myFollowData.myFollowing);
+        setMyFollowers(myFollowData.myFollowers);
+      } catch (error) {
+        console.error("Error fetching following and followers MY PROFILE:", error);
+      }
+    };
+
     if (currentAccount) {
       fetchMyNFTsData();
+      fetchFollowingAndFollowersData();
     }
   }, [currentAccount]);
 
@@ -91,8 +107,12 @@ const Author = () => {
               nftsLiked={nftsLiked}
               collections={collections}
               collectionsData={collectionsData}
+              myFollowing={myFollowing}
+              myFollowers={myFollowers}
+              follower={follower}
+              following={following}
             />
-            
+
             <div className={Style.author_box_cards}>
               <AuthorNFTCardBox
                 owned={owned}
@@ -111,12 +131,16 @@ const Author = () => {
                 nftsLiked={nftsLiked}
                 collectionsData={collectionsData}
                 currentAccount={currentAccount}
+                myFollowers={myFollowers}
+                myFollowing={myFollowing}
+                followingUsers={followingUsers}
               />
+
             </div>
           </div>
         </div>
       </div>
-      {console.log("COLLECTION DATA MY PROFILE:", collectionsData)}
+      {console.log("COLLECTION DATA MY PROFILE:", myFollowers)}
     </div>
   );
 };

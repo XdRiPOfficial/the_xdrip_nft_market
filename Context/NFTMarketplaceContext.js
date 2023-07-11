@@ -120,8 +120,6 @@ export const NFTMarketplaceProvider = ({ children }) => {
 async function createNFT(name, price, description, category, website, royalties, properties, image,  walletAddress, collectionName ) {
   if (!name || !description || !price || !image)
     return setError("Data Is Missing"), setOpenError(true);
-
-
     console.log('Incoming Data:', {
       name,
       price,

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { RiUserFollowFill, RiAwardLine } from "react-icons/ri";
 import { RoundCarousel, RoundCarouselSlide } from "react-round-carousel";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // INTERNAL IMPORT
 import Style from "./FollowerTab.module.css";
@@ -96,6 +98,10 @@ const FollowerTab = ({ TopCreator }) => {
           <a href="#">BECOME A CREATOR</a>
         </div>
       </div>
+      <ToastContainer
+        position={toast.POSITION.TOP_CENTER}
+        className={Style.toast_container_center}
+      />
     </div>
   );
 };
