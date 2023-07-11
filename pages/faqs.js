@@ -180,10 +180,7 @@ const FAQ = () => {
             question: 'Why is my transaction taking so long?',
             answer: 'Transactions on the Binance Smart Chain are usually fast. However, in times of high network congestion, transactions can take longer than usual. If a transaction is pending for a long time, it may be worth considering increasing the gas fee.'
         },
-        {
-            question: 'Can I list any type of NFT on XMARKET?',
-            answer: 'You can list any type of NFT as long as it\'s compatible with the Binance Smart Chain and adheres to our community guidelines and terms of service. Please ensure the content does not infringe on the rights of others and is not offensive or illegal.'
-        },
+        
         {
             question: 'How can I trust the seller?',
             answer: 'While blockchain transactions are secure, it\'s always important to do your due diligence. Check the seller\'s history and reviews where available, and always be cautious of deals that seem too good to be true.'
