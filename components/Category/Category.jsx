@@ -25,9 +25,9 @@ const Category = () => {
       path: "/metaverseCategory",
     },
     {
-      images: images.category_music,
-      name: "MUSIC",
-      path: "/musicCategory",
+      images: images.category_sports,
+      name: "SPORTS",
+      path: "/sportsCategory",
     },
     {
       images: images.category_photography,
@@ -35,19 +35,19 @@ const Category = () => {
       path: "/photographyCategory",
     },
     {
-      images: images.category_sports,
-      name: "SPORTS",
-      path: "/sportsCategory",
+      images: images.category_favorites,
+      name: "PROFILE PIC",
+      path: "/profilePicCategory",
+    },
+    {
+      images: images.category_music,
+      name: "MUSIC",
+      path: "/musicCategory",
     },
     {
       images: images.category_videos,
       name: "VIDEOS",
       path: "/videoCategory",
-    },
-    {
-      images: images.category_favorites,
-      name: "COLLECTIBLES",
-      path: "/collectibleCategory",
     },
   ];
 
@@ -66,14 +66,6 @@ const Category = () => {
                   height={190}
                 />
                 <div className={Style.category_box_title}>
-                  <span>
-                    <Image
-                      src={images.xm}
-                      alt="Logo"
-                      width={50}
-                      height={50}
-                    />
-                  </span>
                   <div className={Style.category_box_title_info}>
                     <h4>{el.name}</h4>
                   </div>

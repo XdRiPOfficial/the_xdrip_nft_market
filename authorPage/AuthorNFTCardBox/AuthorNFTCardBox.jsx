@@ -3,11 +3,10 @@ import { useAddress } from "@thirdweb-dev/react";
 import { NFTMarketplaceContext } from "../../Context/NFTMarketplaceContext";
 import Style from "./AuthorNFTCardBox.module.css";
 import images from "../../img";
-import { AuthorNFTCard, AuthorCollections } from "../componentIndex";
+import { AuthorNFTCard, AuthorCollections, FollowCard } from "../componentIndex";
 import FollowerTabCard from "../../components/FollowerTab/FollowerTabCard/FollowerTabCard";
 import { Loader } from "../../components/componentsindex";
-import { getUserCollections } from "../../firebase/services";
-
+import { getUserCollections, getFollowingAndFollowers } from "../../firebase/services";
 
 const AuthorNFTCardBox = ({
   owned,
@@ -18,6 +17,7 @@ const AuthorNFTCardBox = ({
   like,
   follower,
   following,
+  followingUser,
   nftsOwned,
   collectionsCreated,
   collectionsData,
@@ -25,6 +25,8 @@ const AuthorNFTCardBox = ({
   nftsListed,
   nftsSold,
   nftsLiked,
+  myFollowing,
+  myFollowers,
 }) => {
   const [user, setUser] = useState(null);
   const [share, setShare] = useState(false);
@@ -32,7 +34,8 @@ const AuthorNFTCardBox = ({
   const address = useAddress();
   const [fileTypes, setFileTypes] = useState({});
   const [loading, setLoading] = useState(true);
-
+  const [followerData, setFollowerData] = useState([]);
+  const [followingData, setFollowingData] = useState([]);
 
   useEffect(() => {
     console.log("owned:", owned);
@@ -42,7 +45,7 @@ const AuthorNFTCardBox = ({
     console.log("sold:", sold);
     console.log("like:", like);
     console.log("follower:", follower);
-    console.log("following:", following);
+    console.log("followingUser:", followingUser);
     console.log("nftsOwned:", nftsOwned);
     console.log("collectionsCreated:", collectionsCreated);
     console.log("collectionsData:", collectionsData);
@@ -50,6 +53,8 @@ const AuthorNFTCardBox = ({
     console.log("nftsListed:", nftsListed);
     console.log("nftsSold:", nftsSold);
     console.log("nftsLiked:", nftsLiked);
+    console.log("myFollowing:", myFollowing);
+    console.log("myFollowers:", myFollowers);
   }, [
     owned,
     collections,
@@ -59,12 +64,15 @@ const AuthorNFTCardBox = ({
     like,
     follower,
     following,
+    followingUser,
     nftsOwned,
     collectionsData,
     nftsCreated,
     nftsListed,
     nftsSold,
     nftsLiked,
+    myFollowing,
+    myFollowers,
   ]);
 
 
@@ -128,12 +136,6 @@ const AuthorNFTCardBox = ({
     return fileType ? <RenderMedia src={el.image} /> : <RenderDefault />;
   };
 
-
-
-  const followerArray = [];
-
-  const followingArray = [];
-
   return (
     <div className={Style.AuthorNFTCardBox}>
       {owned && (
@@ -162,7 +164,6 @@ const AuthorNFTCardBox = ({
             <p className={Style.NoDataMessage}>NO CREATED COLLECTIONS ON XMARKET</p>
           )}
         </div>
-
       )}
       {listed && (
         <div>
@@ -182,6 +183,8 @@ const AuthorNFTCardBox = ({
           )}
         </div>
       )}
+
+
       {like && (
         <div>
           {nftsLiked.length > 0 ? (
@@ -191,24 +194,34 @@ const AuthorNFTCardBox = ({
           )}
         </div>
       )}
+
       {follower && (
-        <div className={Style.AuthorNFTCardBox_box}>
-          {followerArray.length > 0 ? (
-            followerArray.map((el, i) => <FollowerTabCard key={i} el={el} />)
+        <div>
+          {myFollowers.length > 0 ? (
+            myFollowers.map((user, i) => (
+              <FollowCard key={i + 1} user={user} />
+            ))
           ) : (
-            <p className={Style.NoDataMessage}>YOU ARE NOT BEING FOLLOWED BY ANY USERS</p>
+            <p className={Style.NoDataMessage}>YOU ARE NOT BEING FOLLOWED YET</p>
           )}
         </div>
       )}
+
       {following && (
-        <div className={Style.AuthorNFTCardBox_box}>
-          {followingArray.length > 0 ? (
-            followingArray.map((el, i) => <FollowerTabCard key={i} el={el} />)
+        <div className={Style.FollowerTabCard_box}>
+          {myFollowing.length > 0 ? (
+            myFollowing.map((user, i) => (
+              <FollowCard key={i + 1} user={user} />
+            ))
           ) : (
-            <p className={Style.NoDataMessage}>YOU ARE NOT FOLLOWING ANY CREATORS </p>
+            <p className={Style.NoDataMessage}>YOU ARE NOT BEING FOLLOWED YET</p>
           )}
         </div>
       )}
+
+
+
+
     </div>
   );
 };

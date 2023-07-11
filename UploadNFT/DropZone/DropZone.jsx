@@ -20,8 +20,7 @@ const DropZone = ({
   properties,
   price,
   uploadToIPFS,
-  category,
-  
+  category,  
   setImage,
   collectionName,
   setFileType,
