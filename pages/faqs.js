@@ -157,10 +157,6 @@ const FAQ = () => {
             answer: 'XMARKET is compatible with a range of BSC-compatible wallets such as MetaMask, Trust Wallet, and Binance Chain Wallet. Always ensure that your wallet is configured for the Binance Smart Chain network.'
         },
         {
-            question: 'Is my transaction on XMARKET safe?',
-            answer: 'XMARKET uses blockchain technology, which provides a high level of security. However, as with all online transactions, users should take precautions, such as using secure wallets and keeping private keys private.'
-        },
-        {
             question: 'Can I cancel a purchase or sale?',
             answer: 'Once a transaction is confirmed on the blockchain, it is permanent and cannot be reversed. Please make sure to double-check all details before confirming a transaction.'
         },
@@ -179,10 +175,6 @@ const FAQ = () => {
         {
             question: 'What can I do if I encounter a problem or need support?',
             answer: 'If you encounter any issues or require assistance, please visit our support page and submit a ticket. Our team will get back to you as soon as possible.'
-        },
-        {
-            question: 'What currencies can I use on XMARKET?',
-            answer: 'XMARKET operates on the Binance Smart Chain, so transactions are made using Binance Coin (BNB). Other BEP-20 tokens may also be supported.'
         },
         {
             question: 'Why is my transaction taking so long?',
@@ -208,10 +200,7 @@ const FAQ = () => {
             question: 'What forms of payment does XMARKET accept?',
             answer: 'XMARKET currently accepts BNB (Binance Coin) for transactions. You need to have BNB in your connected wallet to buy, sell, or create NFTs on XMARKET.'
         },
-        {
-            question: 'How do I sell my NFT on XMARKET?',
-            answer: 'To sell an NFT on XMARKET, go to your collection, select the NFT you want to sell, and click on "Sell." Set your selling price in BNB and confirm your listing.'
-        },
+  
         {
             question: 'How do I connect my wallet to XMARKET?',
             answer: 'You can connect your wallet by clicking on the "Connect Wallet" button on the top right corner of the XMARKET homepage. XMARKET supports various wallets such as MetaMask, Trust Wallet, and WalletConnect. Follow the prompts to complete the connection process.'
